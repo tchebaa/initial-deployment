@@ -26,6 +26,7 @@ export function ThemedText({
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'link' ? styles.link : undefined,
+        
         style,
       ]}
       {...rest}
@@ -35,8 +36,9 @@ export function ThemedText({
 
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 24,
+    fontFamily: "PoppinsMedium"
   },
   defaultSemiBold: {
     fontSize: 16,
@@ -45,13 +47,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
+    
+    fontFamily: "PoppinsBold"
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'PoppinsSemibold',
   },
+  
   link: {
     lineHeight: 30,
     fontSize: 16,

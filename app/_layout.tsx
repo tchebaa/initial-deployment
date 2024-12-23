@@ -12,9 +12,20 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
   const colorScheme = useColorScheme();
+  
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    RobotoLight: require('../assets/fonts/Roboto-Light.ttf'),
+    RobotoBold: require('../assets/fonts/Roboto-Bold.ttf'),
+    PoppinsExtraLight: require('../assets/fonts/Poppins-ExtraLight.ttf'),
+    PoppinsSemibold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+    PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+    PoppinsLight: require('../assets/fonts/Poppins-Light.ttf'),
+    PoppinsMedium: require('../assets/fonts/Poppins-Medium.ttf'),
+    Playwrite: require('../assets/fonts/PlaywriteNLGuides-Regular.ttf')
+
   });
 
   useEffect(() => {
@@ -30,8 +41,10 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="index" options={{headerShown: false}}/>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="signUp" options={{ headerShown: false }}/>
+        <Stack.Screen name="locationScreen" options={{ headerShown: false }}/>
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
