@@ -1,20 +1,25 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Link } from 'expo-router';
+import {AntDesign} from '@expo/vector-icons';
 import EventBody from '@/components/appComponents/EventBody';
+import { Link } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+import EventHeader from '@/components/appComponents/EventHeader';
+
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
+
+//Events Data
 
 const events = [
     {
@@ -427,35 +432,16 @@ const events = [
 
 
 
-export default function LikesScreen() {
+export default function EventScreen() {
 
-    
-
-    
-
-     const renderEvents = ({item}) => {
-                return(
-                    <EventBody item={item} screenType="like" />
-                )
-            }
-    
+    const { screenType, id } = useLocalSearchParams();
 
 
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
-            <ThemedView style={styles.headerTextBody}>
-                <ThemedText type='subtitle'>Let's go.</ThemedText>
-            </ThemedView>
+            <EventHeader item={events[3]} />
             
-        <ThemedView >
-            <FlatList 
-                contentContainerStyle={{paddingBottom: 150}}
-                data={events}
-                renderItem={renderEvents}
-                keyExtractor={(item)=> item._id} 
-                showsVerticalScrollIndicator={false}/>
-        </ThemedView>
         </ThemedView>
     </SafeAreaView>
   );
@@ -478,9 +464,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         
     },
-    headerTextBody: {
-        width: '95%',
-        marginTop: 10
+    searchButton: {
+        borderWidth: 0.5,
+        borderColor: 'gray',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        width: '90%',
+        borderRadius: 20,
+        marginVertical: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent:'space-between'
     }
   
   

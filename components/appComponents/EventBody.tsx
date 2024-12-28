@@ -24,107 +24,69 @@ export default function EventBody({item, screenType}) {
 
     return (
         <ThemedView>
-              {screenType === 'home1' ?  
-              <TouchableOpacity  style={styles.eventBody2}>
-                    {item.eventMainImage.aspectRatio === 'a'  ? 
-                    <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
-                        <View style={styles.imageBackgroundBadge}>
-                          <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
-                          <View></View>
-                        </View>
-                        <ImageBackground style={styles.eventImageRatioAHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
-                        {screenType === 'home' ? 
-                        <View>
-                            <View style={styles.eventDetailsBody}>
-                                <View style={styles.detailsBackground}></View>
-                                <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
-                                    <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                                </View>
-                                
-                            </View>
-                        </View>: null}
-                    </ImageBackground> : null}
-                    {item.eventMainImage.aspectRatio === 'b'  ? 
-                    <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover' >
-                        <View style={styles.imageBackgroundBadge}>
-                          <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
-                          <View></View>
-                        </View>
-                        <ImageBackground style={styles.eventImageRatioBHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
-                        {screenType === 'home' ? 
-                        <View>
-                            <View style={styles.eventDetailsBody}>
-                                <View style={styles.detailsBackground}></View>
-                                <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
-                                    <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                                </View>
-                                
-                            </View>
-                        </View>: null}
-                    </ImageBackground> : null}
-                    {item.eventMainImage.aspectRatio === 'c'  ? 
-                    <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
-                      
-                        <View style={styles.imageBackgroundBadge}>
+              {screenType === 'home' ?  
+              <Link href={{pathname: '/(tabs)/home/event', params: {screenType: 'home', id: item._id}}} asChild>
+                <TouchableOpacity  style={styles.eventBody2}>
+                      {item.eventMainImage.aspectRatio === 'a'  ? 
+                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                          <View style={styles.imageBackgroundBadge}>
                             <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
                             <View></View>
                           </View>
-                        <ImageBackground style={styles.eventImageRatioCHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
-                        {screenType === 'home' ? 
+                          <ImageBackground style={styles.eventImageRatioAHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                      </ImageBackground> : null}
+                      {item.eventMainImage.aspectRatio === 'b'  ? 
+                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover' >
+                          <View style={styles.imageBackgroundBadge}>
+                            <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
+                            <View></View>
+                          </View>
+                          <ImageBackground style={styles.eventImageRatioBHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                          
+                      </ImageBackground> : null}
+                      {item.eventMainImage.aspectRatio === 'c'  ? 
+                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                         
-                            <View style={styles.eventDetailsBody}>
-                                <View style={styles.detailsBackground}></View>
-                                <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
-                                    <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                                </View>
-                                
+                          <View style={styles.imageBackgroundBadge}>
+                              <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
+                              <View></View>
                             </View>
-                        : null}
-                    </ImageBackground> : null}
-                    {screenType === 'search' ? 
-                    <View style={styles.eventDetailsSearchBody}>
-                            <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
-                            <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                            <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                        </View>: null}
-                        {screenType === 'home1' ? 
-                        <View style={styles.eventDetailsSearchBody2}>
-                            <View style={styles.imageBackgroundHeader2}>
-                                  <View></View>
-                                  {!likedEvents.includes(item._id) ? 
-                                  <TouchableOpacity style={styles.likeButton}>
-                                  
-                                      <AntDesign name="hearto" size={16} color="gray" />
-                                          
-                                      </TouchableOpacity>:
-                                      <TouchableOpacity style={styles.unlikeButton}>
-                                      
-                                      <AntDesign name="heart" size={16} color="#ce2029" />
-                                      
-                                  </TouchableOpacity>}
-                                  
-                              </View>
-                              <ThemedText style={styles.eventNameText} numberOfLines={2}>{item.eventName}</ThemedText>
-                              <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                              <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                              
-                        </View>: null}
-                
-                </TouchableOpacity>
+                          <ImageBackground style={styles.eventImageRatioCHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                      </ImageBackground> : null}
+                      
+                          
+                          <View style={styles.eventDetailsSearchBody2}>
+                              <View style={styles.imageBackgroundHeader2}>
+                                    <View></View>
+                                    {!likedEvents.includes(item._id) ? 
+                                    <TouchableOpacity style={styles.likeButton}>
+                                    
+                                        <AntDesign name="hearto" size={16} color="gray" />
+                                            
+                                        </TouchableOpacity>:
+                                        <TouchableOpacity style={styles.unlikeButton}>
+                                        
+                                        <AntDesign name="heart" size={16} color="#ce2029" />
+                                        
+                                    </TouchableOpacity>}
+                                    
+                                </View>
+                                <ThemedText style={styles.eventNameText} numberOfLines={2}>{item.eventName }</ThemedText>
+                                <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
+                                <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
+                                
+                          </View>
+                  
+                  </TouchableOpacity>
+                </Link>
 
                 : 
-                
+                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' }} asChild>
                 <TouchableOpacity  style={styles.eventBody}>
                     {item.eventMainImage.aspectRatio === 'a'  ? 
                     <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} borderRadius={10} resizeMode='cover'>
                         <View style={styles.imageBackgroundHeader}>
-                            {screenType === 'search' ? <View></View>: <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>}
+                            <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
                             {!likedEvents.includes(item._id) ? 
                             <TouchableOpacity style={styles.likeButton}>
                             
@@ -138,7 +100,7 @@ export default function EventBody({item, screenType}) {
                         </TouchableOpacity>}
                             
                         </View>
-                        {screenType === 'home' ? 
+                        {screenType === 'like' ? 
                         <View>
                             <View style={styles.eventDetailsBody}>
                                 <View style={styles.detailsBackground}></View>
@@ -155,7 +117,7 @@ export default function EventBody({item, screenType}) {
                     <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                       
                         <View style={styles.imageBackgroundHeader}>
-                          {screenType === 'search' ? <View></View>: <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>}
+                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
                             {!likedEvents.includes(item._id) ? 
                             <TouchableOpacity style={styles.likeButton}>
                             
@@ -170,7 +132,7 @@ export default function EventBody({item, screenType}) {
                             
                         </View>
                         <ImageBackground style={styles.eventImageRatioB} source={{uri: item.eventMainImage.url}} borderRadius={10} ></ImageBackground>
-                        {screenType === 'home' ? 
+                        {screenType === 'like' ? 
                         <View>
                             <View style={styles.eventDetailsBody}>
                                 <View style={styles.detailsBackground}></View>
@@ -188,7 +150,7 @@ export default function EventBody({item, screenType}) {
                     <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                       
                         <View style={styles.imageBackgroundHeader}>
-                          {screenType === 'search' ? <View></View>: <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>}
+                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
                             {!likedEvents.includes(item._id) ? 
                             <TouchableOpacity style={styles.likeButton}>
                             
@@ -203,7 +165,7 @@ export default function EventBody({item, screenType}) {
                             
                         </View>
                         <ImageBackground style={styles.eventImageRatioC} source={{uri: item.eventMainImage.url}} borderRadius={10} ></ImageBackground>
-                        {screenType === 'home' ? 
+                        {screenType === 'like' ? 
                         
                             <View style={styles.eventDetailsBody}>
                                 <View style={styles.detailsBackground}></View>
@@ -216,14 +178,15 @@ export default function EventBody({item, screenType}) {
                             </View>
                         : null}
                     </ImageBackground> : null}
-                    {screenType === 'search' ? <View style={styles.eventDetailsSearchBody}>
-                            <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
-                            <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                            <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                        </View>: null}
+                    {screenType === 'search' ? 
+                    <View style={styles.eventDetailsSearchBody}>
+                          <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
+                          <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
+                          <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
+                      </View>: null}
                 
                 </TouchableOpacity>
-
+                </Link>
                 }
             
         </ThemedView>      
@@ -365,14 +328,14 @@ const styles = StyleSheet.create({
   },
   eventDetailsSearchBody: {
     padding: 5,
-    backgroundColor: '',
+    
     margin: 5,
     borderRadius: 5,
     
   },
   eventDetailsSearchBody2: {
     padding: 8,
-    backgroundColor: '',
+    
    
     borderRadius: 5,
     width: windowWidth * 0.55,

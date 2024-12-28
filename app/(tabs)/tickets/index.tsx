@@ -28,7 +28,9 @@ export default function TicketsScreen() {
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
-            <ThemedText>Tickets</ThemedText>
+            <ThemedView style={styles.headerTextBody}>
+                <ThemedText type='subtitle'>I'm going!</ThemedText>
+            </ThemedView>
         </ThemedView>
     </SafeAreaView>
   );
@@ -51,6 +53,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         
     },
+    headerTextBody: {
+        width: '95%',
+        marginTop: 10
+    }
   
   
   

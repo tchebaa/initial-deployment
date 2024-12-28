@@ -9,8 +9,8 @@ interface IEvent {
   }
 
 interface IEventContextValue {
-    eventList:[IEvent],
-    setEventList:(data:[IEvent]) => void
+    eventList?:IEvent[],
+    setEventList:(data:IEvent[]) => void
 }
 
 
@@ -23,7 +23,6 @@ const initialList: IEventContextValue = {
 
 const LikedContext = createContext<IEventContextValue>(initialList);
 
-
    
 
 export function useLikes () {
@@ -34,5 +33,11 @@ type ChildrenProps = { children?: ReactNode };
 
 
 export function LikeProvider({children}: ChildrenProps) {
+
+  const [eventList, setEventList] = useState<IEvent[]>([])
+
+  return(
+    <LikedContext.Provider value={{eventList, setEventList}} >{children}</LikedContext.Provider>
+  )
 
 }

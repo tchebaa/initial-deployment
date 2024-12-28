@@ -440,7 +440,7 @@ export default function HomeScreen() {
 
     const renderSponsoredEvents = ({item}) => {
             return(
-                <EventBody item={item} screenType="home1" />
+                <EventBody item={item} screenType="home" />
             )
         }
 
