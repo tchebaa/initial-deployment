@@ -515,7 +515,7 @@ const events = [
 
 //Events Categories Item
 
-const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}) => {
+const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {item: { icon: string, title: string, name: string}, selectedCategories: string [], handleAddRemoveCategory: (item: string) => void}) => {
     return (
       
         <ThemedView>
@@ -540,7 +540,7 @@ export default function SearchScreen() {
     const [selectedCategories, setSelectedCategories] = useState<categoryItemSelected []>([])
 
 
-    type CategoryProps = {item : { icon: Element, title: string, name: string}}
+    type CategoryProps = {item : { icon: string, title: string, name: string}}
 
 
     const handleAddRemoveCategory = (category: string) => {

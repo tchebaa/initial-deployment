@@ -440,7 +440,7 @@ export default function EventScreen() {
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
-            <EventHeader item={events[3]} />
+            <EventHeader item={events[3]} screenType={screenType}/>
             
         </ThemedView>
     </SafeAreaView>

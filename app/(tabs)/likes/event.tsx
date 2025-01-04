@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -11,6 +11,7 @@ import EventBody from '@/components/appComponents/EventBody';
 import { Link } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import EventHeader from '@/components/appComponents/EventHeader';
+import EventScreenBody from '@/components/appComponents/EventScreenBody';
 
 
 
@@ -441,7 +442,11 @@ export default function EventScreen() {
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
-            <EventHeader item={events[1]} />
+            <EventHeader item={events[1]} screenType={screenType} />
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <EventScreenBody item={events[1]} screenType={screenType}/>
+            </ScrollView>
+            
         </ThemedView>
         
     </SafeAreaView>
@@ -460,7 +465,7 @@ const styles = StyleSheet.create({
     },
     body: {
         width: windowWidth,
-        padding: 5,
+        
         height: '100%',
         alignItems: 'center',
         

@@ -1,11 +1,36 @@
 
 import {createContext, useContext, useState, useEffect, type Dispatch, type SetStateAction, type ReactNode} from 'react';
 
-
+const ageRestriction: string [] = []
 
 interface IEvent {
-    name?: string;
-    photo?: string;
+    eventName?: string;
+    eventDescription?: string;
+    _id?: string;
+    email?:string;
+    eventMainImage?:{ aspectRatio?: string; url?: string};
+    eventImage1?:{ aspectRatio?: string; url?: string};
+    eventImage2?:{ aspectRatio?: string; url?: string};
+    eventImage3?:{ aspectRatio?: string; url?: string};
+    eventImage4?:{ aspectRatio?: string; url?: string};
+    dateTimePrice?: { adultPrice?: number;
+      adolescentPrice?: number;
+      childPrice?:number;
+      eventDate?: string;
+      eventDays?:number;
+      eventHours?:number;
+      eventMinutes?:number;
+      ticketTitle?: string;
+      _id?:string;
+      eventEndDate?:string
+    }[];
+    ageRestriction?:string[];
+    location?: {type?:string;
+      coordinates?: {$numberDecimal?:string}[];
+
+    };
+    address?:string;
+    categories?: string[]
   }
 
 interface IEventContextValue {

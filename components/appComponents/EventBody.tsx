@@ -71,7 +71,7 @@ export default function EventBody({item, screenType}) {
                                     </TouchableOpacity>}
                                     
                                 </View>
-                                <ThemedText style={styles.eventNameText} numberOfLines={2}>{item.eventName }</ThemedText>
+                                <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName }</ThemedText>
                                 <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
                                 <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
                                 
@@ -105,7 +105,7 @@ export default function EventBody({item, screenType}) {
                             <View style={styles.eventDetailsBody}>
                                 <View style={styles.detailsBackground}></View>
                                 <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
+                                    <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                     <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
                                     <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
                                 </View>
@@ -137,7 +137,7 @@ export default function EventBody({item, screenType}) {
                             <View style={styles.eventDetailsBody}>
                                 <View style={styles.detailsBackground}></View>
                                 <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
+                                    <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                     <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
                                     <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
                                 </View>
@@ -170,7 +170,7 @@ export default function EventBody({item, screenType}) {
                             <View style={styles.eventDetailsBody}>
                                 <View style={styles.detailsBackground}></View>
                                 <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
+                                    <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                     <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
                                     <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
                                 </View>
@@ -180,7 +180,7 @@ export default function EventBody({item, screenType}) {
                     </ImageBackground> : null}
                     {screenType === 'search' ? 
                     <View style={styles.eventDetailsSearchBody}>
-                          <ThemedText style={styles.eventNameText} numberOfLines={1}>{item.eventName}</ThemedText>
+                          <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                           <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
                           <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
                       </View>: null}

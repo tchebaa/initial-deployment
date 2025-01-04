@@ -15,11 +15,8 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
+export default function ProfileHeader({pageType}: {pageType: string}) {
 
-
-export default function EventHeader({item, screenType}) {
-
-    const [likedEvents, setLikedEvents] = useState([])
 
 
     return (
@@ -27,10 +24,9 @@ export default function EventHeader({item, screenType}) {
               <Pressable onPress={()=> router.back()}>
                 <AntDesign name='arrowleft' size={24}/>
               </Pressable>
-              {screenType === 'tickets' ? <View></View> : 
-              <Pressable>
-                {likedEvents.includes(item) ? <AntDesign name='heart' size={20} color="#ce2029"/> : <AntDesign name='hearto' size={20}/> }
-              </Pressable>}
+              <ThemedView>
+                <ThemedText>{pageType}</ThemedText>
+              </ThemedView>
         </ThemedView>      
                   
         
