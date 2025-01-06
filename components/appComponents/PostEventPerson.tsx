@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     borderWidth: 0.5,
-    fontFamily:"PoppinsSemibold",
+    fontFamily:"default",
     width: '95%',
     marginTop: 10
   },

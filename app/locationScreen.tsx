@@ -2,12 +2,16 @@ import {useState, useEffect} from 'react'
 
 import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable } from 'react-native';
 
+import * as Location from 'expo-location';
+
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
+import {useLocation} from '../context/LocationContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -17,15 +21,24 @@ const windowHeight = Dimensions.get('window').height
 
 export default function LocationScreen() {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [repeatPassword, setRepeatPassword] = useState('')
-
-    const handleSignup = () => void {
 
 
+    const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
+
+    async function getCurrentLocation() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      
+      setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
     }
 
+    
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,8 +53,42 @@ export default function LocationScreen() {
             </ThemedView>
             <ThemedView style={styles.locationContainer}>
               <MaterialIcons name='location-on' size={24} color={'#1184e8'} />
-              <TextInput placeholder='Search Location' style={styles.inputContainer}/>
+              <GooglePlacesAutocomplete
+                placeholder='Search location' 
+                nearbyPlacesAPI='GooglePlacesSearch'
+                minLength={2}
+                onPress={(data, details = null)=>{
+
+                    console.log(details)
+                    console.log(details.geometry.location.lat, details.geometry.location.lng)
+                    setUserLocation({latitude:details.geometry.location.lat, longitude: details.geometry.location.lng})
+                   // setLocation({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng});
+                   // setOpenContainer(!openContainer)
+                    
+                }}
+                
+                fetchDetails={true}
+                debounce={400}
+                styles={{
+                    container:{
+                        flex:0,
+                        marginTop: 5,
+                        
+                        width: '90%'
+                    },
+                    textInput: {
+                        borderBottomWidth: 1,
+                        borderColor: 'gray',
+                        fontFamily:"default",
+                    }
+                }}
+                enablePoweredByContainer={false}
+                query={{
+                    key: 'AIzaSyCGzT9TA6GF716zU_JaSqprPUEaBoA9wgk',
+                    language: 'en'
+                }}/>
             </ThemedView>
+            
             <ThemedView style={styles.locationContainer}>
               <ThemedView style={{marginRight: 5}}>
                   <MaterialIcons name='my-location' size={24} color={'#1184e8'} />

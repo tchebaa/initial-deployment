@@ -12,6 +12,7 @@ import { Link } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import EventHeader from '@/components/appComponents/EventHeader';
 import EventScreenBody from '@/components/appComponents/EventScreenBody';
+import ProfileHeader from '@/components/appComponents/ProfileHeader';
 
 
 
@@ -23,14 +24,14 @@ const windowHeight = Dimensions.get('window').height
 
 export default function Settings() {
 
-   
+  const [pageType, setPageType] = useState<string>('settings')
 
 
 
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
-            
+            <ProfileHeader pageType={pageType}/>
         </ThemedView>
         
     </SafeAreaView>

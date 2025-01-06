@@ -6,8 +6,10 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import {LikeProvider} from '../context/LikedContext'
+import {LocationProvider} from '../context/LocationContext'
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import 'react-native-get-random-values';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,16 +42,18 @@ export default function RootLayout() {
   }
 
   return (
-    <LikeProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="index" options={{headerShown: false}}/>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="signUp" options={{ headerShown: false }}/>
-          <Stack.Screen name="locationScreen" options={{ headerShown: false }}/>
-        </Stack>
-        <StatusBar style="auto" /> 
-      </ThemeProvider>
-    </LikeProvider>
+    <LocationProvider>
+      <LikeProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="index" options={{headerShown: false}}/>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="signUp" options={{ headerShown: false }}/>
+            <Stack.Screen name="locationScreen" options={{ headerShown: false }}/>
+          </Stack>
+          <StatusBar style="auto" /> 
+        </ThemeProvider>
+      </LikeProvider>
+    </LocationProvider>
   );
 }

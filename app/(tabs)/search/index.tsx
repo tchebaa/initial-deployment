@@ -10,6 +10,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link } from 'expo-router';
 import { FontAwesome, Ionicons, MaterialCommunityIcons, Foundation, MaterialIcons, FontAwesome5, Entypo, Feather } from '@expo/vector-icons'; 
 import EventBody from '@/components/appComponents/EventBody';
+import LocationComponent from '@/components/appComponents/LocationComponent';
+import {useLocation} from '../../../context/LocationContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -538,6 +540,10 @@ export default function SearchScreen() {
     type categoryItemSelected = string
 
     const [selectedCategories, setSelectedCategories] = useState<categoryItemSelected []>([])
+    const [openLocationComponent, setOpenLocationComponent] = useState<boolean>(false)
+
+
+    const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
 
     type CategoryProps = {item : { icon: string, title: string, name: string}}
@@ -596,6 +602,15 @@ export default function SearchScreen() {
                     showsHorizontalScrollIndicator={false}/>
                 
             </ThemedView>
+            <Pressable style={styles.addressComponent} onPress={()=> setOpenLocationComponent(!openLocationComponent)}>
+                {!openLocationComponent ? <MaterialIcons name='keyboard-arrow-down' size={20}/> : <MaterialIcons name='keyboard-arrow-up' size={20}/> }
+                <MaterialIcons name='location-on' size={16} color={'#1184e8'} />
+                <ThemedText numberOfLines={1} style={styles.addressText} >{userAddress}</ThemedText>
+            </Pressable>
+            {openLocationComponent ? 
+            <ThemedView>
+                <LocationComponent />
+            </ThemedView>: null}
             <ThemedView >
             <FlatList 
                 contentContainerStyle={{paddingBottom: 150}}
@@ -681,7 +696,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '10%'
+    },
+    addressComponent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5
+    },
+    addressText: {
+        marginLeft: 5
     }
-    
   
 });

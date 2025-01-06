@@ -18,6 +18,8 @@ import PostEventCategories from '@/components/appComponents/PostEventCategories'
 import PostLocationNameDetails from '@/components/appComponents/PostLocationNameDetails';
 import PostAgeRestriction from '@/components/appComponents/PostAgeRestriction';
 import PostDateTimeDuration from '@/components/appComponents/PostDateTimeDuration';
+import PostPhotoUpload from '@/components/appComponents/PostPhotoUpload';
+import * as ImagePicker from 'expo-image-picker';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -106,7 +108,7 @@ const eventsCategories = [
 export default function postEvent() {
 
 
-    const [pageSection, setPageSection] = useState<number>(3)
+    const [pageSection, setPageSection] = useState<number>(5)
 
     const [pageType, setPageType] = useState<string>('post')
 
@@ -129,6 +131,8 @@ export default function postEvent() {
     const [eventNameError, setEventNameError] = useState<boolean>(false)
     const [eventDescription, setEventDescription] = useState<string>('')
     const [eventDescriptionError, setEventDescriptionError] = useState<boolean>(false)
+    const [address, setAddress] = useState<string>('')
+    const [coordinates, setCoordinates] = useState<{latitude: number, longitude: number} | null>(null)
 
 
 
@@ -137,10 +141,20 @@ export default function postEvent() {
 
     const [eventDate, setEventDate] = useState<Date>(new Date)
 
+    const [mainImage, setMainImage] = useState<string>('')
+    const [image2, setImage2] = useState<string>('')
+    const [image3, setImage3] = useState<string>('')
+    const [image4, setImage4] = useState<string>('')
+    const [aspectRatio, setAspectRatio] = useState<number []>([4,3])
 
 
     const handleNextDisplay = () => {
 
+        setPageSection(pageSection + 1)
+    }
+
+    const handlePrevDisplay = () =>  {
+        setPageSection(pageSection - 1)
     }
 
     const handleAddRemoveCategory = (category: string) => {
@@ -176,6 +190,25 @@ export default function postEvent() {
 
     }
 
+    const handlePickImage = (item: string) => {
+        const pickImage = async () => {
+            // No permissions request is necessary for launching the image library
+            let result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ['images', 'videos'],
+              allowsEditing: true,
+              aspect: [4, 3],
+              quality: 1,
+            });
+        
+            console.log(result);
+        
+            if (!result.canceled) {
+              setMainImage(result.assets[0].uri);
+            }
+          };
+
+          pickImage()
+    }
     
     const currentDisplay = () => {
         if(pageSection === 0) {
@@ -192,7 +225,7 @@ export default function postEvent() {
         if(pageSection === 2) {
             return (
                 <PostLocationNameDetails eventName={eventName}  setEventName={setEventName} eventDescription={eventDescription} setEventDescription={setEventDescription} 
-                eventNameError={eventNameError} eventDescriptionError={eventDescriptionError}/>
+                eventNameError={eventNameError} eventDescriptionError={eventDescriptionError} address={address} setAddress={setAddress} coordinates={coordinates} setCoordinates={setCoordinates}/>
             )
         }
         if(pageSection === 3) {
@@ -203,6 +236,11 @@ export default function postEvent() {
         if(pageSection === 4) {
             return(
                 <PostDateTimeDuration ageRestriction={ageRestriction} eventDate={eventDate} setEventDate={setEventDate}/>
+            )
+        }
+        if(pageSection === 5) {
+            return(
+                <PostPhotoUpload mainImage={mainImage} image2={image2} image3={image3} image4={image4} handlePickImage={handlePickImage}/>
             )
         }
     }
@@ -216,10 +254,10 @@ export default function postEvent() {
             {currentDisplay()}
             <ThemedView style={styles.pageButtons}>
                 {pageSection === 0 ? <ThemedText></ThemedText>: 
-                <Pressable>
+                <Pressable onPress={()=> handlePrevDisplay()}>
                     <ThemedText>Prev</ThemedText>
                 </Pressable>}
-                <Pressable>
+                <Pressable onPress={()=> handleNextDisplay()}>
                     <ThemedText>Next</ThemedText>
                 </Pressable>
             </ThemedView>

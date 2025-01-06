@@ -69,14 +69,14 @@ const styles = StyleSheet.create({
   },
   categoryButtonSelected: {
     padding: 5,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: '#1184e8',
     borderRadius: 10,
     margin: 5
   },
   categoryButtonUnselected: {
     padding: 5,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 10,
     margin: 5

@@ -1,0 +1,113 @@
+import {useEffect, useState} from 'react';
+import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground, Pressable  } from 'react-native';
+import { FontAwesome5, AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons'; 
+import HomeDateTimeCostSection from './HomeDateTimeCostSection';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
+import {useLocation} from '../../context/LocationContext'
+
+import { Link, router } from 'expo-router';
+import * as Location from 'expo-location';
+
+
+
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+
+
+export default function LocationComponent() {
+
+
+    const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
+
+    async function getCurrentLocation() {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            
+            return;
+          }
+    
+          let location = await Location.getCurrentPositionAsync({});
+          
+          setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
+        }
+
+    return (
+        <ThemedView style={styles.container}>
+              <ThemedView style={styles.locationContainer}>
+                <MaterialIcons name='location-on' size={24} color={'#1184e8'} />
+                <GooglePlacesAutocomplete
+                    placeholder='Search location' 
+                    nearbyPlacesAPI='GooglePlacesSearch'
+                    minLength={2}
+                    onPress={(data, details = null)=>{
+    
+                        console.log(details)
+                        if(details){
+                            console.log(details.geometry.location.lat, details.geometry.location.lng)
+                        }
+                        setUserLocation({latitude:details.geometry.location.lat, longitude: details.geometry.location.lng})
+                        // setLocation({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng});
+                        // setOpenContainer(!openContainer)
+                        
+                    }}
+                    
+                    fetchDetails={true}
+                    debounce={400}
+                    styles={{
+                        container:{
+                            flex:0,
+                            marginTop: 5,
+                            
+                            width: '90%'
+                        },
+                        textInput: {
+                            borderBottomWidth: 1,
+                            borderColor: 'gray',
+                            fontFamily:"default",
+                        }
+                    }}
+                    enablePoweredByContainer={false}
+                    query={{
+                        key: 'AIzaSyCGzT9TA6GF716zU_JaSqprPUEaBoA9wgk',
+                        language: 'en'
+                    }}/>
+                </ThemedView>
+                
+                <ThemedView style={styles.locationContainer}>
+                <ThemedView style={{marginRight: 5}}>
+                    <MaterialIcons name='my-location' size={16} color={'#1184e8'} />
+                </ThemedView>
+                
+                <Link href={"/(tabs)/home"} asChild>
+                    <ThemedText style={styles.myLocationText}>My current location</ThemedText>
+                </Link>
+                    
+                </ThemedView>
+        </ThemedView>      
+                  
+        
+    )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%'
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '95%',
+    
+  },
+  myLocationText: {
+    marginLeft: 5,
+    color: 'gray',
+    marginVertical: 5
+  }
+   
+})

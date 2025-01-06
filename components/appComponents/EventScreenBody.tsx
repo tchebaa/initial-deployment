@@ -1,10 +1,11 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground, Pressable  } from 'react-native';
 import { FontAwesome5, AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons'; 
 import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import MapView, {Marker} from 'react-native-maps';
 
 import { Link, router } from 'expo-router';
 
@@ -19,7 +20,26 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function EventScreenBody({item, screenType}) {
 
-  
+
+
+  const mapRef = useRef(null)
+
+
+  const [mapRegion, setMapRegion] = useState({
+    latitude: Number(item.location.coordinates[1].$numberDecimal),
+    longitude: Number(item.location.coordinates[0].$numberDecimal),
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005, 
+  })
+
+
+  useEffect(()=> {
+
+    if(mapRef.current) {
+      mapRef.current.animateToRegion(mapRegion, 1000)
+    }
+
+  },[mapRegion])
 
 
     return (
@@ -64,7 +84,10 @@ export default function EventScreenBody({item, screenType}) {
                     <ThemedText type='defaultSemiBold'>About this event</ThemedText>
                     <ThemedText style={styles.eventDescription}>{item.eventDescription}</ThemedText>
                 </View>
-                
+                <MapView style={styles.mapStyle} ref={mapRef} initialRegion={mapRegion} provider="google">
+                  <Marker coordinate={{latitude:Number(item.location.coordinates[1].$numberDecimal), longitude:Number(item.location.coordinates[0].$numberDecimal)}}
+                  title={item.eventName}></Marker>
+                </MapView>
             </ThemedView>
             
         </ThemedView>      
@@ -132,5 +155,9 @@ const styles = StyleSheet.create({
   },
   eventDescription: {
     marginTop: 10
+  },
+  mapStyle: {
+    width: '100%',
+    height: 500
   }
 })
