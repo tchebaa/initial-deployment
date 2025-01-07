@@ -15,6 +15,7 @@ export default function ProfileLayout() {
         <Stack.Screen name="postEvent" options={{headerShown: false}}/>
         <Stack.Screen name="message" options={{headerShown: false}}/>
         <Stack.Screen name="settings" options={{headerShown: false}}/>
+        <Stack.Screen name="chats" options={{headerShown: false}}/>
       </Stack>
     
   );

@@ -141,11 +141,15 @@ export default function postEvent() {
 
     const [eventDate, setEventDate] = useState<Date>(new Date)
 
+    const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('a')
+    const [selectedImage, setSelectedImage] = useState<string>('a')
     const [mainImage, setMainImage] = useState<string>('')
     const [image2, setImage2] = useState<string>('')
     const [image3, setImage3] = useState<string>('')
     const [image4, setImage4] = useState<string>('')
     const [aspectRatio, setAspectRatio] = useState<number []>([4,3])
+    const [imageRatioModal, setImageRatioModal] = useState<boolean>(false)
+    const [imageName, setImageName] = useState<string>('')
 
 
     const handleNextDisplay = () => {
@@ -209,6 +213,11 @@ export default function postEvent() {
 
           pickImage()
     }
+
+    const handleOpenImageRatioModal = (name: string) => {
+        setImageName(name)
+        setImageRatioModal(true)
+    }
     
     const currentDisplay = () => {
         if(pageSection === 0) {
@@ -225,7 +234,8 @@ export default function postEvent() {
         if(pageSection === 2) {
             return (
                 <PostLocationNameDetails eventName={eventName}  setEventName={setEventName} eventDescription={eventDescription} setEventDescription={setEventDescription} 
-                eventNameError={eventNameError} eventDescriptionError={eventDescriptionError} address={address} setAddress={setAddress} coordinates={coordinates} setCoordinates={setCoordinates}/>
+                eventNameError={eventNameError} eventDescriptionError={eventDescriptionError} address={address} setAddress={setAddress} coordinates={coordinates} 
+                setCoordinates={setCoordinates}/>
             )
         }
         if(pageSection === 3) {
@@ -240,7 +250,9 @@ export default function postEvent() {
         }
         if(pageSection === 5) {
             return(
-                <PostPhotoUpload mainImage={mainImage} image2={image2} image3={image3} image4={image4} handlePickImage={handlePickImage}/>
+                <PostPhotoUpload mainImage={mainImage} image2={image2} image3={image3} image4={image4} handlePickImage={handlePickImage} imageRatioModal={imageRatioModal}
+                setImageRatioModal={setImageRatioModal} handleOpenImageRatioModal={handleOpenImageRatioModal}
+                />
             )
         }
     }

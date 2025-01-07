@@ -6,6 +6,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import MapView, {Marker} from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 
 import { Link, router } from 'expo-router';
 
@@ -21,6 +22,9 @@ const windowHeight = Dimensions.get('window').height;
 export default function EventScreenBody({item, screenType}) {
 
 
+  const [showModalMap, setShowModalMap] = useState<boolean>(false)
+  const [mapReady, setMapReady] = useState(false);
+	const [forceReload, setForceReload] = useState(0);
 
   const mapRef = useRef(null)
 
@@ -39,7 +43,21 @@ export default function EventScreenBody({item, screenType}) {
       mapRef.current.animateToRegion(mapRegion, 1000)
     }
 
-  },[mapRegion])
+  },[mapRef, mapRegion])
+
+
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			if (!mapReady) {
+				console.warn('Map was not ready within 1 second. Forcing re-render.');
+				setForceReload((prev) => prev + 1);
+			}
+		}, 2000);
+
+		return () => clearTimeout(timer);
+	}, [mapReady]);
+	
 
 
     return (
@@ -84,12 +102,40 @@ export default function EventScreenBody({item, screenType}) {
                     <ThemedText type='defaultSemiBold'>About this event</ThemedText>
                     <ThemedText style={styles.eventDescription}>{item.eventDescription}</ThemedText>
                 </View>
-                <MapView style={styles.mapStyle} ref={mapRef} initialRegion={mapRegion} provider="google">
-                  <Marker coordinate={{latitude:Number(item.location.coordinates[1].$numberDecimal), longitude:Number(item.location.coordinates[0].$numberDecimal)}}
-                  title={item.eventName}></Marker>
-                </MapView>
+                <ThemedView>
+                    <View style={styles.mapButtonBody}>
+                    <View></View>
+                    <TouchableOpacity onPress={()=> setShowModalMap(false)}>
+                      <ThemedView>
+                        <AntDesign name='close' size={24} color={'black'} />
+                      </ThemedView>
+                      
+                    </TouchableOpacity>
+                  </View>
+                    <MapView key={forceReload} style={styles.mapStyle} ref={mapRef} initialRegion={mapRegion} >
+                    
+                    <Marker coordinate={{latitude:Number(item.location.coordinates[1].$numberDecimal), longitude:Number(item.location.coordinates[0].$numberDecimal)}}
+                    ></Marker>
+                  </MapView>
+                </ThemedView>
+                
             </ThemedView>
-            
+            {showModalMap ? 
+            <ThemedView style={styles.mapModal}>
+              <View style={styles.mapButtonBody}>
+                <View></View>
+                <TouchableOpacity onPress={()=> setShowModalMap(false)}>
+                  <ThemedView>
+                    <AntDesign name='close' size={24} color={'black'} />
+                  </ThemedView>
+                  
+                </TouchableOpacity>
+              </View>
+              <MapView style={styles.mapModalStyle}  initialRegion={mapRegion} ></MapView>
+              
+              <Marker  coordinate={{latitude:Number(item.location.coordinates[1].$numberDecimal), longitude:Number(item.location.coordinates[0].$numberDecimal)}}
+                 ></Marker>
+            </ThemedView>: null}
         </ThemedView>      
                   
         
@@ -159,5 +205,24 @@ const styles = StyleSheet.create({
   mapStyle: {
     width: '100%',
     height: 500
-  }
+  },
+  mapModal: {
+    width: windowWidth,
+    height: windowHeight
+  },
+  mapModalStyle: {
+    width: '100%',
+    height: '100%',
+    
+  },
+  mapButtonBody: {
+    position: 'absolute',
+    zIndex: 20,
+    width: windowWidth * 0.95,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10
+  },
+  
 })

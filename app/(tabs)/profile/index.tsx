@@ -48,7 +48,7 @@ export default function ProfileScreen() {
                 </Link>
                 <Link href={'/(tabs)/profile/message'} asChild>
                     <Pressable style={styles.button}>
-                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>Message</ThemedText>
+                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>Messages</ThemedText>
                         <MaterialCommunityIcons name="message-outline" size={24} color="black" />
                     </Pressable>
                 </Link>

@@ -69,7 +69,7 @@ export function LocationProvider({children}: ChildrenProps) {
 
         
 
-        const description = await Location.reverseGeocodeAsync(userLocation) 
+        const description = await Location.reverseGeocodeAsync({latitude: userLocation.latitude, longitude: userLocation.longitude}) 
 
         const newDescription = description[0]
         

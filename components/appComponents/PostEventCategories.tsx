@@ -18,7 +18,8 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function PostEventCategories({selectedCategories, handleAddRemoveCategory, eventCategories}: {selectedCategories: string [], handleAddRemoveCategory: (item: string) => void, eventCategories: {name: string, title: string}[]}) {
+export default function PostEventCategories({selectedCategories, handleAddRemoveCategory, eventCategories}: 
+  {selectedCategories: string [], handleAddRemoveCategory: (item: string) => void, eventCategories: {name: string, title: string}[]}) {
 
 
 
