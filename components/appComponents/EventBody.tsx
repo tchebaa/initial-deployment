@@ -81,7 +81,7 @@ export default function EventBody({item, screenType}) {
                 </Link>
 
                 : 
-                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' }} asChild>
+                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' , params: {screenType: screenType ==='search' ? 'search' : 'like', id: item._id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody}>
                     {item.eventMainImage.aspectRatio === 'a'  ? 
                     <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} borderRadius={10} resizeMode='cover'>

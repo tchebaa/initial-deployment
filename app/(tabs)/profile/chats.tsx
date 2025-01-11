@@ -145,7 +145,7 @@ const handleSendText = () => {
 
     if(text.length > 1) {
 
-        const chatItem = {message: text, senderName: 'Rani', id: '123456', sender: 'rani@gmail.com', createdAt: '2025-01-07T05:00:00.000Z'}
+        const chatItem = {message: text, senderName: 'Rani', id: '123456', sender: 'rani@gmail.com', createdAt: new Date()}
 
         setChats([...chats, chatItem])
     }

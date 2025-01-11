@@ -18,8 +18,8 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function PostEventCategories({selectedCategories, handleAddRemoveCategory, eventCategories}: 
-  {selectedCategories: string [], handleAddRemoveCategory: (item: string) => void, eventCategories: {name: string, title: string}[]}) {
+export default function PostEventCategories({selectedCategories, handleAddRemoveCategory, eventCategories, categoriesError}: 
+  {selectedCategories: string [], categoriesError: boolean, handleAddRemoveCategory: (item: string) => void, eventCategories: {name: string, title: string}[]}) {
 
 
 
@@ -45,6 +45,7 @@ export default function PostEventCategories({selectedCategories, handleAddRemove
                     )
                 })}
               </ThemedView>
+              {!categoriesError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Categories required</ThemedText>}
         </ThemedView>      
                   
         
@@ -85,6 +86,10 @@ const styles = StyleSheet.create({
   categoriesBody: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginTop: 10
+  },
+  errorText: {
+    color: 'red',
     marginTop: 10
   }
    

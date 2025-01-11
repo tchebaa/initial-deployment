@@ -17,9 +17,11 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function PostEventPerson({personType, setPersonType, companyName, setCompanyName, companyEmail, setCompanyEmail, companyNameError, companyEmailError}: 
+export default function PostEventPerson({personType, setPersonType, companyName, setCompanyName, companyEmail, setCompanyEmail, companyNameError, 
+  companyEmailError, personName, setPersonName, personNameError}: 
     {personType: boolean, setPersonType: Dispatch<SetStateAction<boolean>>, companyName: string, setCompanyName: Dispatch<SetStateAction<string>>, companyEmail: string,
-        setCompanyEmail: Dispatch<SetStateAction<string>>, companyNameError: boolean, companyEmailError: boolean
+        setCompanyEmail: Dispatch<SetStateAction<string>>, companyNameError: boolean, companyEmailError: boolean, personName: string, setPersonName:Dispatch<SetStateAction<string>>,
+        personNameError: boolean
     }) {
 
 
@@ -53,10 +55,14 @@ export default function PostEventPerson({personType, setPersonType, companyName,
               {!personType ? 
               <ThemedView style={styles.companyInputComponent}>
                 <TextInput placeholder='Company Name' style={styles.inputContainer} value={companyName} onChangeText={(e)=> setCompanyName(e)}/>
-                {!companyNameError ? <ThemedText></ThemedText> : <ThemedText>Company name required</ThemedText>}
+                {!companyNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Company name required</ThemedText>}
                 <TextInput placeholder='Company Email' style={styles.inputContainer} value={companyEmail} onChangeText={(e)=> setCompanyEmail(e)}/>
-                {!companyEmailError ? <ThemedText></ThemedText> : <ThemedText>Company email required</ThemedText>}
-              </ThemedView> : null}
+                {!companyEmailError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Company email required</ThemedText>}
+              </ThemedView> : 
+              <ThemedView style={styles.companyInputComponent}>
+                <TextInput placeholder='My name' style={styles.inputContainer} value={personName} onChangeText={(e)=> setPersonName(e)}/>
+                {!personNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Your name is required</ThemedText>}
+              </ThemedView>}
         </ThemedView>      
                   
         
@@ -89,4 +95,8 @@ const styles = StyleSheet.create({
     width: '95%',
     marginTop: 10
   },
+  errorText: {
+    color: 'red',
+    marginTop: 10
+  }
 })

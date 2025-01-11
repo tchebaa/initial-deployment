@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     marginTop: 20,
     borderRadius: 5,
-    fontFamily:"PoppinsSemibold"
+    fontFamily:"PoppinsSemibold",
+    padding:5
   },
   loginButton: {
     borderWidth: 1,

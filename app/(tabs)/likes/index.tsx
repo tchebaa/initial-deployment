@@ -131,7 +131,7 @@ const events = [
                 "childPrice": 0,
                 "preschoolerPrice": 0,
                 "infantPrice": 0,
-                "eventDate": "2024-12-25T05:00:00.000Z",
+                "eventDate": "2025-01-25T05:00:00.000Z",
                 "eventDays": 1,
                 "eventHours": 0,
                 "eventMinutes": 0,
@@ -142,7 +142,7 @@ const events = [
                     "Child"
                 ],
                 "_id": "668a818d16951e563f914e38",
-                "eventEndDate": "2024-12-30T05:00:00.000Z"
+                "eventEndDate": "2025-01-30T05:00:00.000Z"
             },
             {
                 "adultPrice": 0,
@@ -150,7 +150,7 @@ const events = [
                 "childPrice": 0,
                 "preschoolerPrice": 0,
                 "infantPrice": 0,
-                "eventDate": "2024-07-05T05:00:00.000Z",
+                "eventDate": "2025-01-05T05:00:00.000Z",
                 "eventDays": 1,
                 "eventHours": 0,
                 "eventMinutes": 0,
@@ -161,7 +161,7 @@ const events = [
                     "Child"
                 ],
                 "_id": "668a818d16951e563f914e39",
-                "eventEndDate": "2024-07-12T05:00:00.000Z"
+                "eventEndDate": "2025-01-12T05:00:00.000Z"
             }
         ],
         "ageRestriction": [

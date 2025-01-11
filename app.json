@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "tchebaa",
-    "slug": "tchebaa",
+    "slug": "tchebaamobileapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,6 +15,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.tchebaaapp.tchebaamobileapp",
+      "newArchEnabled": false,
+      "experimental": {
+      "enableFabricRenderer": false
       }
     },
     "web": {
@@ -46,12 +51,34 @@
             "./assets/fonts/Poppins-Bold.ttf",
             "./assets/fonts/Poppins-Light.ttf",
             "./assets/fonts/Poppins-Medium.ttf"
-      ]
+          ]
+        }
+      ],
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0cmNvdTA0YXcycXBjeWQ3ZXFtd3gifQ.nbkTp8UjrnFVrAnKyt-C9w",
+          "RNMapboxMapsVersion": "11.0.0"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Tchebaa to use your location."
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "25c783a9-85c1-46a1-abcd-4b6603605cbe"
+      }
+    },
+    "owner": "tchebaa-app"
   }
 }

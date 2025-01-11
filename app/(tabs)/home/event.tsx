@@ -443,9 +443,8 @@ export default function EventScreen() {
         
         <ThemedView style={styles.body}>
             <EventHeader item={events[0]} screenType={screenType}/>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            
                 <EventScreenBody item={events[0]} screenType={screenType}/>
-            </ScrollView>
             
         </ThemedView>
     </SafeAreaView>

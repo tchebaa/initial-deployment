@@ -17,31 +17,96 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function PostPhotoUpload({mainImage, image2, image3, image4, handlePickImage, imageRatioModal, handleOpenImageRatioModal, setImageRatioModal }: 
+export default function PostPhotoUpload({mainImage, image2, image3, image4, handlePickImage, imageRatioModal, handleOpenImageRatioModal, setImageRatioModal, 
+    mainImageAspectRatio, image2AspectRatio, image3AspectRatio, image4AspectRatio, setMainImage, setImage4, setImage2, setImage3, handleRemoveImage
+ }: 
     {mainImage: string, image2: string, image3: string, image4: string, handlePickImage: (item: string) => void, imageRatioModal: boolean, 
-        setImageRatioModal: Dispatch<SetStateAction<boolean>>, handleOpenImageRatioModal: (item: string) => void}) {
+        setImageRatioModal: Dispatch<SetStateAction<boolean>>, handleOpenImageRatioModal: (item: string) => void, mainImageAspectRatio: string,
+    image2AspectRatio: string, image3AspectRatio: string, image4AspectRatio: string, setMainImage: Dispatch<SetStateAction<string>>, 
+    setImage4: Dispatch<SetStateAction<string>>, setImage2: Dispatch<SetStateAction<string>>, setImage3: Dispatch<SetStateAction<string>>,
+handleRemoveImage: (item: string) => void}) {
 
 
 
     return (
         <ThemedView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-            <TouchableOpacity onPress={()=>handleOpenImageRatioModal('mainImage')} style={styles.imagePickerA}>
-                <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Main Image</ThemedText>
-                <ThemedText style={styles.imageDetailsText}>(required)</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image2')} style={styles.imagePickerA}>
-                <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 2</ThemedText>
-                <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image3')} style={styles.imagePickerA}>
-                <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 3</ThemedText>
-                <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image4')} style={styles.imagePickerA}>
-                <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 4</ThemedText>
-                <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
-            </TouchableOpacity>
+            {mainImage ?
+                <ThemedView>
+                    {mainImageAspectRatio === 'a' ? 
+                    <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri: mainImage}}>
+                        <View>
+                            <View></View>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('mainImage')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        </View>
+                    </ImageBackground>: null}
+                    {mainImageAspectRatio === 'b' ? 
+                    <ImageBackground style={styles.mainImage} source={{uri: mainImage}} borderRadius={10}  blurRadius={10} resizeMode='cover'>  
+                        <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImage}} borderRadius={10} ></ImageBackground>
+                    </ImageBackground>: null}
+                    {mainImageAspectRatio === 'c' ? 
+                    <ImageBackground style={styles.mainImage} source={{uri: mainImage}} borderRadius={10}  blurRadius={10} resizeMode='cover'>
+                        <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImage}} borderRadius={10} ></ImageBackground>
+                    </ImageBackground>: null}
+                </ThemedView> 
+                : 
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('mainImage')} style={styles.imagePickerA}>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Main Image</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>(required)</ThemedText>
+                </TouchableOpacity>}
+            {image2 ? 
+                <ThemedView>
+                {image2AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image2}}></ImageBackground>: null}
+                {image2AspectRatio === 'b' ? 
+                <ImageBackground style={styles.mainImage} source={{uri: image2}} borderRadius={10} blurRadius={10} resizeMode='cover'>  
+                    <ImageBackground style={styles.eventImageRatioB} source={{uri: image2}} borderRadius={10} ></ImageBackground>
+                </ImageBackground>: null}
+                {image2AspectRatio === 'c' ? 
+                <ImageBackground style={styles.mainImage} source={{uri: image2}} borderRadius={10}  blurRadius={10} resizeMode='cover'>
+                    <ImageBackground style={styles.eventImageRatioC} source={{uri: image2}} borderRadius={10} ></ImageBackground>
+                </ImageBackground>: null}
+                </ThemedView> : 
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image2')} style={styles.imagePickerA}>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 2</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
+                </TouchableOpacity>}
+            {image3 ? 
+                <ThemedView>
+                {image3AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image3}}></ImageBackground>: null}
+                {image3AspectRatio === 'b' ? 
+                <ImageBackground style={styles.mainImage} source={{uri: image3}}  blurRadius={10} borderRadius={10} resizeMode='cover'>  
+                    <ImageBackground style={styles.eventImageRatioB} source={{uri: image3}} borderRadius={10} ></ImageBackground>
+                </ImageBackground>: null}
+                {image3AspectRatio === 'c' ? 
+                <ImageBackground style={styles.mainImage} source={{uri: image3}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                    <ImageBackground style={styles.eventImageRatioC} source={{uri: image3}} borderRadius={10} ></ImageBackground>
+                </ImageBackground>: null}
+                </ThemedView>
+                : 
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image3')} style={styles.imagePickerA}>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 3</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
+                </TouchableOpacity>
+            }
+            {image4 ? 
+                <ThemedView>
+                {image4AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} source={{uri:image4}}></ImageBackground>: null}
+                {image4AspectRatio === 'b' ? 
+                <ImageBackground style={styles.mainImage} source={{uri: image4}}  blurRadius={10} resizeMode='cover'>  
+                    <ImageBackground style={styles.eventImageRatioB} source={{uri: image4}} borderRadius={10} ></ImageBackground>
+                </ImageBackground>: null}
+                {image4AspectRatio === 'c' ? 
+                <ImageBackground style={styles.mainImage} source={{uri: image4}}  blurRadius={10} resizeMode='cover'>
+                    <ImageBackground style={styles.eventImageRatioC} source={{uri: image4}} borderRadius={10} ></ImageBackground>
+                </ImageBackground>: null}
+                </ThemedView>
+                : 
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image4')} style={styles.imagePickerA}>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 4</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
+                </TouchableOpacity>
+            }
+            
             {imageRatioModal ? 
             <ThemedView style={styles.aspectRatioModal}>
                 <ThemedView style={styles.closeSection}>
@@ -50,26 +115,17 @@ export default function PostPhotoUpload({mainImage, image2, image3, image4, hand
                     </View>
                     <TouchableOpacity onPress={()=> setImageRatioModal(false)}><AntDesign name='closesquareo' size={24} color={'black'} /></TouchableOpacity>
                 </ThemedView>
-                <TouchableOpacity style={styles.aspectRatioA}>
+                <TouchableOpacity style={styles.aspectRatioA} onPress={()=> handlePickImage('a')}>
                     <ThemedText>16:9</ThemedText>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.aspectRatioB}>
+                <TouchableOpacity style={styles.aspectRatioB} onPress={()=> handlePickImage('b')}>
                     <ThemedText>1:1</ThemedText>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.aspectRatioC}>
+                <TouchableOpacity style={styles.aspectRatioC} onPress={()=> handlePickImage('c')}>
                     <ThemedText>4:3</ThemedText>
                 </TouchableOpacity>
             </ThemedView> : null}
-            {mainImage ? <ImageBackground style={styles.mainImage} source={{uri: mainImage}}/>: null}
-            {mainImage ? <ImageBackground style={styles.mainImage} source={{uri: mainImage}}  blurRadius={10} resizeMode='cover'>
-                        
-                            <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImage}} borderRadius={10} ></ImageBackground>
-                        </ImageBackground>: null}
-            {mainImage ? <ImageBackground style={styles.mainImage} source={{uri: mainImage}}  blurRadius={10} resizeMode='cover'>
-                        
-
-                            <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImage}} borderRadius={10} ></ImageBackground>
-                        </ImageBackground>: null}
+            
             </ScrollView>
         </ThemedView>      
                   
