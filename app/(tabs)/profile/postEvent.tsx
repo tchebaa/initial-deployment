@@ -134,6 +134,7 @@ export default function postEvent() {
     const [eventDescription, setEventDescription] = useState<string>('')
     const [eventDescriptionError, setEventDescriptionError] = useState<boolean>(false)
     const [address, setAddress] = useState<string>('')
+    const [eventAddressError, setEventAddressError] = useState<boolean>(false)
     const [coordinates, setCoordinates] = useState<{latitude: number, longitude: number} | null>(null)
 
 
@@ -142,10 +143,12 @@ export default function postEvent() {
 
 
     const [dateTimePrice, setDateTimePrice] = useState<string []>([])
+    const [dateTimePriceError, setDateTimePriceError] = useState<boolean>(false)
 
     const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('a')
     const [selectedImage, setSelectedImage] = useState<string>('a')
     const [mainImage, setMainImage] = useState<string>('')
+    const [mainImageError, setMainImageError] = useState<boolean>(false)
     const [image2, setImage2] = useState<string>('')
     const [image3, setImage3] = useState<string>('')
     const [image4, setImage4] = useState<string>('')
@@ -196,7 +199,26 @@ export default function postEvent() {
         }
 
         if(pageSection === 2) {
-            setPageSection(pageSection + 1)
+            if (eventName.length > 1) {
+                setEventNameError(false)
+
+                if(eventDescription.length > 1) {
+                    setEventDescriptionError(false)
+
+                    if(address.length > 1) {
+                        setEventAddressError(false)
+                        setPageSection(pageSection + 1)
+                    } else {
+                        setEventAddressError(true)
+                    }
+
+                } else {
+                    setEventDescriptionError(true)
+                }
+            } else {
+                setEventNameError(true)
+            }
+            
         }
 
         if(pageSection === 3) {
@@ -204,10 +226,21 @@ export default function postEvent() {
         }
 
         if(pageSection === 4) {
-            setPageSection(pageSection + 1)
+            if(dateTimePrice.length > 0) {
+
+                setDateTimePriceError(false)
+                setPageSection(pageSection + 1)
+
+            } else {
+                setDateTimePriceError(true)
+            }
+            
         }
 
         if(pageSection === 5) {
+            if(mainImage) {
+
+            }
             setPageSection(pageSection + 1)
         }
 
@@ -323,7 +356,7 @@ export default function postEvent() {
             return (
                 <PostLocationNameDetails eventName={eventName}  setEventName={setEventName} eventDescription={eventDescription} setEventDescription={setEventDescription} 
                 eventNameError={eventNameError} eventDescriptionError={eventDescriptionError} address={address} setAddress={setAddress} coordinates={coordinates} 
-                setCoordinates={setCoordinates}/>
+                setCoordinates={setCoordinates} eventAddressError={eventAddressError}/>
             )
         }
         if(pageSection === 3) {
@@ -341,7 +374,7 @@ export default function postEvent() {
                 <PostPhotoUpload mainImage={mainImage} image2={image2} image3={image3} image4={image4} handlePickImage={handlePickImage} imageRatioModal={imageRatioModal}
                 setImageRatioModal={setImageRatioModal} handleOpenImageRatioModal={handleOpenImageRatioModal} mainImageAspectRatio={mainImageAspectRatio}
                 image2AspectRatio={image2AspectRatio} image3AspectRatio={image3AspectRatio} image4AspectRatio={image4AspectRatio} setMainImage={setMainImage}
-                setImage2={setImage2} setImage3={setImage3} setImage4={setImage4} handleRemoveImage={handleRemoveImage}
+                setImage2={setImage2} setImage3={setImage3} setImage4={setImage4} handleRemoveImage={handleRemoveImage} mainImageError={mainImageError}
                 />
             )
         }

@@ -124,7 +124,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                 if(days > 0 || hours > 0 || minutes > 0) {
 
                     setDurationError(false)
-                    console.log('done')
+                    
                     setDateTimePrice([...dateTimePrice, JSON.stringify(item)])
                     setSelectedDate('')
                     setSelectedTime('')
@@ -256,9 +256,12 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
 
         if(scrollRef.current) {
 
+
             const stringifiedTicketPriceArray = item.ticketPriceArray.map((ticketOption, i)=> {
                 return JSON.stringify(ticketOption)
             })
+
+            setEditIndex(index)
 
             setTicketPriceArray(stringifiedTicketPriceArray)
             setSelectedDate(moment(item.eventDate).startOf('day').format())
@@ -272,6 +275,68 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
         }
         
         
+
+      }
+
+      const handleSaveEdit = () => {
+
+        const dateHours = moment(selectedTime).hours()
+        const dateMinutes = moment(selectedTime).minutes()
+
+        const eventDate = moment(selectedDate).add(dateHours, 'hours').add(dateMinutes, 'minutes')
+
+        const eventEndDate = moment(eventDate).add(days, 'days').add(hours, 'hours').add(minutes, 'minutes')
+
+        const item = {
+            eventDate: eventDate,
+            eventEndDate: eventEndDate,
+            eventDays: days,
+            eventHours: hours,
+            eventMinutes: minutes,
+            ticketPriceArray: ticketPriceArray.map((item, i)=> {
+                return JSON.parse(item)
+            })
+        }
+
+        if(selectedDate) {
+
+            setSelectedDateError(false)
+
+            if(selectedTime) {
+
+                setSelectedTimeError(false)
+
+                if(days > 0 || hours > 0 || minutes > 0) {
+
+                    setDurationError(false)
+                    
+                    dateTimePrice.splice(editIndex, 1, JSON.stringify(item))
+
+                    setDateTimePrice([...dateTimePrice])
+                    
+                    setSelectedDate('')
+                    setSelectedTime('')
+                    setDays(0)
+                    setHours(0)
+                    setMinutes(0)
+                    setTicketPriceArray([JSON.stringify({adultPrice: 0, adolescentPrice: 0, childPrice: 0, ticketTitle: '', ticketNumber:0})])
+                    setShowForm(false)
+
+                } else {
+
+                    setDurationError(true)
+                }
+
+            } else {
+
+                setSelectedTimeError(true)
+            }
+
+
+        } else {
+            setSelectedDateError(true)
+        }
+
 
       }
 

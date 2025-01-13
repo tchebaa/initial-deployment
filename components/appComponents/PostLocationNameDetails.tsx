@@ -26,8 +26,8 @@ const windowHeight = Dimensions.get('window').height;
 
 
 export default function PostLocationNameDetails({eventName, setEventName, eventDescription, setEventDescription, eventNameError, eventDescriptionError, address, 
-    setAddress, coordinates, setCoordinates}: 
-    {eventName: string, setEventName: Dispatch<SetStateAction<string>>, eventDescription: string, setEventDescription: Dispatch<SetStateAction<string>>, 
+    setAddress, coordinates, setCoordinates, eventAddressError}: 
+    {eventName: string, setEventName: Dispatch<SetStateAction<string>>, eventDescription: string, setEventDescription: Dispatch<SetStateAction<string>>, eventAddressError: boolean,
     eventNameError: boolean, eventDescriptionError: boolean, address: string, setAddress: Dispatch<SetStateAction<string>>, coordinates: {latitude: number, longitude:number} | null,
     setCoordinates: Dispatch<SetStateAction<{latitude: number, longitude:number} | null>>
 }) {
@@ -177,6 +177,10 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                     <ThemedText style={styles.pickLocationText}>Pick Location</ThemedText>
                     
                 </TouchableOpacity>
+                <ThemedView>
+                  <ThemedText>{address}</ThemedText>
+                  {eventAddressError ? <ThemedText>Event Location is required</ThemedText>: <ThemedText></ThemedText>}
+                </ThemedView>
                 <ThemedView>
                     <ThemedText type='defaultSemiBold'>Event name</ThemedText>
                     <TextInput style={styles.inputContainer} placeholder='Event name' value={eventName} onChangeText={(e)=> setEventName(e)}/>

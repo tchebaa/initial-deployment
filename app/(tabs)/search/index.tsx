@@ -611,14 +611,14 @@ export default function SearchScreen() {
             <ThemedView>
                 <LocationComponent />
             </ThemedView>: null}
-            <ThemedView >
+           
             <FlatList 
                 contentContainerStyle={{paddingBottom: 150}}
                 data={events}
                 renderItem={renderEvents}
                 keyExtractor={(item)=> item._id} 
                 showsVerticalScrollIndicator={false}/>
-            </ThemedView>
+            
         </ThemedView>
     </SafeAreaView>
   );
@@ -704,6 +704,6 @@ const styles = StyleSheet.create({
     },
     addressText: {
         marginLeft: 5
-    }
-  
+    },
+    
 });

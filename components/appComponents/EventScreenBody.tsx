@@ -14,6 +14,8 @@ import {featureCollection, geometry, point} from '@turf/helpers'
 import pin from '../../assets/images/location-pin.png'
 import PinImage from '../../assets/images/location-pin.png'
 import axios from 'axios';
+import LocationComponent from './LocationComponent';
+import { Directions } from 'react-native-gesture-handler';
 
 const DEFAULT_IMAGE = Image.resolveAssetSource(PinImage).uri;
 
@@ -43,6 +45,8 @@ export default function EventScreenBody({item, screenType}) {
   const [sortedDates, setSortedDates] = useState<{adultPrice: number, adolescentPrice: number, childPrice: number, eventDate: string, eventEndDate: string, eventHours: number, eventDays: number, eventMinutes: number, ticketTitle: string}[]>([])
   const [loadSortingDates, setLoadSortingDates] = useState<boolean>(true)
   const [eventIndex, setEventIndex] = useState<number | null>()
+
+  const [openDirection, setOpenDirections] = useState<boolean>(false)
 
 
   const [likedEvents, setLikedEvents] = useState([])
@@ -171,7 +175,7 @@ export default function EventScreenBody({item, screenType}) {
 
   const getDirections = async () => {
 
-    const response = await fetch('https://api.mapbox.com/directions/v5/mapbox/walking/39.63086668045429%2C-4.002112679088917%3B39.6262996484521%2C-4.007546436874143?alternatives=true&continue_straight=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig')
+    const response = await fetch('https://api.mapbox.com/driving/v5/mapbox/walking/39.63086668045429%2C-4.002112679088917%3B39.6262996484521%2C-4.007546436874143?alternatives=true&continue_straight=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig')
 
     const json = await response.json()
 
@@ -191,9 +195,21 @@ export default function EventScreenBody({item, screenType}) {
             <View style={styles.mapFunctionSection}>
               <View style={styles.closeMapSection}>
                   <View></View>
-                  <TouchableOpacity onPress={()=> setShowFullMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={'black'} /></ThemedView></TouchableOpacity>
+                  <View style={styles.closeMapDirectionSection}>
+                    {!openDirection ? <TouchableOpacity style={styles.directionsButton} onPress={()=> setOpenDirections(!openDirection)}><ThemedView style={styles.directionIconContainer}><MaterialIcons name='directions' size={24} color={'black'} /></ThemedView></TouchableOpacity>
+                    : <TouchableOpacity style={styles.directionsButton} onPress={()=> setOpenDirections(!openDirection)}><ThemedView style={styles.openDirectionIconContainer}><MaterialIcons name='directions' size={24} color={'black'} /></ThemedView></TouchableOpacity>}
+                    <TouchableOpacity style={styles.closeMapButton} onPress={()=> setShowFullMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={'black'} /></ThemedView></TouchableOpacity>
+                  </View>
+                  
               </View>
+              {openDirection ? 
+              <ThemedView style={styles.directionLocationSection}>
+                  <ThemedText type='defaultSemiBold'>Directions from</ThemedText>
+                  <LocationComponent />
+              </ThemedView>: null}
+              
             </View>
+            
             <MapView style={styles.fullMapStyle}>
               <Camera centerCoordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]} zoomLevel={15}/> 
               <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]}>
@@ -352,9 +368,6 @@ export default function EventScreenBody({item, screenType}) {
                             <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]}>
                               
                             </PointAnnotation>
-                            <ShapeSource id='line' lineMetrics shape={{type: 'Feature', geometry:{type: "LineString", coordinates:[[39.630851, -4.002132], [39.631032, -4.002276], [39.630863, -4.002478], [39.630402, -4.002941], [39.629684, -4.003671], [39.629281, -4.004084], [39.629145, -4.004218], [39.628957, -4.004441], [39.628819, -4.004759], [39.628767, -4.004854], [39.628654, -4.005321], [39.628485, -4.005811], [39.628257, -4.006671], [39.628052, -4.007328], [39.627861, -4.007936], [39.626991, -4.007683], [39.626666, -4.007588], [39.626477, -4.007531], [39.626308, -4.0075]]}}}>
-                              <LineLayer id='exampleline' style={{lineWidth: 7, lineColor: '#1184e8'}} />
-                            </ShapeSource> 
                           </MapView>
                             
                         </ThemedView>
@@ -640,7 +653,7 @@ closeMapView: {
 },
 mapFunctionSection: {
   
-  width: '99%',
+  width: '100%',
   marginVertical: 10,
   position: 'absolute',
   zIndex: 20
@@ -648,7 +661,29 @@ mapFunctionSection: {
 closeMapSection: {
   flexDirection: 'row',
   alignItems: 'center',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  marginBottom: 10
+},
+closeMapButton: {
+  marginRight: 5
+},
+directionLocationSection: {
+  padding: 10
+},
+closeMapDirectionSection: {
+  flexDirection: 'row',
+  alignItems: 'center'
+},
+directionsButton: {
+  marginRight: 20
+},
+directionIconContainer: {
+  borderWidth: 1,
+  borderColor: 'gray'
+},
+openDirectionIconContainer:{
+  borderWidth: 1,
+  borderColor: '#1184e8'
 }
 
 })

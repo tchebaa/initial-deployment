@@ -78,16 +78,13 @@ export default function LocationComponent() {
                     }}/>
                 </ThemedView>
                 
-                <ThemedView style={styles.locationContainer}>
-                <ThemedView style={{marginRight: 5}}>
-                    <MaterialIcons name='my-location' size={16} color={'#1184e8'} />
-                </ThemedView>
-                
-                <Link href={"/(tabs)/home"} asChild>
-                    <ThemedText style={styles.myLocationText}>My current location</ThemedText>
-                </Link>
+                <TouchableOpacity style={styles.locationContainer}>
+                  <ThemedView style={{marginRight: 5}}>
+                      <MaterialIcons name='my-location' size={16} color={'#1184e8'} />
+                  </ThemedView>
+                  <ThemedText style={styles.myLocationText}>My current location</ThemedText>            
                     
-                </ThemedView>
+                </TouchableOpacity>
         </ThemedView>      
                   
         

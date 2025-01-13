@@ -18,12 +18,12 @@ const windowHeight = Dimensions.get('window').height;
 
 
 export default function PostPhotoUpload({mainImage, image2, image3, image4, handlePickImage, imageRatioModal, handleOpenImageRatioModal, setImageRatioModal, 
-    mainImageAspectRatio, image2AspectRatio, image3AspectRatio, image4AspectRatio, setMainImage, setImage4, setImage2, setImage3, handleRemoveImage
+    mainImageAspectRatio, image2AspectRatio, image3AspectRatio, image4AspectRatio, setMainImage, setImage4, setImage2, setImage3, handleRemoveImage, mainImageError
  }: 
     {mainImage: string, image2: string, image3: string, image4: string, handlePickImage: (item: string) => void, imageRatioModal: boolean, 
         setImageRatioModal: Dispatch<SetStateAction<boolean>>, handleOpenImageRatioModal: (item: string) => void, mainImageAspectRatio: string,
     image2AspectRatio: string, image3AspectRatio: string, image4AspectRatio: string, setMainImage: Dispatch<SetStateAction<string>>, 
-    setImage4: Dispatch<SetStateAction<string>>, setImage2: Dispatch<SetStateAction<string>>, setImage3: Dispatch<SetStateAction<string>>,
+    setImage4: Dispatch<SetStateAction<string>>, setImage2: Dispatch<SetStateAction<string>>, setImage3: Dispatch<SetStateAction<string>>, mainImageError: boolean,
 handleRemoveImage: (item: string) => void}) {
 
 
@@ -54,6 +54,7 @@ handleRemoveImage: (item: string) => void}) {
                     <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Main Image</ThemedText>
                     <ThemedText style={styles.imageDetailsText}>(required)</ThemedText>
                 </TouchableOpacity>}
+                {mainImageError ? <ThemedText>Main Image required</ThemedText>: <ThemedText></ThemedText>}
             {image2 ? 
                 <ThemedView>
                 {image2AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image2}}></ImageBackground>: null}

@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, TouchableOpacity } from 'react-native';
 
 import * as Location from 'expo-location';
 
@@ -8,7 +8,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {useLocation} from '../context/LocationContext'
@@ -22,26 +22,53 @@ const windowHeight = Dimensions.get('window').height
 export default function LocationScreen() {
 
 
+    const [locationPermission, setLocationPermission] = useState(false)
+    
+    const router = useRouter()
 
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
     async function getCurrentLocation() {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        
-        return;
-      }
-
+      
       let location = await Location.getCurrentPositionAsync({});
       
       setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
     }
 
+    async function getLocationPermission() {
+    
+        let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+
+            setLocationPermission(false)
+    
+            return;
+          }
+          setLocationPermission(true)
+      }
+
+    async function checkPermissions () {
+
+      const status = await Location.getForegroundPermissionsAsync()
+      console.log(status)
+
+    }
+
+    useEffect(()=> {
+
+    },[locationPermission])
+
+    useEffect(()=> {
+
+      getLocationPermission()
+      
+    },[])
     
   
 
   return (
     <SafeAreaView style={styles.container}>
+        {locationPermission ? 
         <ThemedView style={styles.body}>
             <ThemedView style={styles.titleContainer}>
                 <ThemedText type="title" >Events in...</ThemedText>
@@ -93,17 +120,26 @@ export default function LocationScreen() {
               <ThemedView style={{marginRight: 5}}>
                   <MaterialIcons name='my-location' size={24} color={'#1184e8'} />
               </ThemedView>
-              
-              <Link href={"/(tabs)/home"}>
-                <ThemedText style={styles.myLocationText}>My current location</ThemedText>
-              </Link>
-                
+              <TouchableOpacity>
+                  <ThemedText style={styles.myLocationText}>My current location</ThemedText>
+              </TouchableOpacity>
             </ThemedView>
+
+            <Link href={"/(tabs)/home"}>
+                <ThemedText >Skip</ThemedText>
+              </Link>
             
             
             
             
-        </ThemedView>
+        </ThemedView>:
+        <ThemedView style={styles.body}>
+          <ThemedText style={styles.locationHeaderText} type='boldSmallTitle'>Location is required to use this app</ThemedText>
+          <TouchableOpacity style={styles.grantPermissionButton}>
+            <ThemedText>Grant permission</ThemedText>
+          </TouchableOpacity>
+        </ThemedView>}
+
     </SafeAreaView>
   );
 }
@@ -154,11 +190,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '95%',
-    marginTop: 40
+    marginTop: 40,
+    marginBottom: 20
   },
   myLocationText: {
     marginLeft: 5,
     color: 'gray'
+  },
+  locationHeaderText: {
+    marginVertical: 40
+  },
+  grantPermissionButton: {
+    borderWidth: 0.5,
+    color: 'gray',
+    padding: 5,
+    borderRadius: 10
   }
+  
   
 });

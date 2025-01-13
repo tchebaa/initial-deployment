@@ -13,7 +13,8 @@ interface IEventContextValue {
     loadingAddress: boolean
     setLoadingAddress: (data: boolean) => void
     setUserLocation:(data:{latitude: number, longitude: number}) => void
-    setUserAddress:(data:string) => void
+    setUserAddress:(data:string) => void,
+  
 }
 
 
@@ -23,7 +24,8 @@ const initialList: IEventContextValue = {
     loadingAddress: false,
     setLoadingAddress(data) {},
     setUserLocation: (data) => {},
-    setUserAddress:(data) => {}
+    setUserAddress:(data) => {},
+    
   }
 
 
@@ -56,6 +58,16 @@ export function LocationProvider({children}: ChildrenProps) {
     }
   },[userLocation])
 
+
+  async function getLocationPermission() {
+
+    let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setUserAddress('Permission to access location was denied');
+
+        return;
+      }
+  }
 
   async function getUserAddress() {
 
@@ -132,6 +144,9 @@ export function LocationProvider({children}: ChildrenProps) {
         setLoadingAddress(false)
     }
   }
+
+
+
 
   return(
     <LocationContext.Provider value={{userAddress, setUserAddress, userLocation, setUserLocation, loadingAddress, setLoadingAddress}} >{children}</LocationContext.Provider>

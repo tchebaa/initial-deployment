@@ -23,7 +23,7 @@ export default function EventBody({item, screenType}) {
 
 
     return (
-        <ThemedView>
+        <ThemedView style={styles.body}>
               {screenType === 'home' ?  
               <Link href={{pathname: '/(tabs)/home/event', params: {screenType: 'home', id: item._id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody2}>
@@ -196,6 +196,9 @@ export default function EventBody({item, screenType}) {
 }
 
 const styles = StyleSheet.create({
+  body: {
+    alignItems: 'center'
+  },
   eventImage: {
     width: windowWidth * 0.95,
     height: 200,
