@@ -703,7 +703,8 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     addressText: {
-        marginLeft: 5
+        marginLeft: 5,
+        width: windowWidth * 0.8
     },
     
 });

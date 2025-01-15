@@ -12,6 +12,10 @@ import {LocationProvider} from '../context/LocationContext'
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import 'react-native-get-random-values';
+import {Amplify} from 'aws-amplify'
+import outputs from '../amplify_outputs.json'
+
+Amplify.configure(outputs)
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

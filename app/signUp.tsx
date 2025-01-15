@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, TouchableOpacity } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -9,6 +9,8 @@ import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import GoogleLoginButton from '../components/appComponents/GoogleLoginButton'
 import { Link } from 'expo-router';
+
+import {signUp} from '@aws-amplify/auth'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -22,8 +24,22 @@ export default function SignUp() {
     const [password, setPassword] = useState('')
     const [repeatPassword, setRepeatPassword] = useState('')
 
-    const handleSignup = () => void {
+    const handleSignup = async () => {
 
+      try {
+      
+            
+              const user = await signUp({
+                username: email,
+                password: password,
+              }).then((e)=> console.log(e))
+      
+              
+      
+            } catch(e) {
+              console.log(e)
+            }
+      
 
     }
 
@@ -48,18 +64,18 @@ export default function SignUp() {
                         <ThemedText type='default'>Forgot Password?</ThemedText>
                     </Pressable>
                 </ThemedView>
-                <Pressable style={styles.loginButton}>
-                    <ThemedText style={styles.loginText}>Login</ThemedText>
-                </Pressable>
+                <TouchableOpacity style={styles.loginButton} onPress={()=> handleSignup()}>
+                    <ThemedText style={styles.loginText}>Sign up</ThemedText>
+                </TouchableOpacity>
             </ThemedView>
             <GoogleLoginButton />
             
             <ThemedView style={styles.signupContainer}>
                 <ThemedText type='default'>Already have an account?</ThemedText>
                 <Link href={'/'} asChild>
-                    <Pressable>
+                    <TouchableOpacity>
                         <ThemedText style={styles.signupText}>Log in</ThemedText>
-                    </Pressable>
+                    </TouchableOpacity>
                 </Link>
             </ThemedView>
             <ThemedView style={styles.skipContainer}>

@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground, Pressable  } from 'react-native';
+import {Dispatch, useEffect, useState, SetStateAction} from 'react';
+import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground, Pressable, Platform  } from 'react-native';
 import { FontAwesome5, AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons'; 
 import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -19,17 +19,26 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function LocationComponent() {
+export default function LocationDirection({originDirection, getDirections, setOriginDirection, loadingDirections, loadingDirectionsError, setLoadingDirections, openExternalMap}: 
+    {originDirection: {latitude: number, longitude: number} | null, getDirections: () => void, 
+    setOriginDirection: Dispatch<SetStateAction<{latitude: number, longitude:number} | null>>, loadingDirections: boolean, loadingDirectionsError: string,
+    setLoadingDirections: Dispatch<SetStateAction<boolean>>, openExternalMap: () => void}) {
 
 
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
     async function getCurrentLocation() {
           
+          
           let location = await Location.getCurrentPositionAsync({});
           
-          setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
+          
+          setOriginDirection({latitude: location.coords.latitude, longitude: location.coords.longitude});
+
+          
         }
+
+        
 
     return (
         <ThemedView style={styles.container}>
@@ -43,9 +52,12 @@ export default function LocationComponent() {
     
                         console.log(details)
                         if(details){
-                            console.log(details.geometry.location.lat, details.geometry.location.lng)
+
+                          
+                          setOriginDirection({latitude:details.geometry.location.lat, longitude: details.geometry.location.lng})
+                          
                         }
-                        setUserLocation({latitude:details.geometry.location.lat, longitude: details.geometry.location.lng})
+                        
                         // setLocation({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng});
                         // setOpenContainer(!openContainer)
                         
@@ -80,6 +92,26 @@ export default function LocationComponent() {
                   <ThemedText style={styles.myLocationText}>My current location</ThemedText>            
                     
                 </TouchableOpacity>
+                {originDirection ? 
+                <ThemedView style={styles.getDirectionBody}>
+                    <TouchableOpacity onPress={()=> getDirections()}>
+                        <ThemedText>Get Directions</ThemedText>
+                    </TouchableOpacity>
+                </ThemedView>: null}
+                {loadingDirections ? 
+                <ThemedView>
+                  <ThemedText>Loading Directions...</ThemedText>
+                  <ActivityIndicator />
+                </ThemedView>: null}
+                {loadingDirectionsError ? 
+                <ThemedView><ThemedText>{loadingDirectionsError}</ThemedText></ThemedView>: 
+                null}
+                <ThemedView style={styles.externalMapBody}>
+                  <View></View>
+                  <TouchableOpacity style={styles.openMapsButton} onPress={()=> openExternalMap()}>
+                    <ThemedText>Open Maps</ThemedText>
+                  </TouchableOpacity>
+                </ThemedView>
         </ThemedView>      
                   
         
@@ -88,7 +120,8 @@ export default function LocationComponent() {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%'
+    width: '100%',
+    alignItems: 'center'
   },
   locationContainer: {
     flexDirection: 'row',
@@ -97,9 +130,31 @@ const styles = StyleSheet.create({
     
   },
   myLocationText: {
-    marginLeft: 5,
+    marginLeft: 3,
     color: 'gray',
     marginVertical: 5
+  },
+  getDirectionBody: {
+    borderWidth: 0.5,
+    marginTop: 10,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderColor: 'gray'
+  },
+  externalMapBody: {
+    width: '90%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginTop: 10
+  },
+  openMapsButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderWidth: 0.5,
+    borderRadius: 10
   }
    
 })

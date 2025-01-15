@@ -108,7 +108,7 @@ const eventsCategories = [
 export default function postEvent() {
 
 
-    const [pageSection, setPageSection] = useState<number>(4)
+    const [pageSection, setPageSection] = useState<number>(2)
 
     const [pageType, setPageType] = useState<string>('post')
 
@@ -262,7 +262,7 @@ export default function postEvent() {
 
         } else {
 
-            if(selectedCategories.length < 5) {
+            if(selectedCategories.length < 4) {
 
                 setSelectedCategories([...selectedCategories, category])
 

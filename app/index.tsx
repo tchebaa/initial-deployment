@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, TouchableOpacity } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import GoogleLoginButton from '../components/appComponents/GoogleLoginButton'
 import { Link } from 'expo-router';
+import {signIn} from '@aws-amplify/auth'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -19,11 +20,54 @@ const windowHeight = Dimensions.get('window').height
 export default function SignInScreen() {
 
     const [email, setEmail] = useState('')
+    const [emailError, setEmailError] = useState('')
     const [password, setPassword] = useState('')
+    const [passwordError, setPasswordError] = useState('')
+    const [loginError, setLoginError] = useState('')
 
-    const handleLogin = () => void {
+    const handleLogin = async () => {
 
+      if(email.length > 1) {
 
+        setEmailError('')
+
+        if(password.length > 1) {
+
+          setPasswordError('')
+
+        } else {
+
+          setPasswordError('Password is required')
+
+        }
+
+      } else {
+
+        setEmailError('Email is required')
+
+      }
+
+      try {
+
+      
+        const user = await signIn({
+          username: email,
+          password: password,
+        }).then((e)=> console.log(e))
+
+        
+
+      } catch(e) {
+        console.log(e)
+      
+        console.log(e.message)
+
+      
+        
+      }
+
+      
+     
     }
 
 
@@ -46,9 +90,9 @@ export default function SignInScreen() {
                         <ThemedText type='default'>Forgot Password?</ThemedText>
                     </Pressable>
                 </ThemedView>
-                <Pressable style={styles.loginButton}>
+                <TouchableOpacity style={styles.loginButton} onPress={()=> handleLogin()}>
                     <ThemedText style={styles.loginText}>Login</ThemedText>
-                </Pressable>
+                </TouchableOpacity>
             </ThemedView>
             <GoogleLoginButton />
             

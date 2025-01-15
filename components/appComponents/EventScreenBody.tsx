@@ -1,5 +1,5 @@
 import {useEffect, useState, useRef} from 'react';
-import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground, Pressable  } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground, Pressable, Platform, Linking  } from 'react-native';
 import { FontAwesome5, AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Feather } from '@expo/vector-icons'; 
 import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -15,7 +15,7 @@ import pin from '../../assets/images/location-pin.png'
 import PinImage from '../../assets/images/location-pin.png'
 import axios from 'axios';
 import LocationComponent from './LocationComponent';
-import { Directions } from 'react-native-gesture-handler';
+import LocationDirection from './LocationDirection';
 
 const DEFAULT_IMAGE = Image.resolveAssetSource(PinImage).uri;
 
@@ -48,6 +48,11 @@ export default function EventScreenBody({item, screenType}) {
 
   const [openDirection, setOpenDirections] = useState<boolean>(false)
 
+  const [originDirection, setOriginDirection] = useState<{latitude: number, longitude: number} | null>(null)
+  const [loadingDirections, setLoadingDirections] = useState<boolean>(false)
+  const [loadingDirectionsError, setLoadingDirectionsError] = useState<string>('')
+  const [lineCoordinates, setLineCoordinates] = useState< [number] []>([])
+
 
   const [likedEvents, setLikedEvents] = useState([])
   const [bookingModal, setBookingModal] = useState<boolean>(false)
@@ -62,14 +67,7 @@ export default function EventScreenBody({item, screenType}) {
   const mapRef = useRef(null)
   const cameraRef = useRef(null)
 
-
-  const [mapRegion, setMapRegion] = useState({
-    latitude: Number(item.location.coordinates[1].$numberDecimal),
-    longitude: Number(item.location.coordinates[0].$numberDecimal),
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005, 
-  })
-
+  
 /** 
   useEffect(()=> {
 
@@ -108,11 +106,7 @@ export default function EventScreenBody({item, screenType}) {
 
 	*/
 
-  useEffect(()=> {
-
-    
-
-  },[])
+  
 
 
   useEffect(()=> {
@@ -120,7 +114,7 @@ export default function EventScreenBody({item, screenType}) {
     setLoadSortingDates(true)
 
     const sortedTimelines = item.dateTimePrice.sort(function(a,b){
-      return b.eventDate - a.eventDate
+      return moment(b.eventDate).format() - moment(a.eventDate).format()
     })
 
     console.log(sortedTimelines, sortedTimelines.length)
@@ -175,12 +169,50 @@ export default function EventScreenBody({item, screenType}) {
 
   const getDirections = async () => {
 
-    const response = await fetch('https://api.mapbox.com/driving/v5/mapbox/walking/39.63086668045429%2C-4.002112679088917%3B39.6262996484521%2C-4.007546436874143?alternatives=true&continue_straight=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig')
+    console.log('directions')
+
+    console.log(Number(item.location.coordinates[0].$numberDecimal), originDirection?.latitude)
+
+    try {
+
+      setLoadingDirectionsError('')
+      setLoadingDirections(true)
+
+      const response = await fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${Number(item.location.coordinates[0].$numberDecimal)}%2C${Number(item.location.coordinates[1].$numberDecimal)}%3B${Number(originDirection?.longitude)}%2C${originDirection?.latitude}?alternatives=true&continue_straight=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig`)
+
+      console.log(response)
 
     const json = await response.json()
 
+    setLineCoordinates(json.routes[0].geometry.coordinates)
+    setLoadingDirections(false)
+
+    cameraRef.current.fitBounds([Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)],[Number(originDirection?.longitude), Number(originDirection?.latitude)])
+    
     console.log(json.routes[0].geometry.coordinates)
 
+    } catch (error) {
+
+      console.log(error)
+      setLoadingDirectionsError('Error getting directions')
+      setLoadingDirections(false)
+
+    }
+
+    
+
+  }
+
+  const openExternalMap = () => {
+    const scheme = Platform.select({
+      ios: `maps://?q=${item.address}&ll=${Number(item.location.coordinates[1].$numberDecimal)},${Number(item.location.coordinates[0].$numberDecimal)}`,
+      android: `geo:${Number(item.location.coordinates[1].$numberDecimal)},${Number(item.location.coordinates[0].$numberDecimal)}?q=${Number(item.location.coordinates[1].$numberDecimal)},${Number(item.location.coordinates[0].$numberDecimal)}(${item.address})`,
+    });
+
+    if (scheme) {
+      Linking.openURL(scheme).catch(err =>
+        console.error('Error opening map: ', err),
+    )}
   }
 
   useEffect(()=> {
@@ -205,19 +237,25 @@ export default function EventScreenBody({item, screenType}) {
               {openDirection ? 
               <ThemedView style={styles.directionLocationSection}>
                   <ThemedText type='defaultSemiBold'>Directions from</ThemedText>
-                  <LocationComponent />
+                  <LocationDirection originDirection={originDirection} getDirections={getDirections} setOriginDirection={setOriginDirection} loadingDirections={loadingDirections} 
+                  setLoadingDirections={setLoadingDirections} loadingDirectionsError={loadingDirectionsError} openExternalMap={openExternalMap}/>
               </ThemedView>: null}
               
             </View>
             
             <MapView style={styles.fullMapStyle}>
-              <Camera centerCoordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]} zoomLevel={15}/> 
+              <Camera ref={cameraRef} centerCoordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]} zoomLevel={15}/> 
               <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]}>
                 
               </PointAnnotation>
-              <ShapeSource id='line' lineMetrics shape={{type: 'Feature', geometry:{type: "LineString", coordinates:[[39.630851, -4.002132], [39.631032, -4.002276], [39.630863, -4.002478], [39.630402, -4.002941], [39.629684, -4.003671], [39.629281, -4.004084], [39.629145, -4.004218], [39.628957, -4.004441], [39.628819, -4.004759], [39.628767, -4.004854], [39.628654, -4.005321], [39.628485, -4.005811], [39.628257, -4.006671], [39.628052, -4.007328], [39.627861, -4.007936], [39.626991, -4.007683], [39.626666, -4.007588], [39.626477, -4.007531], [39.626308, -4.0075]]}}}>
+              {originDirection ? 
+              <PointAnnotation id='pin' coordinate={[Number(originDirection.longitude), Number(originDirection.latitude)]}>
+                
+              </PointAnnotation>: null}
+              {lineCoordinates.length > 1 && loadingDirections === false ? 
+              <ShapeSource id='line' lineMetrics shape={{type: 'Feature', geometry:{type: "LineString", coordinates:lineCoordinates}}}>
                 <LineLayer id='exampleline' style={{lineWidth: 7, lineColor: '#1184e8'}} />
-              </ShapeSource> 
+              </ShapeSource> : null}
             </MapView>
           </View>
           : null}

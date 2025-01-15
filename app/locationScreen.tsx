@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import * as Location from 'expo-location';
 
@@ -12,6 +12,8 @@ import { Link, useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {useLocation} from '../context/LocationContext'
+import {generateClient} from 'aws-amplify/data'
+import {type Schema} from '../amplify/data/resource'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -23,13 +25,29 @@ export default function LocationScreen() {
 
 
     const [locationPermission, setLocationPermission] = useState(false)
+
+    const client = generateClient<Schema>();
+
+    async function createToDo () {
+
+      
+
+    const toDo = await client.models.Todo.create({
+      content: "My new todo",
+      
+    }).then((e)=> console.log(e))
+
     
+
+    }
+
     const router = useRouter()
 
-    const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
+    const {userAddress, userLocation, setUserAddress, setUserLocation, loadingAddress, setLoadingAddress} = useLocation()
 
     async function getCurrentLocation() {
       
+      setLoadingAddress(true)
       let location = await Location.getCurrentPositionAsync({});
       
       setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
@@ -60,9 +78,15 @@ export default function LocationScreen() {
 
     useEffect(()=> {
 
+
       getLocationPermission()
       
     },[])
+
+    useEffect(()=> {
+      
+
+    },[locationPermission, userLocation])
     
   
 
@@ -86,9 +110,13 @@ export default function LocationScreen() {
                 minLength={2}
                 onPress={(data, details = null)=>{
 
-                    console.log(details)
-                    console.log(details.geometry.location.lat, details.geometry.location.lng)
+                  if(details) {
+
+                    setLoadingAddress(true)
                     setUserLocation({latitude:details.geometry.location.lat, longitude: details.geometry.location.lng})
+
+                  }
+                    
                    // setLocation({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng});
                    // setOpenContainer(!openContainer)
                     
@@ -116,22 +144,29 @@ export default function LocationScreen() {
                 }}/>
             </ThemedView>
             
-            <ThemedView style={styles.locationContainer}>
+            <TouchableOpacity style={styles.locationContainer} onPress={()=> getCurrentLocation()}>
               <ThemedView style={{marginRight: 5}}>
                   <MaterialIcons name='my-location' size={24} color={'#1184e8'} />
               </ThemedView>
-              <TouchableOpacity>
-                  <ThemedText style={styles.myLocationText}>My current location</ThemedText>
-              </TouchableOpacity>
+              <ThemedText style={styles.myLocationText}>My current location</ThemedText>
+            </TouchableOpacity>
+            <ThemedView style={styles.addressBody}>
+              <ThemedText numberOfLines={1}>{userAddress}</ThemedText>
             </ThemedView>
-
-            <Link href={"/(tabs)/home"}>
-                <ThemedText >Skip</ThemedText>
+            {loadingAddress ? 
+            <ThemedView>
+              <ThemedText>Loading location...</ThemedText>
+              <ActivityIndicator />
+            </ThemedView> : null}
+            
+            {userAddress && !loadingAddress ? 
+            <ThemedView style={styles.continueButton}>
+              <Link href={"/(tabs)/home"}>
+                <ThemedText >Continue</ThemedText>
               </Link>
+            </ThemedView>: null} 
             
-            
-            
-            
+ 
         </ThemedView>:
         <ThemedView style={styles.body}>
           <ThemedText style={styles.locationHeaderText} type='boldSmallTitle'>Location is required to use this app</ThemedText>
@@ -139,7 +174,7 @@ export default function LocationScreen() {
             <ThemedText>Grant permission</ThemedText>
           </TouchableOpacity>
         </ThemedView>}
-
+        
     </SafeAreaView>
   );
 }
@@ -205,6 +240,17 @@ const styles = StyleSheet.create({
     color: 'gray',
     padding: 5,
     borderRadius: 10
+  },
+  continueButton: {
+    marginTop: 20,
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    borderRadius: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10
+  },
+  addressBody: {
+    width: windowWidth * 0.9
   }
   
   

@@ -44,7 +44,7 @@ type ChildrenProps = { children?: ReactNode };
 export function LocationProvider({children}: ChildrenProps) {
 
   const [userAddress, setUserAddress] = useState<string>('')
-  const [userLocation, setUserLocation] = useState<{latitude: number, longitude: number} | null >(null)
+  const [userLocation, setUserLocation] = useState<{latitude: number , longitude: number} | null >(null)
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false)
 
   
@@ -79,9 +79,9 @@ export function LocationProvider({children}: ChildrenProps) {
 
         //Pick<LocationGeocodedLocation, "latitude" | "longitude">
 
-        
+        setLoadingAddress(true)
 
-        const description = await Location.reverseGeocodeAsync({latitude: userLocation.latitude, longitude: userLocation.longitude}) 
+        const description = await Location.reverseGeocodeAsync({latitude: userLocation?.latitude, longitude: userLocation.longitude}) 
 
         const newDescription = description[0]
         

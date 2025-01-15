@@ -1,4 +1,4 @@
-import {useEffect, useState, Dispatch, SetStateAction} from 'react';
+import {useEffect, useState, Dispatch, SetStateAction, useRef} from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground  } from 'react-native';
 import { FontAwesome5, AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons'; 
 import HomeDateTimeCostSection from './HomeDateTimeCostSection';
@@ -10,6 +10,8 @@ import MapBox, {MapView, Camera, ShapeSource, PointAnnotation, SymbolLayer, Imag
 import * as Location from 'expo-location';
 const pin = require('../../assets/images/location-pin.png')
 import { Link } from 'expo-router';
+import {useLocation} from '../../context/LocationContext'
+import { geometry } from '@turf/helpers';
 
 const accessToken = 'pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig'
 
@@ -33,9 +35,124 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
 }) {
 
   const [showMap, setShowMap] = useState<boolean>(false)
+  const [loadingAddress, setLoadingAddress] = useState<boolean>(false)
 
+  const {userLocation} = useLocation()
+
+  const [mapCoordinates, setMapCoordinates] = useState<{latitude: number , longitude: number} | null >(null)
+
+  const cameraRef = useRef(null)
+
+
+  useEffect(()=> {
+    if(coordinates) {
+
+      setMapCoordinates({latitude: coordinates.latitude, longitude: coordinates.longitude})
+
+    } else {
+
+      setMapCoordinates({latitude: userLocation.latitude, longitude: userLocation.longitude})
+
+    }
     
+  },[])
 
+  useEffect(()=> {
+    if(cameraRef.current) {
+      
+      cameraRef.current.setCamera({
+        centerCoordinate: [Number(mapCoordinates?.longitude), Number(mapCoordinates?.latitude)]
+      })
+      console.log(Number(userLocation?.longitude), Number(userLocation?.latitude), 123)
+      cameraRef.current.flyTo([Number(mapCoordinates?.longitude), Number(mapCoordinates?.latitude)])
+    }
+  },[cameraRef, mapCoordinates])
+
+
+  async function getUserAddress({latitude, longitude}: {latitude: number, longitude: number}) {
+                            
+    try {
+        let street
+        let district
+        let city
+        let country
+
+        //Pick<LocationGeocodedLocation, "latitude" | "longitude">
+
+
+        const description = await Location.reverseGeocodeAsync({latitude: latitude, longitude: longitude}) 
+
+        const newDescription = description[0]
+        
+        if(newDescription.hasOwnProperty('street')) {
+
+              if(newDescription.street) {
+                street = `${newDescription.street} `
+              } else {
+                street= ''
+              }
+
+            } else {
+              street = ''
+            } 
+
+        if(newDescription.hasOwnProperty('district')) {
+
+            if(newDescription.district) {
+  
+                  district = `${newDescription.district} `
+      
+                } else {
+                  district = ''
+                }
+
+            } else {
+              district = ''
+            }
+    
+        if(newDescription.hasOwnProperty('city')) {
+
+          if(newDescription.city) {
+
+                city = `${newDescription.city} `
+    
+              } else {
+                city = ''
+              }
+          } else {
+            city = ''
+          }
+
+        if(newDescription.hasOwnProperty('country')) {
+
+          if( newDescription.country ) {
+
+                country = `${newDescription.country} `
+    
+              } else {
+                country = ''
+              }
+            } else {
+              country = ''
+            }
+        
+          setAddress(street + district + city + country)
+          setLoadingAddress(false)
+
+    } catch(error) {
+        setAddress('Error getting description')
+        setLoadingAddress(false)
+    }
+  } 
+
+  const getAddressByDrag = (longitude: number, latitude: number) => {
+
+    setLoadingAddress(true)
+    setCoordinates({latitude: latitude, longitude: longitude})
+    setMapCoordinates({latitude: latitude, longitude: longitude})
+    getUserAddress({latitude:Number(latitude), longitude: Number(longitude)})
+
+  }
 
 
     return (
@@ -43,104 +160,29 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
             {showMap ? 
             <ThemedView style={styles.mapSection}>
                 <MapView style={styles.mapStyle}>
-                  <Camera centerCoordinate={[Number(39.6309814), Number(-4.004131699999999)]} zoomLevel={15}/>
-                  <PointAnnotation id='pin' draggable coordinate={[Number(39.6309814), Number(-4.004131699999999)]} onDragEnd={(event)=> console.log(event)}/>
+                  <Camera ref={cameraRef} centerCoordinate={[Number(mapCoordinates?.longitude), Number(mapCoordinates?.latitude)]} zoomLevel={15}/>
+                  <PointAnnotation id='pin' draggable coordinate={[Number(mapCoordinates?.longitude), Number(mapCoordinates?.latitude)]} onDragEnd={(event)=> getAddressByDrag(event.geometry.coordinates[0], event.geometry.coordinates[1])}/>
 
                 </MapView>
                 <View style={styles.placesComponent}>
-                <View style={styles.closeMapSection}>
-                    <View></View>
-                    <TouchableOpacity onPress={()=> setShowMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={'black'} /></ThemedView></TouchableOpacity>
-                </View>
+                    <View style={styles.closeMapSection}>
+                        <View></View>
+                        <TouchableOpacity onPress={()=> setShowMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={'black'} /></ThemedView></TouchableOpacity>
+                    </View>
                     <GooglePlacesAutocomplete
                         placeholder='Location' 
                         nearbyPlacesAPI='GooglePlacesSearch'
                         minLength={2}
                         onPress={(data, details = null)=>{
         
+                          setLoadingAddress(true)
                             console.log(details)
                             if(details){
                                 console.log(details.geometry.location.lat, details.geometry.location.lng)
                                 setCoordinates({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng})
+                                setMapCoordinates({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng})
                                 getUserAddress({latitude:Number(details.geometry.location.lat), longitude: Number(details.geometry.location.lng)})
                             }
-                            
-
-                            async function getUserAddress({latitude, longitude}: {latitude: number, longitude: number}) {
-                            
-                                try {
-                                    let street
-                                    let district
-                                    let city
-                                    let country
-                            
-                                    //Pick<LocationGeocodedLocation, "latitude" | "longitude">
-                          
-                            
-                                    const description = await Location.reverseGeocodeAsync({latitude: latitude, longitude: longitude}) 
-                            
-                                    const newDescription = description[0]
-                                    
-                                    if(newDescription.hasOwnProperty('street')) {
-                            
-                                          if(newDescription.street) {
-                                            street = `${newDescription.street} `
-                                          } else {
-                                            street= ''
-                                          }
-
-                                        } else {
-                                          street = ''
-                                        } 
-                            
-                                    if(newDescription.hasOwnProperty('district')) {
-                            
-                                        if(newDescription.district) {
-                              
-                                              district = `${newDescription.district} `
-                                  
-                                            } else {
-                                              district = ''
-                                            }
-
-                                        } else {
-                                          district = ''
-                                        }
-                                
-                                    if(newDescription.hasOwnProperty('city')) {
-                            
-                                      if(newDescription.city) {
-                            
-                                            city = `${newDescription.city} `
-                                
-                                          } else {
-                                            city = ''
-                                          }
-                                      } else {
-                                        city = ''
-                                      }
-                            
-                                    if(newDescription.hasOwnProperty('country')) {
-                            
-                                      if( newDescription.country ) {
-                            
-                                            country = `${newDescription.country} `
-                                
-                                          } else {
-                                            country = ''
-                                          }
-                                        } else {
-                                          country = ''
-                                        }
-                                    
-                                      setAddress(street + district + city + country)
-                                    
-                            
-                                } catch(error) {
-                                    setAddress('Error getting description')
-                                    
-                                }
-                              }
                             // setLocation({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng});
                             // setOpenContainer(!openContainer)
                             
@@ -167,6 +209,18 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                             key: 'AIzaSyCGzT9TA6GF716zU_JaSqprPUEaBoA9wgk',
                             language: 'en'
                         }}/>
+                        {loadingAddress ? 
+                        <ThemedView style={styles.loadingLocationBody}>
+                          <ThemedText>Loading location</ThemedText>
+                        <ActivityIndicator />
+                        </ThemedView> : null}
+                        {address && !loadingAddress ? 
+                        <ThemedView style={styles.confirmAddressBody}>
+                          <ThemedText numberOfLines={1}>{address}</ThemedText>
+                          <TouchableOpacity style={styles.confirmButton} onPress={()=> setShowMap(false)}>
+                            <ThemedText>Confirm</ThemedText>
+                          </TouchableOpacity>
+                        </ThemedView>: null}
                       </View>
             </ThemedView>
             : null}
@@ -258,6 +312,29 @@ const styles = StyleSheet.create({
       },
       pickLocationText: {
         marginLeft: 5
+      },
+      confirmAddressBody:{
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        width:'90%',
+        borderRadius: 10,
+        borderWidth: 0.5,
+        borderColor: 'gray'
+      },
+      confirmButton: {
+        borderWidth: 0.5,
+        borderRadius: 10,
+        marginVertical: 10,
+        paddingHorizontal: 10
+      },
+      loadingLocationBody:{
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginTop: 10,
+        borderRadius: 10,
+        borderWidth: 0.5,
+        borderColor: 'gray'
       }
    
 })
