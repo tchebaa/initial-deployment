@@ -1,0 +1,3 @@
+[submodule "tchebaa-backend"]
+	path = tchebaa-backend
+	url = https://github.com/tchebaa/tchebaa-backend.git
