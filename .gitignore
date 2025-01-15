@@ -41,3 +41,5 @@ app-example
 .amplify
 amplify_outputs*
 amplifyconfiguration*
+
+tchebaa-backend/node_modules
