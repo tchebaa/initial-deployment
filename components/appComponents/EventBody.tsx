@@ -5,8 +5,15 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import { uploadData, getUrl } from '@aws-amplify/storage';
+import {useLikes} from '../../context/LikedContext';
+import {useUser} from '../../context/UserContext';
+import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
+import { generateClient } from 'aws-amplify/data';
 import { Link } from 'expo-router';
+
+
+const client = generateClient<Schema>();
 
 
 
@@ -17,48 +24,161 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function EventBody({item, screenType}) {
+export default function EventBody({item, screenType}: {screenType: string}) {
 
-    const [likedEvents, setLikedEvents] = useState([])
+    
+    const {userDetails} = useUser()
+    const [loadingImage, setLoadingImage] = useState<boolean>(true)
+    const [loadingImageError, setLoadingImageError] = useState<string>('')
+    const [loadingLikeUnlikeEvent, setLoadingLikeUnlikeEvent] = useState<boolean>(false)
+    const [mainImageUrl, setMainImageUrl] = useState<string>('')
+
+    const {likedEvents, handleGetLikedEvents} = useLikes()
+
+
+
+    const handleGetImageUrl = async () => {
+
+      try {
+
+        setLoadingImage(true)
+
+        const linkToStorageFile = await getUrl({
+          path: item.eventMainImage.url,
+          options: {
+            useAccelerateEndpoint: true
+          }
+      })
+
+      setMainImageUrl(linkToStorageFile.url.toString())
+
+      setLoadingImage(false)
+
+      } catch(e) {
+
+      }
+
+      
+   
+
+    }
+
+    useEffect(()=> {
+      
+
+      handleGetImageUrl()
+      
+
+      
+    },[])
+
+
+    const handleLikeEvent = async () => {
+
+      try {
+
+        setLoadingLikeUnlikeEvent(true)
+
+        const likedEvent = await client.models.LikedEvent.create({
+                  email: item.email,
+                  eventName: item.eventName,
+                  eventDescription: item.eventDescription,
+                  personType: item.personType,
+                  personName: item.personName,
+                  eventMainImage: item.eventMainImage,
+                  eventImage2: item.eventImage2,
+                  eventImage3: item.eventImage3,
+                  eventImage4: item.eventImage4,
+                  dateTimePriceList: item.dateTimePriceList,
+                  eventAddress: item.eventAddress,
+                  ageRestriction: item.ageRestriction,
+                  categories: item.categories,
+                  location: item.location,
+                  eventId: item.eventId,
+                  userEmail: userDetails?.username
+              
+          });
+
+          handleGetLikedEvents()
+
+          setLoadingLikeUnlikeEvent(false)
+
+      } catch(e) {
+
+
+        setLoadingLikeUnlikeEvent(false)
+
+      }
+
+    }
+
+
+    const handleUnlikeEvent = async (id: string) => {
+
+      try {
+
+        setLoadingLikeUnlikeEvent(true)
+
+        const unLikedEvent = await client.models.LikedEvent.delete({ 
+              id: id
+          });
+
+          handleGetLikedEvents()
+          setLoadingLikeUnlikeEvent(false)
+
+      } catch(e) {
+
+        setLoadingLikeUnlikeEvent(false)
+
+      }
+
+    }
 
 
     return (
         <ThemedView style={styles.body}>
               {screenType === 'home' ?  
-              <Link href={{pathname: '/(tabs)/home/event', params: {screenType: 'home', id: item._id}}} asChild>
+              <Link href={{pathname: '/(tabs)/home/event', params: {screenType: 'home', id: item.id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody2}>
+                  {!loadingImage ? 
+                   <View>
                       {item.eventMainImage.aspectRatio === 'a'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                           <View style={styles.imageBackgroundBadge}>
                             <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
-                            <View></View>
+                            <View>
+                              
+                            </View>
                           </View>
-                          <ImageBackground style={styles.eventImageRatioAHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                          <ImageBackground style={styles.eventImageRatioAHome1} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
                       </ImageBackground> : null}
                       {item.eventMainImage.aspectRatio === 'b'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover' >
+                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover' >
                           <View style={styles.imageBackgroundBadge}>
                             <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
                             <View></View>
                           </View>
-                          <ImageBackground style={styles.eventImageRatioBHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                          <ImageBackground style={styles.eventImageRatioBHome1} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
                           
                       </ImageBackground> : null}
                       {item.eventMainImage.aspectRatio === 'c'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                         
                           <View style={styles.imageBackgroundBadge}>
                               <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
                               <View></View>
                             </View>
-                          <ImageBackground style={styles.eventImageRatioCHome1} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                          <ImageBackground style={styles.eventImageRatioCHome1} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
                       </ImageBackground> : null}
-                      
+                    </View>:
+                    <View style={styles.eventImageLoading}>
+                      <ActivityIndicator/>
+                    </View>}
                           
                           <View style={styles.eventDetailsSearchBody2}>
                               <View style={styles.imageBackgroundHeader2}>
                                     <View></View>
-                                    {!likedEvents.includes(item._id) ? 
+                                    {!likedEvents.some((item) => item.eventId === item.id) ? 
                                     <TouchableOpacity style={styles.likeButton}>
                                     
                                         <AntDesign name="hearto" size={16} color="gray" />
@@ -71,9 +191,10 @@ export default function EventBody({item, screenType}) {
                                     </TouchableOpacity>}
                                     
                                 </View>
+                                
                                 <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName }</ThemedText>
-                                <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                                <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
+                                <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
                                 
                           </View>
                   
@@ -81,77 +202,87 @@ export default function EventBody({item, screenType}) {
                 </Link>
 
                 : 
-                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' , params: {screenType: screenType ==='search' ? 'search' : 'like', id: item._id}}} asChild>
+                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' , params: {screenType: screenType ==='search' ? 'search' : 'like', id: item.id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody}>
                     {item.eventMainImage.aspectRatio === 'a'  ? 
-                    <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} borderRadius={10} resizeMode='cover'>
-                        <View style={styles.imageBackgroundHeader}>
-                            <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                            {!likedEvents.includes(item._id) ? 
-                            <TouchableOpacity style={styles.likeButton}>
-                            
-                            <AntDesign name="hearto" size={16} color="gray" />
-                                
-                            </TouchableOpacity>:
-                            <TouchableOpacity style={styles.unlikeButton}>
-                            
-                            <AntDesign name="heart" size={16} color="#ce2029" />
-                            
-                        </TouchableOpacity>}
-                            
-                        </View>
-                        {screenType === 'like' ? 
-                        <View>
-                            <View style={styles.eventDetailsBody}>
-                                <View style={styles.detailsBackground}></View>
-                                <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
-                                    <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                                </View>
-                                
-                            </View>
-                        </View>: null}
-                    </ImageBackground> : null}
+                    <View>
+                      {!loadingImage ? 
+                      <ImageBackground style={styles.eventImage} source={{uri: mainImageUrl}} borderRadius={10} resizeMode='cover'>
+                          <View style={styles.imageBackgroundHeader}>
+                              <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                              {!likedEvents.some((item) => item.eventId === item.id) ? 
+                              <TouchableOpacity style={styles.likeButton}>
+                              
+                              <AntDesign name="hearto" size={16} color="gray" />
+                                  
+                              </TouchableOpacity>:
+                              <TouchableOpacity style={styles.unlikeButton}>
+                              
+                              <AntDesign name="heart" size={16} color="#ce2029" />
+                              
+                          </TouchableOpacity>}
+                              
+                          </View>
+                          {screenType === 'like' ? 
+                         
+                              <View style={styles.eventDetailsBody}>
+                                  <View style={styles.detailsBackground}></View>
+                                  <View style={styles.detailsBodyText}>
+                                      <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
+                                      <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
+                                  </View>
+                                  
+                              
+                          </View>: null}
+                      </ImageBackground>:
+                      <View style={styles.eventImage}><ActivityIndicator/></View>} 
+                    </View>: null}
+                    
                     {item.eventMainImage.aspectRatio === 'b'  ? 
-                    <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
-                      
-                        <View style={styles.imageBackgroundHeader}>
-                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                            {!likedEvents.includes(item._id) ? 
-                            <TouchableOpacity style={styles.likeButton}>
-                            
-                            <AntDesign name="hearto" size={16} color="gray" />
-                                
-                            </TouchableOpacity>:
-                            <TouchableOpacity style={styles.unlikeButton}>
-                            
-                            <AntDesign name="heart" size={16} color="#ce2029" />
-                            
-                        </TouchableOpacity>}
-                            
-                        </View>
-                        <ImageBackground style={styles.eventImageRatioB} source={{uri: item.eventMainImage.url}} borderRadius={10} ></ImageBackground>
-                        {screenType === 'like' ? 
-                        <View>
-                            <View style={styles.eventDetailsBody}>
-                                <View style={styles.detailsBackground}></View>
-                                <View style={styles.detailsBodyText}>
-                                    <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
-                                    <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
-                                </View>
-                                
-                            </View>
-                        </View>: null}
-                    </ImageBackground> : null}
+                    <View>
+                      {!loadingImage ? 
+                      <ImageBackground style={styles.eventImage} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                        
+                          <View style={styles.imageBackgroundHeader}>
+                            <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                              {!likedEvents.some((item) => item.eventId === item.id) ? 
+                              <TouchableOpacity style={styles.likeButton}>
+                              
+                              <AntDesign name="hearto" size={16} color="gray" />
+                                  
+                              </TouchableOpacity>:
+                              <TouchableOpacity style={styles.unlikeButton}>
+                              
+                              <AntDesign name="heart" size={16} color="#ce2029" />
+                              
+                          </TouchableOpacity>}
+                              
+                          </View>
+                          <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImageUrl}} borderRadius={10} ></ImageBackground>
+                          {screenType === 'like' ? 
+                          
+                              <View style={styles.eventDetailsBody}>
+                                  <View style={styles.detailsBackground}></View>
+                                  <View style={styles.detailsBodyText}>
+                                      <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
+                                      <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
+                                  </View>
+                                  
+                              
+                          </View>: null}
+                      </ImageBackground>:
+                      <View style={styles.eventImage}><ActivityIndicator/></View>}
+                    </View> : null}
                     {item.eventMainImage.aspectRatio === 'c'  ? 
-
-                    <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                    <View>
+                    {!loadingImage ? 
+                    <ImageBackground style={styles.eventImage} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                       
                         <View style={styles.imageBackgroundHeader}>
                           <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                            {!likedEvents.includes(item._id) ? 
+                            {!likedEvents.some((item) => item.eventId === item.id) ? 
                             <TouchableOpacity style={styles.likeButton}>
                             
                             <AntDesign name="hearto" size={16} color="gray" />
@@ -164,25 +295,27 @@ export default function EventBody({item, screenType}) {
                         </TouchableOpacity>}
                             
                         </View>
-                        <ImageBackground style={styles.eventImageRatioC} source={{uri: item.eventMainImage.url}} borderRadius={10} ></ImageBackground>
+                        <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImageUrl}} borderRadius={10} ></ImageBackground>
                         {screenType === 'like' ? 
                         
                             <View style={styles.eventDetailsBody}>
                                 <View style={styles.detailsBackground}></View>
                                 <View style={styles.detailsBodyText}>
                                     <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
-                                    <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
+                                    <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
                                 </View>
                                 
                             </View>
                         : null}
-                    </ImageBackground> : null}
+                    </ImageBackground>:
+                    <View style={styles.eventImage}><ActivityIndicator /></View>}
+                    </View> : null}
                     {screenType === 'search' ? 
                     <View style={styles.eventDetailsSearchBody}>
                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
-                          <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
-                          <HomeDateTimeCostSection eventTimelines={item.dateTimePrice} option={'homeNear'} />
+                          <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                          <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
                       </View>: null}
                 
                 </TouchableOpacity>
@@ -222,6 +355,19 @@ const styles = StyleSheet.create({
     alignItems: 'center'
     
     
+  },
+  eventImageLoading: {
+
+    width: windowWidth * 0.4,
+    height: 200,
+  
+    borderRadius: 10,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 0.5,
+    borderColor: 'gray'
+
   },
   eventImageRatioB: {
     width: 180,

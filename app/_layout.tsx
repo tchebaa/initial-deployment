@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import {LikeProvider} from '../context/LikedContext'
 import {LocationProvider} from '../context/LocationContext'
+import {UserProvider} from '../context/UserContext'
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import 'react-native-get-random-values';
@@ -48,18 +49,22 @@ export default function RootLayout() {
   }
 
   return (
-    <LocationProvider>
-      <LikeProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="index" options={{headerShown: false}}/>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="signUp" options={{ headerShown: false }}/>
-            <Stack.Screen name="locationScreen" options={{ headerShown: false }}/>
-          </Stack>
-          <StatusBar style="auto" /> 
-        </ThemeProvider>
-      </LikeProvider>
-    </LocationProvider>
+    <UserProvider>
+      <LocationProvider>
+        <LikeProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="index" options={{headerShown: false}}/>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="signUp" options={{ headerShown: false }}/>
+              <Stack.Screen name="locationScreen" options={{ headerShown: false }}/> 
+              <Stack.Screen name="confirmAccount" options={{ headerShown: false }}/> 
+              <Stack.Screen name="forgotPassword" options={{ headerShown: false }}/>   
+            </Stack>
+            <StatusBar style="auto" /> 
+          </ThemeProvider>
+        </LikeProvider>
+      </LocationProvider>
+    </UserProvider>
   );
 }

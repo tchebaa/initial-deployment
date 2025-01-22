@@ -13,6 +13,12 @@ import { useLocalSearchParams } from 'expo-router';
 import EventHeader from '@/components/appComponents/EventHeader';
 import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import ProfileHeader from '@/components/appComponents/ProfileHeader';
+import { uploadData, getUrl } from '@aws-amplify/storage';
+import { generateClient } from 'aws-amplify/data';
+import {useUser} from '../../../context/UserContext';
+import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
+
+const client = generateClient<Schema>();
 
 
 
@@ -25,6 +31,44 @@ const windowHeight = Dimensions.get('window').height
 export default function ManageEvents() {
 
     const [pageType, setPageType] = useState<string>('manage')
+    const [events, setEvents] = useState()
+    const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
+    const [loadingError, setLoadingError] = useState<string>('')
+    const {userDetails} = useUser()
+
+
+    const handleGetEvents = async () => {
+
+        try {
+
+            setLoadingError('')
+            setLoadingEvents(true)
+
+            const { data, errors } = await client.models.Event.list({
+
+                filter: {
+                  email: {
+                    beginsWith: userDetails?.username
+                  }
+                }
+              });
+
+
+              setEvents(data)
+              console.log(data)
+              setLoadingEvents(false)
+
+
+        } catch (e) {
+
+            setLoadingError(e?.message)
+            setLoadingEvents(false)
+
+        }
+
+        
+
+    }
 
 
 

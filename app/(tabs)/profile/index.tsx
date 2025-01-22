@@ -1,13 +1,15 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, View } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, View, TouchableOpacity } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {FontAwesome, MaterialCommunityIcons, AntDesign, Ionicons} from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import {signOut} from '@aws-amplify/auth'
+import {useUser} from '../../../context/UserContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -17,10 +19,23 @@ const windowHeight = Dimensions.get('window').height
 
 export default function ProfileScreen() {
 
+    const {userDetails, setUserDetails} = useUser()
+
+    const router = useRouter()
+
+    const [openSignOutModal, setOpenSignOutModal] = useState<boolean>(false)
+
     
 
-    const handleSignup = () => void {
+    const handleSignOut = async () => {
 
+        try {
+
+            await signOut().then((e)=> {setUserDetails(null)})
+
+        } catch(e) {
+
+        }
 
     }
 
@@ -28,13 +43,25 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
+            {openSignOutModal ? 
+            <ThemedView style={styles.signOutModal}>
+                <ThemedText>Are you sure you want to sign out?</ThemedText>
+                <ThemedView style={styles.signOutOptionBody}>
+                    <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setOpenSignOutModal(false)}>
+                        <ThemedText type='defaultSemiBold'>No</ThemedText>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleSignOut()}>
+                        <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>Yes</ThemedText>
+                    </TouchableOpacity>
+                </ThemedView>
+            </ThemedView>: null}
             <ThemedView style={styles.pageHeader}>
                 <Ionicons name="person-circle-outline" size={24} color="black" />
                 <View></View>
             </ThemedView>
             
             <ThemedView style={styles.buttonsBody}>
-                <Link href={'/(tabs)/profile/postEvent'} asChild>
+                <Link href={{pathname: '/(tabs)/profile/postEvent', params: {screenName: 'post'}}} asChild>
                     <Pressable style={styles.button}>
                         <ThemedText style={styles.buttonText} type='defaultSemiBold'>Post Event</ThemedText>
                         <FontAwesome name='calendar-plus-o' size={24}/>
@@ -58,6 +85,11 @@ export default function ProfileScreen() {
                         <AntDesign name="setting" size={24} color="black" />
                     </Pressable>
                 </Link>
+                <ThemedView style={styles.signOutBody}>
+                    <TouchableOpacity style={styles.loginButton} onPress={()=> setOpenSignOutModal(true)}>
+                        <ThemedText style={styles.loginText}>Sign Out</ThemedText>
+                    </TouchableOpacity>
+                </ThemedView>
                 
             </ThemedView>
                 
@@ -107,7 +139,58 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: '100%',
         padding: 10
-    }
+    },
+    loginButton: {
+        borderWidth: 1,
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5,
+        borderRadius:5,
+        borderColor: "#FF4D00",
+        fontFamily: "PoppinsSemibold"
+      },
+      loginText: {
+        color: "#FF4D00",
+        fontFamily: "PoppinsSemibold",
+        fontSize: 16
+      },
+      signOutBody: {
+        marginTop:50
+      },
+      signOutModal: {
+        borderWidth: 0.5,
+        borderColor: 'gray',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 200,
+        width: '90%',
+        height: 200,
+        zIndex: 20
+      },
+      signOutOptionBody:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+      declineSignOutButton: {
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        margin: 10
+      },
+      acceptSignOutButton: {
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        margin: 10,
+        borderColor: 'red'
+      },
+      acceptSignOutText: {
+        color: 'red'
+      }
   
   
 });

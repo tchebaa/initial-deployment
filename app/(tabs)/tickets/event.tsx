@@ -80,7 +80,7 @@ const events = [
                 }
             ]
         },
-        "address": "Mikindani Hospital, Mombasa, Kenya",
+        "eventAddress": "Mikindani Hospital, Mombasa, Kenya",
         "categories": [
             "{\"title\":\"Music\",\"name\":\"music\"}",
             "{\"title\":\"Night party\",\"name\":\"night\"}"
@@ -184,7 +184,7 @@ const events = [
                 }
             ]
         },
-        "address": "Kitengela, Kenya",
+        "eventAddress": "Kitengela, Kenya",
         "categories": [
             "{\"title\":\"Business\",\"name\":\"business\"}",
             "{\"title\":\"Real estate\",\"name\":\"business\"}"
@@ -259,7 +259,7 @@ const events = [
                 }
             ]
         },
-        "address": "Thika Road, Nairobi, Kenya",
+        "eventAddress": "Thika Road, Nairobi, Kenya",
         "categories": [
             "{\"title\":\"Health\",\"name\":\"health\"}",
             "{\"title\":\"Charity & fundraising\",\"name\":\"charity\"}"
@@ -336,7 +336,7 @@ const events = [
                 }
             ]
         },
-        "address": "Bamburi mtambo, Mombasa, Kenya",
+        "eventAddress": "Bamburi mtambo, Mombasa, Kenya",
         "categories": [
             "{\"title\":\"Religion & spirituality\",\"name\":\"photography\"}",
             "{\"title\":\"Charity & fundraising\",\"name\":\"charity\"}"
@@ -415,7 +415,7 @@ const events = [
                 }
             ]
         },
-        "address": "Grand Regency Hotel, Nairobi, Kenya",
+        "eventAddress": "Grand Regency Hotel, Nairobi, Kenya",
         "categories": [
             "{\"title\":\"Software & tech\",\"name\":\"software\"}"
         ],

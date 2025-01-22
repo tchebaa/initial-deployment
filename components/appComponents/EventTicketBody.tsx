@@ -17,9 +17,9 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function EventTicketBody({item, screenType}) {
+export default function EventTicketBody({item, screenType}: {screenType: string | string []}) {
 
-    const [likedEvents, setLikedEvents] = useState([])
+   
 
 
     return (
@@ -39,7 +39,7 @@ export default function EventTicketBody({item, screenType}) {
                                     <View style={styles.detailsBackground}></View>
                                     <View style={styles.detailsBodyText}>
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
-                                        <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
+                                        <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
                                         <ThemedText>4 Tickets</ThemedText>
                                         <ThemedText>{moment("2025-01-13T00:00:00.000Z").format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                         
@@ -64,7 +64,7 @@ export default function EventTicketBody({item, screenType}) {
                                     <View style={styles.detailsBackground}></View>
                                     <View style={styles.detailsBodyText}>
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
-                                        <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
+                                        <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
                                         <ThemedText>4 Tickets</ThemedText>
                                         <ThemedText>{moment("2025-01-13T00:00:00.000Z").format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                     </View>
@@ -88,7 +88,7 @@ export default function EventTicketBody({item, screenType}) {
                                     <View style={styles.detailsBackground}></View>
                                     <View style={styles.detailsBodyText}>
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
-                                        <ThemedText style={styles.eventAddressText}>{item.address}</ThemedText>
+                                        <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
                                         <ThemedText>4 Tickets</ThemedText>
                                         <ThemedText>{moment("2025-01-13T00:00:00.000Z").format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                     </View>

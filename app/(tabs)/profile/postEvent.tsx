@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -10,8 +10,6 @@ import {AntDesign} from '@expo/vector-icons';
 import EventBody from '@/components/appComponents/EventBody';
 import { Link } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
-import EventHeader from '@/components/appComponents/EventHeader';
-import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import PostEventPerson from '@/components/appComponents/PostEventPerson';
 import PostEventCategories from '@/components/appComponents/PostEventCategories';
@@ -20,6 +18,13 @@ import PostAgeRestriction from '@/components/appComponents/PostAgeRestriction';
 import PostDateTimeDuration from '@/components/appComponents/PostDateTimeDuration';
 import PostPhotoUpload from '@/components/appComponents/PostPhotoUpload';
 import * as ImagePicker from 'expo-image-picker';
+import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
+import { uploadData, getUrl } from '@aws-amplify/storage';
+import { generateClient } from 'aws-amplify/data';
+import {useUser} from '../../../context/UserContext'
+import PostEventPreview from '@/components/appComponents/PostEventPreview';
+
+const client = generateClient<Schema>();
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -108,7 +113,13 @@ const eventsCategories = [
 export default function postEvent() {
 
 
-    const [pageSection, setPageSection] = useState<number>(2)
+    const {screenName} = useLocalSearchParams()
+
+    const [newScreenName, setNewScreenName] = useState<string | string []>(screenName)
+
+    const {userDetails} = useUser()
+
+    const [pageSection, setPageSection] = useState<number>(0)
 
     const [pageType, setPageType] = useState<string>('post')
 
@@ -148,10 +159,14 @@ export default function postEvent() {
     const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('a')
     const [selectedImage, setSelectedImage] = useState<string>('a')
     const [mainImage, setMainImage] = useState<string>('')
+    const [mainImageBlob, setMainImageBlob] = useState()
     const [mainImageError, setMainImageError] = useState<boolean>(false)
     const [image2, setImage2] = useState<string>('')
+    const [image2Bolb, setImage2Blob] = useState()
     const [image3, setImage3] = useState<string>('')
+    const [image3Bolb, setImage3Blob] = useState()
     const [image4, setImage4] = useState<string>('')
+    const [image4Bolb, setImage4Blob] = useState()
     const [mainImageAspectRatio, setMainImageAspectRatio] = useState<string>('')
     const [image2AspectRatio, setImage2AspectRatio] = useState<string>('')
     const [image3AspectRatio, setImage3AspectRatio] = useState<string>('')
@@ -159,6 +174,16 @@ export default function postEvent() {
     const [imageRatioModal, setImageRatioModal] = useState<boolean>(false)
     const [imageName, setImageName] = useState<string>('')
 
+    const [uploadError, setUploadError] = useState<string>('')
+    const [uploadPercent, setUploadPercent] = useState<number>(0)
+    const [uploadingDetail, setUploadingDetail] = useState<string>('')
+    const [uploadLoading, setUploadLoading] = useState<boolean>(false)
+
+
+
+    useEffect(()=> {
+        console.log(screenName, 'screenName')
+    },[])
 
     const handleNextDisplay = () => {
 
@@ -246,11 +271,234 @@ export default function postEvent() {
 
     }
 
+
     const handlePrevDisplay = () =>  {
         setPageSection(pageSection - 1)
     }
 
+    const eventData = {
+
+                eventName: eventName,
+                eventDescription: eventDescription,
+                email: userDetails?.username,
+                personType: personType,
+                personName: personName,
+                eventMainImage: {
+                    aspectRatio: mainImageAspectRatio,
+                    url: mainImage
+                },
+                eventImage2: {
+                    aspectRatio: image2AspectRatio,
+                    url: image2
+                },
+                eventImage3: {
+                    aspectRatio: image3AspectRatio,
+                    url: image3
+                },
+                eventImage4: {
+                    aspectRatio: image4AspectRatio,
+                    url: image4
+                },
+                dateTimePriceList: dateTimePrice.map((item)=> {
+                    return JSON.parse(item)
+                }),
+                ageRestriction: ageRestriction,
+                categories: selectedCategories,
+                eventAddress: address,
+                location:{
+                    type: "Point",
+                    coordinates: [Number(coordinates?.longitude), Number(coordinates?.latitude)]
+                }
+                
+              }
+
+    const handlePostEvent = async () => {
+
+        /** 
+
+          const result = await uploadData({
+            path: `picture-submissions/${mainImage}`,
+            // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+            data: mainImageBlob,
+          }).result;
+
+          const linkToStorageFile = await getUrl({
+              path: result.path
+          })
+          console.log('Succeeded: ', linkToStorageFile.url); */
+
+        try {
+
+
+           
+
+            setUploadingDetail('Uploading Event Details')
+            setUploadPercent(10)
+            setUploadLoading(true)
+
+            const uploadedDocument = await client.models.Event.create({
+                eventName: eventName,
+                eventDescription: eventDescription,
+                email: userDetails?.username,
+                personType: personType,
+                personName: personName,
+                eventMainImage: {
+                    aspectRatio: mainImageAspectRatio,
+                    url: ''
+                },
+                eventImage2: {
+                    aspectRatio: image2AspectRatio,
+                    url: ''
+                },
+                eventImage3: {
+                    aspectRatio: image3AspectRatio,
+                    url: ''
+                },
+                eventImage4: {
+                    aspectRatio: image4AspectRatio,
+                    url: ''
+                },
+                dateTimePriceList: dateTimePrice.map((item)=> {
+
+                    return JSON.parse(item)
+                }),
+                ageRestriction: ageRestriction,
+                categories: selectedCategories,
+                eventAddress: address,
+                location:{
+                    type: "Point",
+                    coordinates: [Number(coordinates?.longitude), Number(coordinates?.latitude)]
+                }
+            })
+
+            console.log(uploadedDocument)
+
+            setUploadPercent(30)
+
+           
+
+              if(mainImage && mainImageBlob) {
+
+                setUploadingDetail('Uploading Images')
+
+                const result = await uploadData({
+                    path: `picture-submissions/${mainImage}`,
+                    // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                    data: mainImageBlob,
+                  }).result;
+        
+                  /** 
+
+                  const linkToStorageFile = await getUrl({
+                      path: result.path
+                  })
+
+                  */
+
+                  await client.models.Event.update({
+
+                    id: uploadedDocument?.data.id,
+                    eventMainImage: {
+                        aspectRatio: mainImageAspectRatio,
+                        url: result.path
+                    }
+                  });
+
+                 
+
+    
+
+                  setUploadPercent(50)
+
+              }
+
+              if(image2 && image2Bolb) {
+
+                const result = await uploadData({
+                    path: `picture-submissions/${image2}`,
+                    // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                    data: image2Bolb,
+                  }).result;
+        
+                 
+                  
+
+                  await client.models.Event.update({
+                    id: uploadedDocument?.data.id,
+                    eventImage2: {
+                        aspectRatio: image2AspectRatio,
+                        url: result.path
+                    }
+                  });
+
+                  setUploadPercent(60)
+              }
+
+              if(image3 && image3Bolb) {
+
+                const result = await uploadData({
+                    path: `picture-submissions/${image3}`,
+                    // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                    data: image3Bolb,
+                  }).result;
+        
+                  
+
+                  await client.models.Event.update({
+                    id: uploadedDocument?.data.id,
+                    eventImage3: {
+                        aspectRatio: image3AspectRatio,
+                        url: result.path
+                    }
+                  });
+
+                  setUploadPercent(70)
+              }
+
+              if(image4 && image4Bolb) {
+                const result = await uploadData({
+                    path: `picture-submissions/${image4}`,
+                    // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                    data: image4Bolb,
+                  }).result;
+        
+                  
+
+                  await client.models.Event.update({
+                    id: uploadedDocument?.data.id,
+                    eventMainImage: {
+                        aspectRatio: image4AspectRatio,
+                        url: result.path
+                    }
+                  });
+
+                  setUploadPercent(80)
+              }
+
+              setUploadPercent(100)
+              setUploadingDetail('Upload Successfull. Closing')
+              setTimeout(()=> {
+                setUploadLoading(false)
+              }, 3000)
+            
+          } catch (error) {
+            
+            setUploadPercent(0)
+            setUploadingDetail('Upload Error')
+            setUploadError(error.message)
+
+            setTimeout(()=> {
+                setUploadLoading(false)
+            }, 3000)
+            
+          }
+
+    }
+
+
     const handleAddRemoveCategory = (category: string) => {
+
+      
 
         const itemIndex = selectedCategories.indexOf(category)
 
@@ -260,11 +508,15 @@ export default function postEvent() {
 
             setSelectedCategories([...selectedCategories])
 
+            
+
         } else {
 
             if(selectedCategories.length < 4) {
 
                 setSelectedCategories([...selectedCategories, category])
+
+                
 
             }
             
@@ -301,24 +553,48 @@ export default function postEvent() {
               quality: 1,
             });
         
-            console.log(result);
+            
         
             if (!result.canceled) {
                 if(imageName === 'mainImage') {
                     setMainImageAspectRatio(item)
                     setMainImage(result.assets[0].uri);
+                    
+                        const response = await fetch(result.assets[0].uri);
+                        const blob = await response.blob();
+                
+                        setMainImageBlob(blob)
+                    
+            
+                 
                 }
                 if(imageName === 'Image2') {
                     setImage2AspectRatio(item)
                     setImage2(result.assets[0].uri);
+
+                    const response = await fetch(result.assets[0].uri);
+                    const blob = await response.blob();
+
+                    setImage2Blob(blob)
+
                 }
                 if(imageName === 'Image3') {
                     setImage3AspectRatio(item)
                     setImage3(result.assets[0].uri);
+
+                    const response = await fetch(result.assets[0].uri);
+                    const blob = await response.blob();
+
+                    setImage3Blob(blob)
                 }
                 if(imageName === 'Image4') {
                     setImage4AspectRatio(item)
                     setImage4(result.assets[0].uri);
+
+                    const response = await fetch(result.assets[0].uri);
+                    const blob = await response.blob();
+
+                    setImage4Blob(blob)
                 }
               
             }
@@ -378,6 +654,11 @@ export default function postEvent() {
                 />
             )
         }
+        if(pageSection === 6) {
+            return(
+                <PostEventPreview newScreenName={newScreenName} eventData={eventData}/>
+            )
+        }
     }
 
    
@@ -387,14 +668,26 @@ export default function postEvent() {
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType} />
             {currentDisplay()}
+            {uploadLoading? <ThemedView style={styles.createEventModal}>
+                <ThemedText>Uploading...</ThemedText>
+                <ThemedText>{uploadingDetail}</ThemedText>
+                <ThemedText>{uploadPercent}</ThemedText>
+                <ThemedText style={styles.errorText}>{uploadError}</ThemedText>
+                <ActivityIndicator />
+            </ThemedView>: null}
             <ThemedView style={styles.pageButtons}>
                 {pageSection === 0 ? <ThemedText></ThemedText>: 
                 <Pressable onPress={()=> handlePrevDisplay()}>
                     <ThemedText>Prev</ThemedText>
                 </Pressable>}
-                <Pressable onPress={()=> handleNextDisplay()}>
+                
+                {pageSection === 6 ? 
+                <TouchableOpacity onPress={()=> handlePostEvent()}>
+                    <ThemedText>Post</ThemedText>
+                </TouchableOpacity>:
+                <TouchableOpacity onPress={()=> handleNextDisplay()}>
                     <ThemedText>Next</ThemedText>
-                </Pressable>
+                </TouchableOpacity>}
             </ThemedView>
         </ThemedView>
         
@@ -430,7 +723,21 @@ const styles = StyleSheet.create({
         width: windowWidth,
         borderWidth: 0.5,
         borderColor: 'gray'
-    }
+    },
+    createEventModal: {
+        position: 'absolute',
+        top: 100,
+        borderWidth:1,
+        borderColor: 'gray',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 200,
+        width: '90%'
+    },
+    errorText: {
+        margin: 5,
+        color: 'red'
+      },
   
   
   

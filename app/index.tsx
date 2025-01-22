@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -8,8 +8,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import GoogleLoginButton from '../components/appComponents/GoogleLoginButton'
-import { Link } from 'expo-router';
-import {signIn} from '@aws-amplify/auth'
+import { Link, useRouter } from 'expo-router';
+import {signIn, getCurrentUser} from '@aws-amplify/auth'
+import {useUser} from '../context/UserContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -19,11 +20,61 @@ const windowHeight = Dimensions.get('window').height
 
 export default function SignInScreen() {
 
-    const [email, setEmail] = useState('')
-    const [emailError, setEmailError] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordError, setPasswordError] = useState('')
-    const [loginError, setLoginError] = useState('')
+    const {userDetails, setUserDetails} = useUser()
+
+    const [email, setEmail] = useState<string>('')
+    const [emailError, setEmailError] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [passwordError, setPasswordError] = useState<string>('')
+    const [loginError, setLoginError] = useState<string>('')
+    const [loadingLogIn, setLoadingLogin] = useState<boolean>(false)
+
+
+    const router = useRouter()
+    
+    
+    const checkCurrentUser = async () => {
+
+
+
+      try{
+
+        const { username, userId, signInDetails } = await getCurrentUser();
+
+        
+
+      
+
+      if(userId) {
+        setUserDetails({username: signInDetails?.loginId, userId: userId})
+        router.push('/locationScreen')
+      }
+
+      } catch (e) {
+        console.log(e)
+      }
+      
+
+
+    }
+
+    useEffect(()=> {
+
+     checkCurrentUser()
+
+    
+    },[loadingLogIn])
+
+    useEffect(()=> {
+      
+      if(userDetails) {
+
+        router.push('/locationScreen')
+
+      }
+
+    },[userDetails])
+
 
     const handleLogin = async () => {
 
@@ -34,6 +85,29 @@ export default function SignInScreen() {
         if(password.length > 1) {
 
           setPasswordError('')
+
+          setLoadingLogin(true)
+
+          try {
+
+      
+            const user = await signIn({
+              username: email,
+              password: password,
+            }).then((e)=> { setLoginError(''); setLoadingLogin(false); console.log(e); router.push('/locationScreen')})
+    
+            
+    
+          } catch(e) {
+            console.log(e)
+    
+            setLoginError(e?.message)
+            setLoadingLogin(false)
+    
+          
+            
+          }
+
 
         } else {
 
@@ -47,28 +121,13 @@ export default function SignInScreen() {
 
       }
 
-      try {
-
       
-        const user = await signIn({
-          username: email,
-          password: password,
-        }).then((e)=> console.log(e))
-
-        
-
-      } catch(e) {
-        console.log(e)
-      
-        console.log(e.message)
-
-      
-        
-      }
 
       
      
     }
+
+
 
 
   return (
@@ -82,13 +141,31 @@ export default function SignInScreen() {
                 <ThemedText type="subtitle">Log in</ThemedText>
                 
             </ThemedView>
+            {loadingLogIn ? 
+              <ThemedView style={styles.loadingLoginModal}>
+                <ThemedText>Logging in...</ThemedText>
+                <ActivityIndicator />
+              </ThemedView>: null}
             <ThemedView style={styles.loginContainer}>
                 <TextInput placeholder='Email' style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                  {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
                 <TextInput placeholder='Password' secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
+                  {passwordError ? <ThemedText style={styles.errorText}>{passwordError}</ThemedText>: null}
+                  {loginError ? <ThemedText style={styles.errorText}>{loginError}</ThemedText>: null}
                 <ThemedView style={styles.forgotPasswordBody}>
-                    <Pressable>
+                  <Link href={'/forgotPassword'} asChild>
+                    <TouchableOpacity>
                         <ThemedText type='default'>Forgot Password?</ThemedText>
-                    </Pressable>
+                    </TouchableOpacity>
+                  </Link>
+                    
+                </ThemedView>
+                <ThemedView style={styles.forgotPasswordBody}>
+                    <Link href={'/confirmAccount'} asChild>
+                      <TouchableOpacity>
+                          <ThemedText type='default'>Didn't confirm email? Resend code.</ThemedText>
+                      </TouchableOpacity>
+                    </Link>
                 </ThemedView>
                 <TouchableOpacity style={styles.loginButton} onPress={()=> handleLogin()}>
                     <ThemedText style={styles.loginText}>Login</ThemedText>
@@ -98,20 +175,13 @@ export default function SignInScreen() {
             
             <ThemedView style={styles.signupContainer}>
                 <ThemedText type='default'>New user?</ThemedText>
-                <Link href={"/signUp"} asChild>
+                <Link href={{pathname: "/signUp", params: {screenType: 'login'}}} asChild>
                     <Pressable>
                         <ThemedText style={styles.signupText}>Sign up</ThemedText>
                     </Pressable>
                 </Link>
                 
                 
-            </ThemedView>
-            <ThemedView style={styles.skipContainer}>
-                <Link href={"/locationScreen"} asChild>
-                    <Pressable>
-                        <ThemedText type='default'>Skip for now</ThemedText>
-                    </Pressable>
-                </Link>
             </ThemedView>
         </ThemedView>
     </SafeAreaView>
@@ -201,5 +271,23 @@ const styles = StyleSheet.create({
   },
   skipContainer: {
     marginTop: 40
+  },
+  loadingLoginModal: {
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 200,
+    width: '90%',
+    height: 200,
+    zIndex: 20
+  },
+  errorText: {
+    margin: 5,
+    color: 'red'
   }
 });

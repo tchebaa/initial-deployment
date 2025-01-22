@@ -93,7 +93,9 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     fontFamily:"default",
     width: '95%',
-    marginTop: 10
+    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5
   },
   errorText: {
     color: 'red',

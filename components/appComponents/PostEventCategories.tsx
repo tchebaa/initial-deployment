@@ -33,7 +33,7 @@ export default function PostEventCategories({selectedCategories, handleAddRemove
                 {eventCategories.map((item, i)=> {
                     return(
                         <TouchableOpacity key={i} onPress={()=> handleAddRemoveCategory(item.name)}>
-                            {selectedCategories.indexOf(item.name) > 0 ? 
+                            {selectedCategories.indexOf(item.name) > -1 ? 
                             <View style={styles.categoryButtonSelected}>
                                 <ThemedText>{item.title}</ThemedText>
                             </View>

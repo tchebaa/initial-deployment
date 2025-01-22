@@ -24,44 +24,26 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
 
         setLoadSortingDates(true)
 
-        const sortedTimlines = eventTimelines.sort(function(a, b){
+        const sortedTimelines = eventTimelines.sort(function(a, b){
 
             return b.eventDate - a.eventDate
 
         })
 
-        console.log(sortedTimlines, 'dates')
 
-        /** 
-         console.log(sortedTimlines, 'dates')
-
-         const firstTimeline = sortedTimlines.find((item)=> {
-
-            console.log(item, 'here')
-
-            if(moment(item.eventEndDate).format() > moment( new Date()).format() ) {
-                console.log(item, 'found')
-            }
-
-        })
-
-        console.log(firstTimeline, 'first item')
         
-       */
 
         //setFirstEventDate(firstTimeline)
 
-        for (var i = 0 ; i < sortedTimlines.length; i++) {
+        for (var i = 0 ; i < sortedTimelines.length; i++) {
 
-            if(moment(sortedTimlines[i].eventEndDate).format() > moment(new Date()).format()) {
+            if(moment(sortedTimelines[i].eventEndDate).format() > moment(new Date()).format()) {
 
-                setFirstEventDate(sortedTimlines[i])
+                setFirstEventDate(sortedTimelines[i])
     
                 setLoadSortingDates(false)
     
 
-
-                console.log(sortedTimlines[i], 'mapped')
     
                 break
                 
@@ -72,18 +54,17 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
 
         }
      
-        const firstTimeline = sortedTimlines.map((item)=> {
+        const firstTimeline = sortedTimelines.map((item)=> {
         
-        console.log(moment(item.eventDate).format())
+       
 
-        console.log(moment( new Date()).format())
 
        
 
        })
        
        
-        setSortedDates(sortedTimlines)
+        setSortedDates(sortedTimelines)
 
         setLoadSortingDates(false)
 
@@ -124,41 +105,32 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
                 </View>
                 <View style={styles.priceBody}>
                     <View>
-                        <View>{firstEventDate.adultPrice > 0 ? 
+                        <View>{firstEventDate.ticketPriceArray[0].adultPrice > 0 ? 
                         <View>
-                            {option === 'homeNear' ? <ThemedText  >{`From ${firstEventDate.adultPrice}`}</ThemedText>: null}
-                            {option === 'sponsored' ? <ThemedText >{`From ${firstEventDate.adultPrice}`}</ThemedText>: null}
+                            {option === 'homeNear' ? <ThemedText  >{`From ${firstEventDate.ticketPriceArray[0].adultPrice}`}</ThemedText>: null}
+                            {option === 'sponsored' ? <ThemedText >{`From ${firstEventDate.ticketPriceArray[0].adultPrice}`}</ThemedText>: null}
                         </View>:
 
                         <View>
                             <View>
                                 {
-                                    firstEventDate.adolescentPrice > 0 ?
+                                    firstEventDate.ticketPriceArray[0].adolescentPrice > 0 ?
                                     <View>
-                                        {option === 'homeNear' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.adolescentPrice}`}</ThemedText> : null}
-                                        {option === 'sponsored' ? <Text style={styles.priceText}>{`From ${firstEventDate.adolescentPrice}`}</Text> : null}
+                                        {option === 'homeNear' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.ticketPriceArray[0].adolescentPrice}`}</ThemedText> : null}
+                                        {option === 'sponsored' ? <Text style={styles.priceText}>{`From ${firstEventDate.ticketPriceArray[0].adolescentPrice}`}</Text> : null}
                                     </View>:
                                     <View>
                                         {
-                                            firstEventDate.childPrice > 0 ? 
+                                            firstEventDate.ticketPriceArray[0].childPrice > 0 ? 
                                             <View>
-                                                {option === 'homeNear' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.childPrice}`}</ThemedText> : null}
-                                                {option === 'sponsored' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.childPrice}`}</ThemedText> : null}
+                                                {option === 'homeNear' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.ticketPriceArray[0].childPrice}`}</ThemedText> : null}
+                                                {option === 'sponsored' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.ticketPriceArray[0].childPrice}`}</ThemedText> : null}
                                             </View>: 
                                             <View>
-                                                {firstEventDate.preschoolerPrice > 0 ?
-                                                <View>
-                                                    {option === 'homeNear' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.preschoolerPrice}`}</ThemedText>: null}
-                                                    {option === 'sponsored' ? <ThemedText style={styles.priceText}>{`From ${firstEventDate.preschoolerPrice}`}</ThemedText>: null}
-                                                </View>:
-                                                <View>
-                                                    {firstEventDate.infantPrice > 0 ? 
-                                                    <ThemedText style={styles.priceText}>{`From ${firstEventDate.preschoolerPrice}`}</ThemedText>:
-                                                    <View style={styles.freeTextBody}>
-                                                        {option === 'homeNear' ? <ThemedText style={styles.freeText}>Free</ThemedText> : null}
-                                                        {option === 'sponsored' ? <ThemedText style={styles.freeText}>Free</ThemedText> : null}
-                                                    </View>}
-                                                </View>}
+                                                <View style={styles.freeTextBody}>
+                                                    {option === 'homeNear' ? <ThemedText style={styles.freeText}>Free</ThemedText> : null}
+                                                    {option === 'sponsored' ? <ThemedText style={styles.freeText}>Free</ThemedText> : null}
+                                                </View>
                                             </View>
                                         }
                                     </View>

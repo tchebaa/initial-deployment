@@ -5,6 +5,7 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import {useLikes} from '../../context/LikedContext'
 
 import { Link, router } from 'expo-router';
 
@@ -17,20 +18,22 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function EventHeader({item, screenType}) {
+export default function EventHeader({item, screenType}: {screenType: string | string []}) {
 
-    const [likedEvents, setLikedEvents] = useState([])
+    
+
+    const {likedEvents, handleGetLikedEvents} = useLikes()
 
 
     return (
         <ThemedView style={styles.container}>
-              <Pressable onPress={()=> router.back()}>
+              <TouchableOpacity onPress={()=> router.back()}>
                 <AntDesign name='arrowleft' size={24}/>
-              </Pressable>
+              </TouchableOpacity>
               {screenType === 'tickets' ? <View></View> : 
-              <Pressable>
-                {likedEvents.includes(item) ? <AntDesign name='heart' size={20} color="#ce2029"/> : <AntDesign name='hearto' size={20}/> }
-              </Pressable>}
+              <TouchableOpacity>
+                {likedEvents.some((item) => item.eventId === item.id) ? <AntDesign name='heart' size={20} color="#ce2029"/> : <AntDesign name='hearto' size={20}/> }
+              </TouchableOpacity>}
         </ThemedView>      
                   
         

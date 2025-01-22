@@ -13,7 +13,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {useLocation} from '../context/LocationContext'
 import {generateClient} from 'aws-amplify/data'
-import {type Schema} from '../amplify/data/resource'
+import { type Schema} from '../tchebaa-backend/amplify/data/resource'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -30,12 +30,20 @@ export default function LocationScreen() {
 
     async function createToDo () {
 
-      
+      try { 
 
-    const toDo = await client.models.Todo.create({
-      content: "My new todo",
-      
-    }).then((e)=> console.log(e))
+        const toDo = await client.models.Todo.create({
+          content: "My new todo",
+          
+        }).then((e)=> console.log(e))
+
+        console.log(toDo)
+
+      } catch (error) {
+        console.log(error)
+      }
+
+    
 
     
 
@@ -68,6 +76,7 @@ export default function LocationScreen() {
     async function checkPermissions () {
 
       const status = await Location.getForegroundPermissionsAsync()
+
       console.log(status)
 
     }
@@ -165,8 +174,7 @@ export default function LocationScreen() {
                 <ThemedText >Continue</ThemedText>
               </Link>
             </ThemedView>: null} 
-            
- 
+          
         </ThemedView>:
         <ThemedView style={styles.body}>
           <ThemedText style={styles.locationHeaderText} type='boldSmallTitle'>Location is required to use this app</ThemedText>

@@ -167,7 +167,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
             
             setTicketPriceArray([...ticketPriceArray])
 
-            console.log(ticketPriceArray)
+            
             
         }
 
@@ -181,7 +181,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
             
             setTicketPriceArray([...ticketPriceArray])
 
-            console.log(ticketPriceArray)
+            
         }
 
         if(item === 'adultPrice') {
@@ -194,7 +194,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
             
             setTicketPriceArray([...ticketPriceArray])
 
-            console.log(ticketPriceArray)
+       
 
         }
 
@@ -208,7 +208,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
             
             setTicketPriceArray([...ticketPriceArray])
 
-            console.log(ticketPriceArray)
+           
         }
 
         if(item === 'childPrice') {
@@ -222,7 +222,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
             
             setTicketPriceArray([...ticketPriceArray])
 
-            console.log(ticketPriceArray)
+            
 
         }
 

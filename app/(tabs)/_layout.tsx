@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
@@ -10,9 +10,24 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import {useUser} from '../../context/UserContext'
+import { Link, useRouter } from 'expo-router';
+
 
 export default function TabLayout() {
+
+
   const colorScheme = useColorScheme();
+
+  const router = useRouter()
+
+  const {userDetails, setUserDetails} = useUser()
+
+  useEffect(()=> {
+    if(!userDetails) {
+      router.push('/')
+    }
+  },[userDetails])
 
   return (
     <Tabs

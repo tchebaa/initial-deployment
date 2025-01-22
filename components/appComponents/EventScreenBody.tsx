@@ -16,6 +16,7 @@ import PinImage from '../../assets/images/location-pin.png'
 import axios from 'axios';
 import LocationComponent from './LocationComponent';
 import LocationDirection from './LocationDirection';
+import { uploadData, getUrl } from '@aws-amplify/storage';
 
 const DEFAULT_IMAGE = Image.resolveAssetSource(PinImage).uri;
 
@@ -33,9 +34,11 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function EventScreenBody({item, screenType}) {
+export default function EventScreenBody({item, screenType}: {screenType: string | string []}) {
 
 
+  const [loadingImage, setLoadingImage] = useState<boolean>(true)
+  const [mainImageUrl, setMainImageUrl] = useState<string>('')
   const [showModalMap, setShowModalMap] = useState<boolean>(false)
   const [mapReady, setMapReady] = useState(false);
   const [showMarker, setShowMarker] = useState<boolean>(false)
@@ -54,18 +57,54 @@ export default function EventScreenBody({item, screenType}) {
   const [lineCoordinates, setLineCoordinates] = useState< [number] []>([])
 
 
-  const [likedEvents, setLikedEvents] = useState([])
+  
   const [bookingModal, setBookingModal] = useState<boolean>(false)
   const [adultNumber, setAdultNumber] = useState<number>(0)
   const [adolescentNumber, setAdolescentNumber] = useState<number>(0)
   const [childNumber, setChildNumber] = useState<number>(0)
-  const [chosenDateDetails, setChosenDateDetails] = 
-  useState<{adultPrice: number, childPrice: number, adolescentPrice: number, eventDate: Date, eventDays: number, eventHours: number, eventMinutes: number}>({adultPrice: 0, childPrice: 0, adolescentPrice: 0, eventDate: new Date(), eventDays: 0, eventMinutes: 0, eventHours:0})
 
-  const [eventDate, setEventDate] = useState<Date | null>()
+  const [ticketPriceArray, setTicketPriceArray] = useState<{adultPrice: number, adolescentPrice: number, childPrice: number, ticketTitle: string, ticketNumber: number} [] >([])
+  const [eventDate, setEventDate] = useState<Date | null| string>()
+  const [eventDays, setEventHours] = useState<number | null>()
+  const [eventHours, setEventDays] = useState<number | null>()
+  const [eventMinutes, setEventMinutes] = useState<number | null>()
 
   const mapRef = useRef(null)
   const cameraRef = useRef(null)
+
+
+
+  const handleGetImageUrl = async () => {
+
+    try {
+
+      setLoadingImage(true)
+
+      const linkToStorageFile = await getUrl({
+        path: item.eventMainImage.url,
+        options: {
+          useAccelerateEndpoint: true
+        }
+    })
+
+    setMainImageUrl(linkToStorageFile.url.toString())
+
+    setLoadingImage(false)
+
+    } catch(e) {
+
+      setLoadingImage(false)
+
+    }
+
+    
+ 
+
+  }
+
+  useEffect(()=> {
+    handleGetImageUrl()
+  },[])
 
   
 /** 
@@ -97,12 +136,6 @@ export default function EventScreenBody({item, screenType}) {
 	}, [mapReady]);
 
 
-  <ShapeSource shape={featureCollection([point([Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)])])}>
-    <SymbolLayer id='pin' style={{iconImage: 'pin'}}>
-      <Images images={{pin}}/>
-    </SymbolLayer>
-  </ShapeSource>
-
 
 	*/
 
@@ -113,24 +146,40 @@ export default function EventScreenBody({item, screenType}) {
 
     setLoadSortingDates(true)
 
-    const sortedTimelines = item.dateTimePrice.sort(function(a,b){
-      return moment(b.eventDate).format() - moment(a.eventDate).format()
-    })
 
-    console.log(sortedTimelines, sortedTimelines.length)
-    setSortedDates(sortedTimelines)
-    setLoadSortingDates(false)
+      const sortedTimelines = item.dateTimePriceList.sort(function(a,b){
+        return moment(b.eventDate).format() - moment(a.eventDate).format()
+      })
+  
+      
+      setSortedDates(sortedTimelines)
+      setLoadSortingDates(false)
+
+   
+    
 
   },[])
 
-  const handleSelectDate = (index:number, item: {adultPrice: number, childPrice: number, adolescentPrice: number, eventDate: Date, eventDays: number, eventHours: number, eventMinutes: number} ) => {
+
+
+
+
+
+  const handleSelectDate = (index:number, eventDate: string, eventDays :number, eventHours: number, eventMinutes: number, ticketPriceArrayList:[{adultPrice: number, adolescentPrice: number, childPrice: number, ticketTitle: string, ticketNumber: number}] ) => {
 
     setEventIndex(index)
-    setEventDate(item.eventDate)
-    setChosenDateDetails({adultPrice: item.adultPrice, adolescentPrice: item.adolescentPrice, 
-      childPrice: item.childPrice, eventDays: item.eventDays, eventHours: item.eventHours, eventMinutes: item.eventMinutes, eventDate: item.eventDate})
+    setEventDate(eventDate)
+    setEventDays(eventDays)
+    setEventHours(eventHours)
+    setEventMinutes(eventMinutes)
+    setTicketPriceArray(ticketPriceArrayList)
+    
 
   }
+
+
+
+
 
   const handleAddTicket = (item: string) => {
 
@@ -169,31 +218,29 @@ export default function EventScreenBody({item, screenType}) {
 
   const getDirections = async () => {
 
-    console.log('directions')
-
-    console.log(Number(item.location.coordinates[0].$numberDecimal), originDirection?.latitude)
+  
 
     try {
 
       setLoadingDirectionsError('')
       setLoadingDirections(true)
 
-      const response = await fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${Number(item.location.coordinates[0].$numberDecimal)}%2C${Number(item.location.coordinates[1].$numberDecimal)}%3B${Number(originDirection?.longitude)}%2C${originDirection?.latitude}?alternatives=true&continue_straight=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig`)
+      const response = await fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${Number(item.location.coordinates[0])}%2C${Number(item.location.coordinates[1])}%3B${Number(originDirection?.longitude)}%2C${originDirection?.latitude}?alternatives=true&continue_straight=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig`)
 
-      console.log(response)
+ 
 
     const json = await response.json()
 
     setLineCoordinates(json.routes[0].geometry.coordinates)
     setLoadingDirections(false)
 
-    cameraRef.current.fitBounds([Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)],[Number(originDirection?.longitude), Number(originDirection?.latitude)])
+    cameraRef.current.fitBounds([Number(item.location.coordinates[0]), Number(item.location.coordinates[1])],[Number(originDirection?.longitude), Number(originDirection?.latitude)])
     
-    console.log(json.routes[0].geometry.coordinates)
+    
 
     } catch (error) {
 
-      console.log(error)
+      
       setLoadingDirectionsError('Error getting directions')
       setLoadingDirections(false)
 
@@ -205,8 +252,8 @@ export default function EventScreenBody({item, screenType}) {
 
   const openExternalMap = () => {
     const scheme = Platform.select({
-      ios: `maps://?q=${item.address}&ll=${Number(item.location.coordinates[1].$numberDecimal)},${Number(item.location.coordinates[0].$numberDecimal)}`,
-      android: `geo:${Number(item.location.coordinates[1].$numberDecimal)},${Number(item.location.coordinates[0].$numberDecimal)}?q=${Number(item.location.coordinates[1].$numberDecimal)},${Number(item.location.coordinates[0].$numberDecimal)}(${item.address})`,
+      ios: `maps://?q=${item.eventAddress}&ll=${Number(item.location.coordinates[1])},${Number(item.location.coordinates[0])}`,
+      android: `geo:${Number(item.location.coordinates[1])},${Number(item.location.coordinates[0])}?q=${Number(item.location.coordinates[1])},${Number(item.location.coordinates[0])}(${item.eventAddress})`,
     });
 
     if (scheme) {
@@ -244,10 +291,15 @@ export default function EventScreenBody({item, screenType}) {
             </View>
             
             <MapView style={styles.fullMapStyle}>
-              <Camera ref={cameraRef} centerCoordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]} zoomLevel={15}/> 
-              <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]}>
+              { screenType === "post" ? <Camera ref={cameraRef} centerCoordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]} zoomLevel={15}/> 
+              : <Camera ref={cameraRef} centerCoordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]} zoomLevel={15}/> }
+              { screenType === "post" ?
+              <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]}>
                 
-              </PointAnnotation>
+                </PointAnnotation> :
+                <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]}>
+                
+              </PointAnnotation>}
               {originDirection ? 
               <PointAnnotation id='pin' coordinate={[Number(originDirection.longitude), Number(originDirection.latitude)]}>
                 
@@ -261,129 +313,163 @@ export default function EventScreenBody({item, screenType}) {
           : null}
           {bookingModal ? 
           <View>
-          {screenType === 'home' || screenType === 'like' || screenType === 'search' ?
-                <View style={styles.bookingView}>
-                  <ThemedView style={styles.ticketBookingSection}>
-                    <View style={styles.closeBookingSection}>
-                      <View><ThemedText></ThemedText></View>
-                      <TouchableOpacity onPress={()=> setBookingModal(false)}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
-                    </View>
-                    <ThemedView>
-                      <ThemedText></ThemedText>
-                    </ThemedView>
-                    <View style={styles.ageGroupPrice}>
-                      <View style={styles.ageGroupSection}>
-                        <ThemedText type='defaultSemiBold'>Adult</ThemedText>
-                        <Text style={styles.ageGroupDetails}>+18</Text>
-                      </View>
-                      <View style={styles.addMinusSection}>
-                        {adultNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adult')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
-                        <ThemedView style={styles.peopleNumberSection}>
-                          <ThemedText >{adultNumber}</ThemedText>
-                        </ThemedView>
+          {screenType === 'home' || screenType === 'like' || screenType === 'search' || 'post' ?
+          <View>
+            
+                {ticketPriceArray.length > 0 ? 
+                <View>
+                  <View style={styles.closeBookingSection}>
                         
-                        <TouchableOpacity onPress={()=> handleAddTicket('adult')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
-                      </View>
+                    <TouchableOpacity onPress={()=> setBookingModal(false)}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                  </View>
+                <ScrollView horizontal contentContainerStyle={{paddingRight: 500}}>
+                <View style={styles.ticketPriceArrayContainer}>
+                    {ticketPriceArray.map((item, i)=> {
+                      return(
+                        <View  key={i}>
+                            <ThemedView style={styles.ticketBookingSection}>
+                              
+                              <ThemedView>
+                                <ThemedText type='subtitle'>{item.ticketTitle}</ThemedText>
+                              </ThemedView>
+                              <View style={styles.ageGroupPrice}>
+                                <View style={styles.ageGroupSection}>
+                                  <ThemedText type='defaultSemiBold'>Adult</ThemedText>
+                                  <Text style={styles.ageGroupDetails}>+18</Text>
+                                </View>
+                                <View style={styles.addMinusSection}>
+                                  {adultNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adult')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
+                                  <ThemedView style={styles.peopleNumberSection}>
+                                    <ThemedText >{adultNumber}</ThemedText>
+                                  </ThemedView>
+                                  
+                                  <TouchableOpacity onPress={()=> handleAddTicket('adult')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
+                                </View>
+                              </View>
+                              <View style={styles.ageGroupPrice}>
+                                <View style={styles.ageGroupSection}>
+                                  <ThemedText type='defaultSemiBold'>Adolescent</ThemedText>
+                                  <Text style={styles.ageGroupDetails}>13 - 17</Text>
+                                </View>
+                                <View style={styles.addMinusSection}>
+                                  {adolescentNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adolescent')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
+                                  <ThemedView style={styles.peopleNumberSection}>
+                                    <ThemedText >{adolescentNumber}</ThemedText>
+                                  </ThemedView>
+                                  <TouchableOpacity onPress={()=> handleAddTicket('adolescent')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
+                                </View>
+                              </View>
+                              <View style={styles.ageGroupPrice}>
+                                <View style={styles.ageGroupSection}>
+                                  <ThemedText type='defaultSemiBold'>Child</ThemedText>
+                                  <Text style={styles.ageGroupDetails}>0 - 12</Text>
+                                </View>
+                                <View style={styles.addMinusSection}>
+                                  {childNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('child')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
+                                  <ThemedView style={styles.peopleNumberSection}>
+                                    <ThemedText >{childNumber}</ThemedText>
+                                  </ThemedView>
+                                  <TouchableOpacity onPress={()=> handleAddTicket('child')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
+                                </View>
+                              </View>
+                              <View style={styles.ageGroupFinalPrice}>
+                                <ThemedText>Adult price</ThemedText>
+                                {item.adultPrice === 0 ? 
+                                <ThemedText>Free</ThemedText>:
+                                <ThemedView style={styles.finalPriceSection}>
+                                  <ThemedText>{adultNumber}</ThemedText>
+                                  <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
+                                  <ThemedText>{item.adultPrice}</ThemedText>
+                                </ThemedView>}
+                              </View>
+                              <View style={styles.ageGroupFinalPrice}>
+                                <ThemedText>Adolescent price</ThemedText>
+                                {item.adolescentPrice === 0 ? 
+                                <ThemedText>Free</ThemedText>:
+                                <ThemedView style={styles.finalPriceSection}>
+                                  <ThemedText>{adolescentNumber}</ThemedText>
+                                  <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
+                                  <ThemedText>{item.adolescentPrice}</ThemedText>
+                                </ThemedView>}
+                              </View>
+                              <View style={styles.ageGroupFinalPrice}>
+                                <ThemedText>Child price</ThemedText>
+                                {item.childPrice === 0 ? 
+                                <ThemedText>Free</ThemedText>:
+                                <ThemedView style={styles.finalPriceSection}>
+                                  <ThemedText>{childNumber}</ThemedText>
+                                  <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
+                                  <ThemedText>{item.childPrice}</ThemedText>
+                                </ThemedView>}
+                              </View>
+                              <View style={styles.ageGroupFinalPrice}>
+                                <ThemedText type='defaultSemiBold'>Total</ThemedText>
+                                <ThemedText>{(adultNumber * item.adultPrice) + (adolescentNumber * item.adolescentPrice) + (childNumber * item.childPrice )}</ThemedText>
+                              </View>
+                              <ThemedView style={styles.finalBookingButtonSection}>
+                                {adultNumber > 0 || adolescentNumber > 0 || childNumber > 0 ? 
+                                <TouchableOpacity style={styles.bookButtonActive}>
+                                  <ThemedText style={styles.bookingTextActive}>Book</ThemedText>
+                                </TouchableOpacity>:
+                                <TouchableOpacity style={styles.bookButton}>
+                                  <ThemedText style={styles.bookingText}>Book</ThemedText>
+                                </TouchableOpacity>}
+                                
+                              </ThemedView>
+                              
+                            </ThemedView>
                     </View>
-                    <View style={styles.ageGroupPrice}>
-                      <View style={styles.ageGroupSection}>
-                        <ThemedText type='defaultSemiBold'>Adolescent</ThemedText>
-                        <Text style={styles.ageGroupDetails}>13 - 17</Text>
-                      </View>
-                      <View style={styles.addMinusSection}>
-                        {adolescentNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adolescent')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
-                        <ThemedView style={styles.peopleNumberSection}>
-                          <ThemedText >{adolescentNumber}</ThemedText>
-                        </ThemedView>
-                        <TouchableOpacity onPress={()=> handleAddTicket('adolescent')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
-                      </View>
-                    </View>
-                    <View style={styles.ageGroupPrice}>
-                      <View style={styles.ageGroupSection}>
-                        <ThemedText type='defaultSemiBold'>Child</ThemedText>
-                        <Text style={styles.ageGroupDetails}>0 - 12</Text>
-                      </View>
-                      <View style={styles.addMinusSection}>
-                        {childNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('child')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
-                        <ThemedView style={styles.peopleNumberSection}>
-                          <ThemedText >{childNumber}</ThemedText>
-                        </ThemedView>
-                        <TouchableOpacity onPress={()=> handleAddTicket('child')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
-                      </View>
-                    </View>
-                    <View style={styles.ageGroupFinalPrice}>
-                      <ThemedText>Adult price</ThemedText>
-                      {chosenDateDetails.adultPrice === 0 ? 
-                      <ThemedText>Free</ThemedText>:
-                      <ThemedView style={styles.finalPriceSection}>
-                        <ThemedText>{adultNumber}</ThemedText>
-                        <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
-                        <ThemedText>{chosenDateDetails.adultPrice}</ThemedText>
-                      </ThemedView>}
-                    </View>
-                    <View style={styles.ageGroupFinalPrice}>
-                      <ThemedText>Adolescent price</ThemedText>
-                      {chosenDateDetails.adolescentPrice === 0 ? 
-                      <ThemedText>Free</ThemedText>:
-                      <ThemedView style={styles.finalPriceSection}>
-                        <ThemedText>{adolescentNumber}</ThemedText>
-                        <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
-                        <ThemedText>{chosenDateDetails.adolescentPrice}</ThemedText>
-                      </ThemedView>}
-                    </View>
-                    <View style={styles.ageGroupFinalPrice}>
-                      <ThemedText>Child price</ThemedText>
-                      {chosenDateDetails.childPrice === 0 ? 
-                      <ThemedText>Free</ThemedText>:
-                      <ThemedView style={styles.finalPriceSection}>
-                        <ThemedText>{childNumber}</ThemedText>
-                        <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
-                        <ThemedText>{chosenDateDetails.childPrice}</ThemedText>
-                      </ThemedView>}
-                    </View>
-                    <View style={styles.ageGroupFinalPrice}>
-                      <ThemedText type='defaultSemiBold'>Total</ThemedText>
-                      <ThemedText>{(adultNumber * chosenDateDetails.adultPrice) + (adolescentNumber * chosenDateDetails.adolescentPrice) + (childNumber * chosenDateDetails.childPrice )}</ThemedText>
-                    </View>
-                    <ThemedText>Book</ThemedText>
-                  </ThemedView>
+                      )
+                    })}
+                     
+                </View>
+                </ScrollView>
+                </View>
+              : null}
+              
                 </View>
                 : null}
                 </View>: null}
                 <ScrollView showsVerticalScrollIndicator={false}>
+                  {!loadingImage ? 
+                  <View>
                       {item.eventMainImage.aspectRatio === 'a'  ? 
-                    <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}} resizeMode='cover'>
-                        <View style={styles.imageBackgroundHeader}>
-                            <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                            
-                            
-                        </View>
-                    </ImageBackground> : null}
-                    {item.eventMainImage.aspectRatio === 'b'  ? 
-                    <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}}  blurRadius={10} resizeMode='cover'>
-                    
-                        <View style={styles.imageBackgroundHeader}>
-                        <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                        </View>
-                        <ImageBackground style={styles.eventImageRatioB} source={{uri: item.eventMainImage.url}} borderRadius={10} ></ImageBackground>
-                    </ImageBackground> : null}
-                    {item.eventMainImage.aspectRatio === 'c'  ? 
+                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}} resizeMode='cover'>
+                          <View style={styles.imageBackgroundHeader}>
+                              <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                              
+                              
+                          </View>
+                      </ImageBackground> : null}
+                      {item.eventMainImage.aspectRatio === 'b'  ? 
+                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
+                      
+                          <View style={styles.imageBackgroundHeader}>
+                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                          </View>
+                          <ImageBackground style={styles.eventImageRatioB} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
+                      </ImageBackground> : null}
+                      {item.eventMainImage.aspectRatio === 'c'  ? 
 
-                    <ImageBackground style={styles.eventImage} source={{uri: item.eventMainImage.url}}  blurRadius={10} resizeMode='cover'>
-                    
-                        <View style={styles.imageBackgroundHeader}>
-                        <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                            
-                        </View>
-                        <ImageBackground style={styles.eventImageRatioC} source={{uri: item.eventMainImage.url}} borderRadius={10} ></ImageBackground>
-                    </ImageBackground> : null}
+                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
+                      
+                          <View style={styles.imageBackgroundHeader}>
+                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                              
+                          </View>
+                          <ImageBackground style={styles.eventImageRatioC} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
+                      </ImageBackground> : null}
+                    </View>: 
+                    <View style={styles.eventImageLoading}>
+                      <ActivityIndicator/>
+                    </View>}
                     <ThemedView style={styles.eventBody}>
                         <ThemedText type='subtitle'>{item.eventName}</ThemedText>
                         <View style={styles.locationBody}>
                             <ThemedText type='defaultSemiBold'>Location</ThemedText>
                             <View style={styles.locationSection}>
                                 <MaterialIcons name='location-on' size={16} color={'#1184e8'} />
-                                <ThemedText>{item.address}</ThemedText>
+                                <ThemedText>{item.eventAddress}</ThemedText>
                             </View>
                         </View>
                         
@@ -402,10 +488,16 @@ export default function EventScreenBody({item, screenType}) {
                             </TouchableOpacity>
                           </View>
                           <MapView style={styles.mapStyle}>
-                            <Camera centerCoordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]} zoomLevel={15}/> 
-                            <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0].$numberDecimal), Number(item.location.coordinates[1].$numberDecimal)]}>
+                            {screenType === "post" ?
+                             <Camera centerCoordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]} zoomLevel={15}/>
+                             : <Camera centerCoordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]} zoomLevel={15}/> }
+                            {screenType === "post" ? 
+                            <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]}>
                               
-                            </PointAnnotation>
+                            </PointAnnotation>:
+                            <PointAnnotation id='pin' coordinate={[Number(item.location.coordinates[0]), Number(item.location.coordinates[1])]}>
+                              
+                            </PointAnnotation>}
                           </MapView>
                             
                         </ThemedView>
@@ -428,21 +520,21 @@ export default function EventScreenBody({item, screenType}) {
                           {moment(item.eventDate).format() < moment(new Date()).format() ? 
                           <ThemedView>
                             {eventIndex === i ? 
-                              <TouchableOpacity style={styles.selectedDate}>
+                              <TouchableOpacity style={styles.selectedDate} onPress={()=> console.log(ticketPriceArray)}>
                                 <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                 <ThemedText style={styles.ongoingText}>ongoing</ThemedText>
                               </TouchableOpacity>:
-                              <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item)}>
+                              <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item.eventDate, item.eventDays, item.eventHours, item.eventMinutes, item.ticketPriceArray)}>
                                 <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                 <ThemedText style={styles.ongoingText}>ongoing</ThemedText>
                               </TouchableOpacity>}
                           </ThemedView>:
                           <ThemedView>
                             {eventIndex === i ? 
-                            <TouchableOpacity style={styles.selectedDate}>
+                            <TouchableOpacity style={styles.selectedDate} onPress={()=> console.log(ticketPriceArray)}>
                               <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                             </TouchableOpacity>:
-                            <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item)}>
+                            <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item.eventDate, item.eventDays, item.eventHours, item.eventMinutes, item.ticketPriceArray)}>
                               <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                             </TouchableOpacity>
                             }
@@ -492,6 +584,20 @@ const styles = StyleSheet.create({
     
     
   },
+  eventImageLoading: {
+
+    width: '100%',
+    height: 200,
+  
+    borderRadius: 10,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    borderWidth: 0.5,
+   
+    borderColor: 'gray',
+    alignItems: 'center'
+
+  },
   imageBackgroundHeader: {
     flexDirection: 'row',
 
@@ -525,7 +631,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   descriptionBody: {
-    marginTop: 10
+    marginVertical: 10
   },
   locationBody: {
     marginTop: 10
@@ -563,7 +669,7 @@ const styles = StyleSheet.create({
     
     borderWidth: 1,
     padding: 10,
-    width: '90%'
+    width: windowWidth * 0.8
   },
   bookingView: {
     width: '100%',
@@ -577,9 +683,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%',
+    width: '90%',
     borderWidth: 1,
-    borderColor: 'white'
+    borderColor: 'white',
+    padding: 5
   },
   dateSelectionComponent: {
     position:'absolute',
@@ -722,6 +829,35 @@ directionIconContainer: {
 openDirectionIconContainer:{
   borderWidth: 1,
   borderColor: '#1184e8'
+},
+ticketPriceArrayContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: 10,
+  width: '90%'
+},
+finalBookingButtonSection: {
+  marginVertical: 10,
+  alignItems: 'center'
+},
+bookButton: {
+  borderWidth: 1,
+  borderRadius: 10,
+  paddingHorizontal: 10,
+  borderColor: "gray"
+},
+bookingText: {
+  color: 'gray'
+},
+bookButtonActive: {
+  borderWidth: 1,
+  borderRadius: 10,
+  paddingHorizontal: 10,
+  borderColor: "#1184e8"
+},
+bookingTextActive: {
+  color: "#1184e8"
+
 }
 
 })

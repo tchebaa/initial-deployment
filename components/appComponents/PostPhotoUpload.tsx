@@ -26,26 +26,44 @@ export default function PostPhotoUpload({mainImage, image2, image3, image4, hand
     setImage4: Dispatch<SetStateAction<string>>, setImage2: Dispatch<SetStateAction<string>>, setImage3: Dispatch<SetStateAction<string>>, mainImageError: boolean,
 handleRemoveImage: (item: string) => void}) {
 
+    
 
 
     return (
         <ThemedView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 100}}>
             {mainImage ?
                 <ThemedView>
                     {mainImageAspectRatio === 'a' ? 
                     <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri: mainImage}}>
-                        <View>
+                        <View style={styles.closeSection}>
                             <View></View>
-                            <TouchableOpacity onPress={()=> handleRemoveImage('mainImage')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            <ThemedView>
+                                <TouchableOpacity onPress={()=> handleRemoveImage('mainImage')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            </ThemedView>
+                            
                         </View>
                     </ImageBackground>: null}
                     {mainImageAspectRatio === 'b' ? 
-                    <ImageBackground style={styles.mainImage} source={{uri: mainImage}} borderRadius={10}  blurRadius={10} resizeMode='cover'>  
+                    <ImageBackground style={styles.mainImage} source={{uri: mainImage}} borderRadius={10}  blurRadius={10} resizeMode='cover'> 
+                        <View style={styles.closeSection}>
+                            <View></View>
+                            <ThemedView>
+                                <TouchableOpacity onPress={()=> handleRemoveImage('mainImage')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            </ThemedView>
+                            
+                        </View> 
                         <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImage}} borderRadius={10} ></ImageBackground>
                     </ImageBackground>: null}
                     {mainImageAspectRatio === 'c' ? 
                     <ImageBackground style={styles.mainImage} source={{uri: mainImage}} borderRadius={10}  blurRadius={10} resizeMode='cover'>
+                        <View style={styles.closeSection}>
+                            <View></View>
+                            <ThemedView>
+                                <TouchableOpacity onPress={()=> handleRemoveImage('mainImage')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            </ThemedView>
+                            
+                        </View>
                         <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImage}} borderRadius={10} ></ImageBackground>
                     </ImageBackground>: null}
                 </ThemedView> 
@@ -57,13 +75,35 @@ handleRemoveImage: (item: string) => void}) {
                 {mainImageError ? <ThemedText>Main Image required</ThemedText>: <ThemedText></ThemedText>}
             {image2 ? 
                 <ThemedView>
-                {image2AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image2}}></ImageBackground>: null}
+                {image2AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image2}}>
+                <View style={styles.closeSection}>
+                    <View></View>
+                    <ThemedView>
+                        <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                    </ThemedView>
+                    
+                </View>
+                </ImageBackground>: null}
                 {image2AspectRatio === 'b' ? 
-                <ImageBackground style={styles.mainImage} source={{uri: image2}} borderRadius={10} blurRadius={10} resizeMode='cover'>  
+                <ImageBackground style={styles.mainImage} source={{uri: image2}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                    <View style={styles.closeSection}>
+                        <View></View>
+                        <ThemedView>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        </ThemedView>
+                        
+                    </View>  
                     <ImageBackground style={styles.eventImageRatioB} source={{uri: image2}} borderRadius={10} ></ImageBackground>
                 </ImageBackground>: null}
                 {image2AspectRatio === 'c' ? 
                 <ImageBackground style={styles.mainImage} source={{uri: image2}} borderRadius={10}  blurRadius={10} resizeMode='cover'>
+                    <View style={styles.closeSection}>
+                        <View></View>
+                        <ThemedView>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        </ThemedView>
+                        
+                    </View>
                     <ImageBackground style={styles.eventImageRatioC} source={{uri: image2}} borderRadius={10} ></ImageBackground>
                 </ImageBackground>: null}
                 </ThemedView> : 
@@ -73,13 +113,35 @@ handleRemoveImage: (item: string) => void}) {
                 </TouchableOpacity>}
             {image3 ? 
                 <ThemedView>
-                {image3AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image3}}></ImageBackground>: null}
+                {image3AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image3}}>
+                <View style={styles.closeSection}>
+                    <View></View>
+                    <ThemedView>
+                        <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                    </ThemedView>
+                    
+                </View>
+                </ImageBackground>: null}
                 {image3AspectRatio === 'b' ? 
-                <ImageBackground style={styles.mainImage} source={{uri: image3}}  blurRadius={10} borderRadius={10} resizeMode='cover'>  
+                <ImageBackground style={styles.mainImage} source={{uri: image3}}  blurRadius={10} borderRadius={10} resizeMode='cover'> 
+                    <View style={styles.closeSection}>
+                        <View></View>
+                        <ThemedView>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        </ThemedView>
+                        
+                    </View> 
                     <ImageBackground style={styles.eventImageRatioB} source={{uri: image3}} borderRadius={10} ></ImageBackground>
                 </ImageBackground>: null}
                 {image3AspectRatio === 'c' ? 
                 <ImageBackground style={styles.mainImage} source={{uri: image3}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                    <View style={styles.closeSection}>
+                        <View></View>
+                        <ThemedView>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        </ThemedView>
+                        
+                    </View>
                     <ImageBackground style={styles.eventImageRatioC} source={{uri: image3}} borderRadius={10} ></ImageBackground>
                 </ImageBackground>: null}
                 </ThemedView>
@@ -91,13 +153,35 @@ handleRemoveImage: (item: string) => void}) {
             }
             {image4 ? 
                 <ThemedView>
-                {image4AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} source={{uri:image4}}></ImageBackground>: null}
+                {image4AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} source={{uri:image4}}>
+                <View style={styles.closeSection}>
+                    <View></View>
+                    <ThemedView>
+                        <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                    </ThemedView>
+                    
+                </View>
+                </ImageBackground>: null}
                 {image4AspectRatio === 'b' ? 
-                <ImageBackground style={styles.mainImage} source={{uri: image4}}  blurRadius={10} resizeMode='cover'>  
+                <ImageBackground style={styles.mainImage} source={{uri: image4}}  blurRadius={10} resizeMode='cover'>
+                    <View style={styles.closeSection}>
+                        <View></View>
+                        <ThemedView>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        </ThemedView>
+                        
+                    </View>  
                     <ImageBackground style={styles.eventImageRatioB} source={{uri: image4}} borderRadius={10} ></ImageBackground>
                 </ImageBackground>: null}
                 {image4AspectRatio === 'c' ? 
                 <ImageBackground style={styles.mainImage} source={{uri: image4}}  blurRadius={10} resizeMode='cover'>
+                    <View style={styles.closeSection}>
+                        <View></View>
+                        <ThemedView>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        </ThemedView>
+                        
+                    </View>
                     <ImageBackground style={styles.eventImageRatioC} source={{uri: image4}} borderRadius={10} ></ImageBackground>
                 </ImageBackground>: null}
                 </ThemedView>
@@ -126,7 +210,7 @@ handleRemoveImage: (item: string) => void}) {
                     <ThemedText>4:3</ThemedText>
                 </TouchableOpacity>
             </ThemedView> : null}
-            
+            <TouchableOpacity onPress={()=> handleChangeBlob()}><ThemedText>convert</ThemedText></TouchableOpacity>
             </ScrollView>
         </ThemedView>      
                   
@@ -193,7 +277,7 @@ const styles = StyleSheet.create({
         width: 200,
         height: 110,
         borderWidth: 1,
-        marginTop: 10,
+        marginTop: 50,
         alignItems: 'center',
         justifyContent: 'center'
       },
@@ -210,7 +294,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '95%',
-        marginTop: 10
+        position: 'absolute',
+        top: 10
       },
       imageDetailsText: {
         color: 'gray'
