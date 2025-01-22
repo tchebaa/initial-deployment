@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -17,6 +17,7 @@ import { uploadData, getUrl } from '@aws-amplify/storage';
 import { generateClient } from 'aws-amplify/data';
 import {useUser} from '../../../context/UserContext';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
+import EventManageBody from '@/components/appComponents/EventManageBody';
 
 const client = generateClient<Schema>();
 
@@ -55,7 +56,7 @@ export default function ManageEvents() {
 
 
               setEvents(data)
-              console.log(data)
+              
               setLoadingEvents(false)
 
 
@@ -71,12 +72,46 @@ export default function ManageEvents() {
     }
 
 
+    useEffect(()=> {
+
+      handleGetEvents()
+
+    },[])
+
+
+    const renderEvents = ({item}) => {
+                return(
+                    <EventManageBody item={item} screenType="manage" />
+                )
+            }
+
+
 
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType} />
+            <ThemedView>
+            {loadingEvents ? 
+            <ThemedView>
+              <ActivityIndicator/>
+            </ThemedView>:
+            <ThemedView>
+              {events.length > 0 ?
+              <FlatList 
+                  contentContainerStyle={{paddingBottom: 150}}
+                  data={events}
+                  renderItem={renderEvents}
+                  keyExtractor={(item)=> item.id} 
+                  showsVerticalScrollIndicator={false}/>
+                  :
+                  <ThemedView><ThemedText>No events found</ThemedText></ThemedView>}
+            </ThemedView>
+            }
+          </ThemedView>
+          
         </ThemedView>
+        
         
     </SafeAreaView>
   );

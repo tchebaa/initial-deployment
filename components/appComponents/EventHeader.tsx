@@ -6,9 +6,13 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {useLikes} from '../../context/LikedContext'
-
+import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
+import { generateClient } from 'aws-amplify/data';
+import {useUser} from '../../context/UserContext';
 import { Link, router } from 'expo-router';
 
+
+const client = generateClient<Schema>();
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -22,7 +26,109 @@ export default function EventHeader({item, screenType}: {screenType: string | st
 
     
 
-    const {likedEvents, handleGetLikedEvents} = useLikes()
+    const {likedEvents, handleGetLikedEvents, loadingLikedEvents} = useLikes()
+    const {userDetails} = useUser()
+    const [loadingImageError, setLoadingImageError] = useState<string>('')
+    const [loadingLikeUnlikeEvent, setLoadingLikeUnlikeEvent] = useState<boolean>(false)
+
+    
+
+    const handleLikeEvent = async () => {
+
+      try {
+
+        setLoadingLikeUnlikeEvent(true)
+
+        const likedEvent = await client.models.LikedEvent.create({
+                  email: item.email,
+                  eventName: item.eventName,
+                  eventDescription: item.eventDescription,
+                  personType: item.personType,
+                  companyEmail: item.companyEmail,
+                  companyName: item.companyName,
+                  personName: item.personName,
+                  eventMainImage: item.eventMainImage,
+                  eventImage2: item.eventImage2,
+                  eventImage3: item.eventImage3,
+                  eventImage4: item.eventImage4,
+                  dateTimePriceList: item.dateTimePriceList,
+                  eventAddress: item.eventAddress,
+                  ageRestriction: item.ageRestriction,
+                  categories: item.categories,
+                  location: item.location,
+                  eventId: item.id,
+                  userEmail: userDetails?.username
+              
+          });
+
+         
+
+          handleGetLikedEvents()
+
+          setLoadingLikeUnlikeEvent(false)
+
+      } catch(e) {
+
+
+        setLoadingLikeUnlikeEvent(false)
+
+      }
+
+    }
+
+
+    
+    const handleUnlikeEvent = async (id: string, screenType: string | string []) => {
+
+  
+
+      if(screenType === 'like') {
+        try {
+
+          setLoadingLikeUnlikeEvent(true)
+  
+          const unLikedEvent = await client.models.LikedEvent.delete({ 
+                id: id
+            });
+  
+            handleGetLikedEvents()
+            setLoadingLikeUnlikeEvent(false)
+  
+        } catch(e) {
+  
+          setLoadingLikeUnlikeEvent(false)
+  
+        }
+
+      } else {
+
+        const newItem = likedEvents.find((likedItem) => likedItem.eventId === id)
+
+      
+      
+
+      try {
+
+        setLoadingLikeUnlikeEvent(true)
+
+        const unLikedEvent = await client.models.LikedEvent.delete({ 
+              id: newItem.id
+          });
+
+          handleGetLikedEvents()
+          setLoadingLikeUnlikeEvent(false)
+
+      } catch(e) {
+
+        setLoadingLikeUnlikeEvent(false)
+
+      }
+        
+
+      }
+
+      
+    }
 
 
     return (
@@ -31,9 +137,21 @@ export default function EventHeader({item, screenType}: {screenType: string | st
                 <AntDesign name='arrowleft' size={24}/>
               </TouchableOpacity>
               {screenType === 'tickets' ? <View></View> : 
-              <TouchableOpacity>
-                {likedEvents.some((item) => item.eventId === item.id) ? <AntDesign name='heart' size={20} color="#ce2029"/> : <AntDesign name='hearto' size={20}/> }
-              </TouchableOpacity>}
+              <View>
+                {loadingLikeUnlikeEvent || loadingLikedEvents ? 
+                <ThemedView><ActivityIndicator/></ThemedView>
+                :
+                <ThemedView>
+                  {screenType === 'like' ? 
+                  <ThemedView><ThemedText><AntDesign name='heart' size={20} color="#ce2029"/></ThemedText></ThemedView>
+                  :
+                  <ThemedView>
+                    {likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                    <TouchableOpacity onPress={()=> handleUnlikeEvent(item.id, screenType)}><AntDesign name='heart' size={20} color="#ce2029"/></TouchableOpacity> : 
+                    <TouchableOpacity onPress={()=> handleLikeEvent()}><AntDesign name='hearto' size={20}/></TouchableOpacity> }
+                  </ThemedView>}
+                </ThemedView>}
+              </View>}
         </ThemedView>      
                   
         

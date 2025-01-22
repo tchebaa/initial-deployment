@@ -78,9 +78,7 @@ export default function EventScreen() {
        {!loadingEvent ? 
         <ThemedView style={styles.body}>
             <EventHeader item={event} screenType={screenType}/>
-            
-                <EventScreenBody item={event} screenType={screenType}/>
-            
+            <EventScreenBody item={event} screenType={screenType}/>
         </ThemedView>: 
         <ThemedView  style={styles.body}>
             <ActivityIndicator/>

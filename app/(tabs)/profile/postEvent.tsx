@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {AntDesign} from '@expo/vector-icons';
 import EventBody from '@/components/appComponents/EventBody';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import PostEventPerson from '@/components/appComponents/PostEventPerson';
@@ -113,15 +113,19 @@ const eventsCategories = [
 export default function postEvent() {
 
 
-    const {screenName} = useLocalSearchParams()
+    const {screenName, id} = useLocalSearchParams()
+    const {userDetails} = useUser()
+    const router = useRouter()
 
     const [newScreenName, setNewScreenName] = useState<string | string []>(screenName)
 
-    const {userDetails} = useUser()
+    const [loadingGetEvent, setLoadingGetEvent] = useState<boolean>(false)
+    const [loadingEventError, setLoadingEventError] = useState<string>('')
+
 
     const [pageSection, setPageSection] = useState<number>(0)
 
-    const [pageType, setPageType] = useState<string>('post')
+    const [pageType, setPageType] = useState<string | string []>(screenName)
 
     const [personType, setPersonType] = useState<boolean>(true)
     const [companyName, setCompanyName] = useState<string>('')
@@ -134,10 +138,7 @@ export default function postEvent() {
 
     
 
-
-    type categoryItemSelected = string
-
-    const [selectedCategories, setSelectedCategories] = useState<categoryItemSelected []>([])
+    const [selectedCategories, setSelectedCategories] = useState< string []>([])
     const [categoriesError, setCategoriesError] = useState<boolean>(false)
 
     const [eventName, setEventName] = useState<string>('')
@@ -159,13 +160,17 @@ export default function postEvent() {
     const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('a')
     const [selectedImage, setSelectedImage] = useState<string>('a')
     const [mainImage, setMainImage] = useState<string>('')
+    const [mainImagePath, setMainImagePath] = useState<string>('')
     const [mainImageBlob, setMainImageBlob] = useState()
     const [mainImageError, setMainImageError] = useState<boolean>(false)
     const [image2, setImage2] = useState<string>('')
+    const [image2Path, setImage2Path] = useState<string>('')
     const [image2Bolb, setImage2Blob] = useState()
     const [image3, setImage3] = useState<string>('')
+    const [image3Path, setImage3Path] = useState<string>('')
     const [image3Bolb, setImage3Blob] = useState()
     const [image4, setImage4] = useState<string>('')
+    const [image4Path, setImage4Path] = useState<string>('')
     const [image4Bolb, setImage4Blob] = useState()
     const [mainImageAspectRatio, setMainImageAspectRatio] = useState<string>('')
     const [image2AspectRatio, setImage2AspectRatio] = useState<string>('')
@@ -182,8 +187,123 @@ export default function postEvent() {
 
 
     useEffect(()=> {
-        console.log(screenName, 'screenName')
+        if(screenName === 'manage') {
+
+            handleGetEvent()
+
+        }
     },[])
+
+
+    const handleGetEvent = async () => {
+
+        try {
+
+            setLoadingGetEvent(true)
+
+            const { data, errors } = await client.models.Event.get({
+                id: id,
+              });
+
+              setPersonType(data?.personType)
+              setEventName(data?.eventName)
+              setEventDescription(data?.eventDescription)
+              setCompanyEmail(data?.email)
+              setPersonName(data?.personName)
+              setMainImageAspectRatio(data?.eventMainImage?.aspectRatio)
+              setImage2AspectRatio(data?.eventImage2?.aspectRatio)
+              setImage3AspectRatio(data?.eventImage3?.aspectRatio)
+              setImage4AspectRatio(data?.eventImage4?.aspectRatio)
+              setAgeRestriction(data?.ageRestriction)
+              setSelectedCategories(data?.categories)
+              setAddress(data?.eventAddress)
+              setCoordinates({latitude: Number(data?.location?.coordinates[1]), longitude: Number(data?.location?.coordinates[0])})
+              setMainImagePath(data?.eventMainImage?.url)
+              setImage2Path(data?.eventImage2?.url)
+              setImage3Path(data?.eventImage3?.url)
+              setImage4Path(data?.eventImage4?.url)
+
+              const linkToStorageFile = await getUrl({
+                path: data?.eventMainImage?.url,
+                options: {
+                  useAccelerateEndpoint: true
+                }
+            })
+        
+            setMainImage(linkToStorageFile.url.toString())
+
+            
+            if(data?.eventImage2?.url?.length > 1) {
+
+                const linkToStorageFile = await getUrl({
+                    path: data?.eventImage2?.url,
+                    options: {
+                      useAccelerateEndpoint: true
+                    }
+                })
+
+                setImage2(linkToStorageFile.url.toString())
+
+
+            }
+
+
+            if(data?.eventImage3?.url?.length > 1) {
+
+                const linkToStorageFile = await getUrl({
+                    path: data?.eventImage3?.url,
+                    options: {
+                      useAccelerateEndpoint: true
+                    }
+                })
+
+                setImage3(linkToStorageFile.url.toString())
+
+
+            }
+
+
+
+
+            if(data?.eventImage4?.url?.length > 1) {
+
+                const linkToStorageFile = await getUrl({
+                    path: data?.eventImage4?.url,
+                    options: {
+                      useAccelerateEndpoint: true
+                    }
+                })
+
+                setImage4(linkToStorageFile.url.toString())
+
+
+            }
+
+            const newDateTimePriceList = data?.dateTimePriceList.map((newItem)=> {
+                return JSON.stringify(newItem)
+            })
+              
+            setDateTimePrice(newDateTimePriceList)  
+              
+              
+              setLoadingGetEvent(false)
+              
+
+        } catch (e) {
+
+            setLoadingEventError(e?.message)
+
+        }
+        
+
+    }
+
+
+
+
+
+
+
 
     const handleNextDisplay = () => {
 
@@ -312,6 +432,177 @@ export default function postEvent() {
                 
               }
 
+
+
+    const handleUpdateEvent = async () => {
+
+
+        try {
+
+            setUploadingDetail('Updating Event Details')
+            setUploadPercent(10)
+            setUploadLoading(true)
+
+
+                await client.models.Event.update({
+                    id: id,
+                    eventName: eventName,
+                    eventDescription: eventDescription,
+                    email: userDetails?.username,
+                    personType: personType,
+                    personName: personName,
+                    eventMainImage: {
+                        aspectRatio: mainImageAspectRatio,
+                        url: mainImagePath
+                    },
+                    eventImage2: {
+                        aspectRatio: image2AspectRatio,
+                        url: image2Path
+                    },
+                    eventImage3: {
+                        aspectRatio: image3AspectRatio,
+                        url: image3Path
+                    },
+                    eventImage4: {
+                        aspectRatio: image4AspectRatio,
+                        url: image4Path
+                    },
+                    dateTimePriceList: dateTimePrice.map((item)=> {
+
+                        return JSON.parse(item)
+                    }),
+                    ageRestriction: ageRestriction,
+                    categories: selectedCategories,
+                    eventAddress: address,
+                    location:{
+                        type: "Point",
+                        coordinates: [Number(coordinates?.longitude), Number(coordinates?.latitude)]
+                    }
+                })
+
+
+                if(mainImage && mainImageBlob) {
+
+                    setUploadingDetail('Updating Images')
+
+                    const result = await uploadData({
+                        path: `picture-submissions/${mainImage}`,
+                        // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                        data: mainImageBlob,
+                    }).result;
+            
+                    /** 
+
+                    const linkToStorageFile = await getUrl({
+                        path: result.path
+                    })
+
+                    */
+
+                    await client.models.Event.update({
+
+                        id: id,
+                        eventMainImage: {
+                            aspectRatio: mainImageAspectRatio,
+                            url: result.path
+                        }
+                    });
+
+                    
+
+
+
+                    setUploadPercent(50)
+
+                }
+
+
+                if(image2 && image2Bolb) {
+
+                    const result = await uploadData({
+                        path: `picture-submissions/${image2}`,
+                        // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                        data: image2Bolb,
+                    }).result;
+            
+                    
+                    
+
+                    await client.models.Event.update({
+                        id: id,
+                        eventImage2: {
+                            aspectRatio: image2AspectRatio,
+                            url: result.path
+                        }
+                    });
+
+                    setUploadPercent(60)
+                }
+
+                if(image3 && image3Bolb) {
+
+                    const result = await uploadData({
+                        path: `picture-submissions/${image3}`,
+                        // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                        data: image3Bolb,
+                    }).result;
+            
+                    
+
+                    await client.models.Event.update({
+                        id: id,
+                        eventImage3: {
+                            aspectRatio: image3AspectRatio,
+                            url: result.path
+                        }
+                    });
+
+                    setUploadPercent(70)
+                }
+
+                if(image4 && image4Bolb) {
+                    const result = await uploadData({
+                        path: `picture-submissions/${image4}`,
+                        // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+                        data: image4Bolb,
+                    }).result;
+            
+                    
+
+                    await client.models.Event.update({
+                        id: uploadedDocument?.data.id,
+                        eventMainImage: {
+                            aspectRatio: image4AspectRatio,
+                            url: result.path
+                        }
+                    });
+
+                    setUploadPercent(80)
+                }
+
+                setUploadPercent(100)
+                setUploadingDetail('Update Successfull. Closing')
+                setTimeout(()=> {
+                    setUploadLoading(false)
+                    router.replace('/(tabs)/profile/manageEvents')
+                }, 3000)
+
+
+        } catch (e) {
+            
+            setUploadPercent(0)
+            setUploadingDetail('Upload Error')
+            setUploadError(error.message)
+
+            setTimeout(()=> {
+                setUploadLoading(false)
+                
+            }, 3000)
+        }
+
+    }
+
+
     const handlePostEvent = async () => {
 
         /** 
@@ -371,7 +662,6 @@ export default function postEvent() {
                 }
             })
 
-            console.log(uploadedDocument)
 
             setUploadPercent(30)
 
@@ -479,6 +769,7 @@ export default function postEvent() {
               setUploadingDetail('Upload Successfull. Closing')
               setTimeout(()=> {
                 setUploadLoading(false)
+                router.replace("/(tabs)/profile/manageEvents")
               }, 3000)
             
           } catch (error) {
@@ -489,6 +780,7 @@ export default function postEvent() {
 
             setTimeout(()=> {
                 setUploadLoading(false)
+                
             }, 3000)
             
           }
@@ -665,7 +957,12 @@ export default function postEvent() {
 
   return (
     <SafeAreaView style={styles.container}>
+        {loadingGetEvent ? 
         <ThemedView style={styles.body}>
+            <ProfileHeader pageType={pageType} />
+            <ActivityIndicator/>
+        </ThemedView>
+        :<ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType} />
             {currentDisplay()}
             {uploadLoading? <ThemedView style={styles.createEventModal}>
@@ -682,14 +979,35 @@ export default function postEvent() {
                 </Pressable>}
                 
                 {pageSection === 6 ? 
-                <TouchableOpacity onPress={()=> handlePostEvent()}>
-                    <ThemedText>Post</ThemedText>
-                </TouchableOpacity>:
+                <ThemedView>
+                    {uploadLoading ? 
+                    <ThemedView>
+                        {screenName === 'post' ? 
+                        <TouchableOpacity >
+                            <ThemedText>Post</ThemedText>
+                        </TouchableOpacity>:
+                        <TouchableOpacity>
+                            <ThemedText>Edit</ThemedText>
+                        </TouchableOpacity>
+                        }
+                    </ThemedView>:
+                    <ThemedView>
+                    {screenName === 'post' ? 
+                    <TouchableOpacity onPress={()=> handlePostEvent()}>
+                            <ThemedText>Post</ThemedText>
+                        </TouchableOpacity>:
+                        <TouchableOpacity onPress={()=> handleUpdateEvent()}>
+                            <ThemedText>Edit</ThemedText>
+                        </TouchableOpacity>
+                        }
+                    </ThemedView>
+                    }
+                </ThemedView>:
                 <TouchableOpacity onPress={()=> handleNextDisplay()}>
                     <ThemedText>Next</ThemedText>
                 </TouchableOpacity>}
             </ThemedView>
-        </ThemedView>
+        </ThemedView>}
         
     </SafeAreaView>
   );

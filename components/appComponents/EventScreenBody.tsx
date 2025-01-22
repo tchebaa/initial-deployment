@@ -9,14 +9,21 @@ import { ThemedView } from '@/components/ThemedView';
 //import MapViewDirections from 'react-native-maps-directions';
 import MapBox, {MapView, Camera, ShapeSource, PointAnnotation, SymbolLayer, Images, MarkerView, LineLayer} from '@rnmapbox/maps'
 import moment from 'moment';
-import { Link, router } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import {featureCollection, geometry, point} from '@turf/helpers'
-import pin from '../../assets/images/location-pin.png'
-import PinImage from '../../assets/images/location-pin.png'
 import axios from 'axios';
 import LocationComponent from './LocationComponent';
 import LocationDirection from './LocationDirection';
 import { uploadData, getUrl } from '@aws-amplify/storage';
+import {useUser} from '../../context/UserContext';
+import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
+import { generateClient } from 'aws-amplify/data';
+import pin from '../../assets/images/location-pin.png'
+import PinImage from '../../assets/images/location-pin.png'
+
+
+
+const client = generateClient<Schema>();
 
 const DEFAULT_IMAGE = Image.resolveAssetSource(PinImage).uri;
 
@@ -37,6 +44,10 @@ const windowHeight = Dimensions.get('window').height;
 export default function EventScreenBody({item, screenType}: {screenType: string | string []}) {
 
 
+  const {userDetails} = useUser()
+
+  const router = useRouter()
+
   const [loadingImage, setLoadingImage] = useState<boolean>(true)
   const [mainImageUrl, setMainImageUrl] = useState<string>('')
   const [showModalMap, setShowModalMap] = useState<boolean>(false)
@@ -44,6 +55,8 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
   const [showMarker, setShowMarker] = useState<boolean>(false)
 	const [forceReload, setForceReload] = useState(0);
   const [showFullMap, setShowFullMap] = useState<boolean>(false)
+  const [loadingBooking, setLoadingBooking] = useState<boolean>(false)
+  const [bookingError, setBookingError] = useState<string>('')
 
   const [sortedDates, setSortedDates] = useState<{adultPrice: number, adolescentPrice: number, childPrice: number, eventDate: string, eventEndDate: string, eventHours: number, eventDays: number, eventMinutes: number, ticketTitle: string}[]>([])
   const [loadSortingDates, setLoadSortingDates] = useState<boolean>(true)
@@ -59,15 +72,19 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
 
   
   const [bookingModal, setBookingModal] = useState<boolean>(false)
+  const [checkOutModal, setCheckOutModal] = useState<boolean>(false)
   const [adultNumber, setAdultNumber] = useState<number>(0)
   const [adolescentNumber, setAdolescentNumber] = useState<number>(0)
   const [childNumber, setChildNumber] = useState<number>(0)
 
   const [ticketPriceArray, setTicketPriceArray] = useState<{adultPrice: number, adolescentPrice: number, childPrice: number, ticketTitle: string, ticketNumber: number} [] >([])
   const [eventDate, setEventDate] = useState<Date | null| string>()
+  const [eventEndDate, setEventEndDate] = useState<Date | null| string>()
   const [eventDays, setEventHours] = useState<number | null>()
   const [eventHours, setEventDays] = useState<number | null>()
   const [eventMinutes, setEventMinutes] = useState<number | null>()
+
+  const [eventTotalPrice, setEventTotalPrice] = useState<number>(0)
 
   const mapRef = useRef(null)
   const cameraRef = useRef(null)
@@ -165,10 +182,11 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
 
 
 
-  const handleSelectDate = (index:number, eventDate: string, eventDays :number, eventHours: number, eventMinutes: number, ticketPriceArrayList:[{adultPrice: number, adolescentPrice: number, childPrice: number, ticketTitle: string, ticketNumber: number}] ) => {
+  const handleSelectDate = (index:number, eventDate: string, eventEndDate: string, eventDays :number, eventHours: number, eventMinutes: number, ticketPriceArrayList:[{adultPrice: number, adolescentPrice: number, childPrice: number, ticketTitle: string, ticketNumber: number}] ) => {
 
     setEventIndex(index)
     setEventDate(eventDate)
+    setEventEndDate(eventEndDate)
     setEventDays(eventDays)
     setEventHours(eventHours)
     setEventMinutes(eventMinutes)
@@ -178,7 +196,56 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
   }
 
 
+  const handleOpenCheckoutModal = (eventTotalPrice: number) => {
 
+    setEventTotalPrice(eventTotalPrice)
+    setCheckOutModal(true)
+
+  }
+
+  const handleBookEvent = async () => {
+
+    try {
+
+      //setLoadingLikeUnlikeEvent(true)
+      setBookingError('')
+      setLoadingBooking(true)
+
+      const bookedEvent = await client.models.EventTicket.create({
+                eventName: item.eventName,
+                eventDescription: item.eventDescription,
+                eventMainImage: item.eventMainImage,
+                eventAddress: item.eventAddress,
+                ageRestriction: item.ageRestriction,
+                eventDate: eventDate,
+                eventEndDate: eventEndDate,
+                location: item.location,
+                eventId: item.id,
+                userEmail: userDetails?.username,
+                adultNumber: adultNumber,
+                adolescentNumber: adolescentNumber,
+                childNumber: childNumber,
+                totalTicketNumber: adultNumber + adolescentNumber + childNumber,
+                eventTotalPrice: eventTotalPrice
+            
+        });
+
+       setLoadingBooking(false)
+       
+       router.push("/(tabs)/tickets")
+
+       // handleGetLikedEvents()
+      //  setLoadingLikeUnlikeEvent(false)
+
+    } catch(e) {
+
+      setBookingError(e?.message)
+      setLoadingBooking(false)
+     // setLoadingLikeUnlikeEvent(false)
+
+    }
+
+  }
 
 
   const handleAddTicket = (item: string) => {
@@ -313,9 +380,32 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
           : null}
           {bookingModal ? 
           <View>
-          {screenType === 'home' || screenType === 'like' || screenType === 'search' || 'post' ?
+          {screenType === 'home' || screenType === 'like' || screenType === 'search' || 'post' || "manage" ?
           <View>
-            
+                {checkOutModal ? 
+                <ThemedView style={styles.checkoutModal}>
+                    <View style={styles.closeBookingSection}>
+                      <View></View>
+                      <TouchableOpacity onPress={()=> setCheckOutModal(false)}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                    </View>
+                    
+                    <ThemedView>
+                      <ThemedText>Total</ThemedText>
+                      <ThemedText>{eventTotalPrice}</ThemedText>
+                    </ThemedView>
+                    <ThemedView>
+                      {loadingBooking ? 
+                      <ThemedView>
+                        <ActivityIndicator/>
+                        <ThemedText>Booking</ThemedText>
+                      </ThemedView>:
+                      <TouchableOpacity style={styles.checkoutButton} onPress={()=> handleBookEvent()}>
+                        <ThemedText>Checkout</ThemedText>
+                      </TouchableOpacity>}
+                      {bookingError ? <ThemedView><ThemedText>{bookingError}</ThemedText></ThemedView>: null}
+                    </ThemedView>
+                  
+                </ThemedView>: null}
                 {ticketPriceArray.length > 0 ? 
                 <View>
                   <View style={styles.closeBookingSection}>
@@ -408,7 +498,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                               </View>
                               <ThemedView style={styles.finalBookingButtonSection}>
                                 {adultNumber > 0 || adolescentNumber > 0 || childNumber > 0 ? 
-                                <TouchableOpacity style={styles.bookButtonActive}>
+                                <TouchableOpacity style={styles.bookButtonActive} onPress={()=> handleOpenCheckoutModal(Number((adultNumber * item.adultPrice) + (adolescentNumber * item.adolescentPrice) + (childNumber * item.childPrice )))}>
                                   <ThemedText style={styles.bookingTextActive}>Book</ThemedText>
                                 </TouchableOpacity>:
                                 <TouchableOpacity style={styles.bookButton}>
@@ -434,7 +524,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                   {!loadingImage ? 
                   <View>
                       {item.eventMainImage.aspectRatio === 'a'  ? 
-                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}} resizeMode='cover'>
+                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}} resizeMode='cover'>
                           <View style={styles.imageBackgroundHeader}>
                               <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
                               
@@ -442,22 +532,22 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                           </View>
                       </ImageBackground> : null}
                       {item.eventMainImage.aspectRatio === 'b'  ? 
-                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
+                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
                       
                           <View style={styles.imageBackgroundHeader}>
                           <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
                           </View>
-                          <ImageBackground style={styles.eventImageRatioB} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
+                          <ImageBackground style={styles.eventImageRatioB} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
                       </ImageBackground> : null}
                       {item.eventMainImage.aspectRatio === 'c'  ? 
 
-                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
+                      <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
                       
                           <View style={styles.imageBackgroundHeader}>
                           <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
                               
                           </View>
-                          <ImageBackground style={styles.eventImageRatioC} source={{uri: screenType === "post" ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
+                          <ImageBackground style={styles.eventImageRatioC} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
                       </ImageBackground> : null}
                     </View>: 
                     <View style={styles.eventImageLoading}>
@@ -524,7 +614,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                 <ThemedText style={styles.ongoingText}>ongoing</ThemedText>
                               </TouchableOpacity>:
-                              <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item.eventDate, item.eventDays, item.eventHours, item.eventMinutes, item.ticketPriceArray)}>
+                              <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item.eventDate,item.eventEndDate, item.eventDays, item.eventHours, item.eventMinutes, item.ticketPriceArray)}>
                                 <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                 <ThemedText style={styles.ongoingText}>ongoing</ThemedText>
                               </TouchableOpacity>}
@@ -534,7 +624,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                             <TouchableOpacity style={styles.selectedDate} onPress={()=> console.log(ticketPriceArray)}>
                               <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                             </TouchableOpacity>:
-                            <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item.eventDate, item.eventDays, item.eventHours, item.eventMinutes, item.ticketPriceArray)}>
+                            <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item.eventDate, item.eventEndDate, item.eventDays, item.eventHours, item.eventMinutes, item.ticketPriceArray)}>
                               <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                             </TouchableOpacity>
                             }
@@ -858,6 +948,23 @@ bookButtonActive: {
 bookingTextActive: {
   color: "#1184e8"
 
+},
+checkoutModal: {
+  width: windowWidth * 0.9,
+  borderWidth: 0.5,
+  margin: 10,
+  borderColor: 'gray',
+  position: 'absolute',
+  zIndex: 40,
+  padding: 10
+},
+checkoutButton: {
+  borderWidth: 0.5,
+  paddingHorizontal: 10,
+  alignItems: 'center',
+  borderRadius: 10,
+  marginVertical: 10,
+  borderColor: '#1184e8'
 }
 
 })

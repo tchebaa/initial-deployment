@@ -263,8 +263,8 @@ export default function SearchScreen() {
 
             setDateFilter('nextmonth')
 
-            setStartDate(moment().add(1, 'month').startOf('month').format())
-            setEndDate(moment().add(1, 'month').endOf('month').format())
+            setStartDate(moment(new Date()).add(1, 'month').startOf('month').format())
+            setEndDate(moment(new Date()).add(1, 'month').endOf('month').format())
             
         }
     }
@@ -366,7 +366,7 @@ export default function SearchScreen() {
                     {dayRanges.map((item, i)=> {
                         return(
                             <ThemedView  key={i}>
-                                <TouchableOpacity style={styles.filterDateButton}>
+                                <TouchableOpacity style={styles.filterDateButton} onPress={()=> handleDateChange(item.code)}>
                                     {dateFilterCode === item.code ? <ThemedText style={styles.selectedDateCodeText}>{item.name}</ThemedText>: <ThemedText>{item.name}</ThemedText> }
                                 </TouchableOpacity>
                             </ThemedView>

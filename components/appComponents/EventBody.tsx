@@ -28,12 +28,15 @@ export default function EventBody({item, screenType}: {screenType: string}) {
 
     
     const {userDetails} = useUser()
+    const {likedEvents, handleGetLikedEvents, loadingLikedEvents} = useLikes()
+
     const [loadingImage, setLoadingImage] = useState<boolean>(true)
     const [loadingImageError, setLoadingImageError] = useState<string>('')
     const [loadingLikeUnlikeEvent, setLoadingLikeUnlikeEvent] = useState<boolean>(false)
+    const [likeUnlikeError, setLikeUnlikeError] = useState<string>('')
     const [mainImageUrl, setMainImageUrl] = useState<string>('')
 
-    const {likedEvents, handleGetLikedEvents} = useLikes()
+    
 
 
 
@@ -84,6 +87,8 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                   eventName: item.eventName,
                   eventDescription: item.eventDescription,
                   personType: item.personType,
+                  companyEmail: item.companyEmail,
+                  companyName: item.companyName,
                   personName: item.personName,
                   eventMainImage: item.eventMainImage,
                   eventImage2: item.eventImage2,
@@ -94,10 +99,12 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                   ageRestriction: item.ageRestriction,
                   categories: item.categories,
                   location: item.location,
-                  eventId: item.eventId,
+                  eventId: item.id,
                   userEmail: userDetails?.username
               
           });
+
+         
 
           handleGetLikedEvents()
 
@@ -113,14 +120,41 @@ export default function EventBody({item, screenType}: {screenType: string}) {
     }
 
 
-    const handleUnlikeEvent = async (id: string) => {
+    const handleUnlikeEvent = async (id: string, screenType: string) => {
+
+  
+
+      if(screenType === 'like') {
+        try {
+
+          setLoadingLikeUnlikeEvent(true)
+  
+          const unLikedEvent = await client.models.LikedEvent.delete({ 
+                id: id
+            });
+  
+            handleGetLikedEvents()
+            setLoadingLikeUnlikeEvent(false)
+  
+        } catch(e) {
+  
+          setLoadingLikeUnlikeEvent(false)
+  
+        }
+
+      } else {
+
+        const newItem = likedEvents.find((likedItem) => likedItem.eventId === id)
+
+      
+      
 
       try {
 
         setLoadingLikeUnlikeEvent(true)
 
         const unLikedEvent = await client.models.LikedEvent.delete({ 
-              id: id
+              id: newItem.id
           });
 
           handleGetLikedEvents()
@@ -131,8 +165,18 @@ export default function EventBody({item, screenType}: {screenType: string}) {
         setLoadingLikeUnlikeEvent(false)
 
       }
+        
 
+      }
+
+      
     }
+
+    
+
+    useEffect(()=> {
+
+    },[])
 
 
     return (
@@ -178,17 +222,23 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                           <View style={styles.eventDetailsSearchBody2}>
                               <View style={styles.imageBackgroundHeader2}>
                                     <View></View>
-                                    {!likedEvents.some((item) => item.eventId === item.id) ? 
-                                    <TouchableOpacity style={styles.likeButton}>
-                                    
-                                        <AntDesign name="hearto" size={16} color="gray" />
-                                            
-                                        </TouchableOpacity>:
-                                        <TouchableOpacity style={styles.unlikeButton}>
+                                    {loadingLikeUnlikeEvent || loadingLikedEvents ? 
+                                    <View><ActivityIndicator /></View>:
+                                    <View>
+                                        {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                                       
+                                          <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
+                                          
+                                              <AntDesign name="hearto" size={16} color="gray" />
+                                                  
+                                          </TouchableOpacity>
+                                        :
                                         
-                                        <AntDesign name="heart" size={16} color="#ce2029" />
-                                        
-                                    </TouchableOpacity>}
+                                          <TouchableOpacity style={styles.unlikeButton} onPress={()=> handleUnlikeEvent(item.id, screenType)}>
+                                            <AntDesign name="heart" size={16} color="#ce2029" />
+                                          </TouchableOpacity>
+                                        }
+                                    </View>}
                                     
                                 </View>
                                 
@@ -202,7 +252,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                 </Link>
 
                 : 
-                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' , params: {screenType: screenType ==='search' ? 'search' : 'like', id: item.id}}} asChild>
+                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' , params: {screenType: screenType ==='search' ? 'search' : 'like', id: screenType === 'like' ? item.eventId : item.id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody}>
                     {item.eventMainImage.aspectRatio === 'a'  ? 
                     <View>
@@ -210,17 +260,31 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                       <ImageBackground style={styles.eventImage} source={{uri: mainImageUrl}} borderRadius={10} resizeMode='cover'>
                           <View style={styles.imageBackgroundHeader}>
                               <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                              {!likedEvents.some((item) => item.eventId === item.id) ? 
-                              <TouchableOpacity style={styles.likeButton}>
-                              
-                              <AntDesign name="hearto" size={16} color="gray" />
-                                  
-                              </TouchableOpacity>:
-                              <TouchableOpacity style={styles.unlikeButton}>
-                              
-                              <AntDesign name="heart" size={16} color="#ce2029" />
-                              
-                          </TouchableOpacity>}
+                              {loadingLikeUnlikeEvent || loadingLikedEvents ?
+                              <View><ActivityIndicator /></View>
+                               :
+                               <View>
+                                  {screenType === 'like' ?
+                                  <TouchableOpacity style={styles.unlikeButton} onPress={()=> handleUnlikeEvent(item.id, screenType)}>
+                                      <AntDesign name="heart" size={16} color="#ce2029" />
+                                  </TouchableOpacity> 
+                                  :
+                                  <View>
+                                    {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                                    
+                                      <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
+                                      
+                                          <AntDesign name="hearto" size={16} color="gray" />
+                                              
+                                      </TouchableOpacity>
+                                    :
+                                    
+                                      <TouchableOpacity style={styles.unlikeButton} onPress={()=> handleUnlikeEvent(item.id, screenType)}>
+                                        <AntDesign name="heart" size={16} color="#ce2029" />
+                                      </TouchableOpacity>
+                                    }
+                                  </View>}
+                              </View>}
                               
                           </View>
                           {screenType === 'like' ? 
@@ -246,17 +310,30 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                         
                           <View style={styles.imageBackgroundHeader}>
                             <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                              {!likedEvents.some((item) => item.eventId === item.id) ? 
-                              <TouchableOpacity style={styles.likeButton}>
-                              
-                              <AntDesign name="hearto" size={16} color="gray" />
-                                  
-                              </TouchableOpacity>:
-                              <TouchableOpacity style={styles.unlikeButton}>
-                              
-                              <AntDesign name="heart" size={16} color="#ce2029" />
-                              
-                          </TouchableOpacity>}
+                            {loadingLikeUnlikeEvent || loadingLikedEvents ? 
+                            <View><ActivityIndicator /></View>:
+                                <View>
+                                  {screenType === 'like' ? 
+                                  <TouchableOpacity style={styles.unlikeButton} onPress={()=> handleUnlikeEvent(item.id, screenType)}>
+                                    <AntDesign name="heart" size={16} color="#ce2029" />
+                                  </TouchableOpacity>
+                                  :
+                                  <View>
+                                    {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                                    
+                                      <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
+                                      
+                                          <AntDesign name="hearto" size={16} color="gray" />
+                                              
+                                      </TouchableOpacity>
+                                    :
+                                    
+                                      <TouchableOpacity style={styles.unlikeButton} onPress={()=> handleUnlikeEvent(item.id, screenType)}>
+                                        <AntDesign name="heart" size={16} color="#ce2029" />
+                                      </TouchableOpacity>
+                                  }
+                                  </View>}
+                              </View>}
                               
                           </View>
                           <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImageUrl}} borderRadius={10} ></ImageBackground>
@@ -282,18 +359,29 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                       
                         <View style={styles.imageBackgroundHeader}>
                           <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                            {!likedEvents.some((item) => item.eventId === item.id) ? 
-                            <TouchableOpacity style={styles.likeButton}>
-                            
-                            <AntDesign name="hearto" size={16} color="gray" />
-                                
-                            </TouchableOpacity>:
-                            <TouchableOpacity style={styles.unlikeButton}>
-                            
-                            <AntDesign name="heart" size={16} color="#ce2029" />
-                            
-                        </TouchableOpacity>}
-                            
+                          {loadingLikeUnlikeEvent || loadingLikedEvents ? 
+                          <View><ActivityIndicator/></View>
+                          :
+                          <View>
+                            {screenType === 'like' ? 
+                            <TouchableOpacity style={styles.unlikeButton} onPress={()=> handleUnlikeEvent(item.id, screenType)}>
+                              <AntDesign name="heart" size={16} color="#ce2029" />
+                            </TouchableOpacity>
+                            :
+                            <View>
+                              {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                              
+                                <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
+                                    <AntDesign name="hearto" size={16} color="gray" />   
+                                </TouchableOpacity>
+                              :
+                              
+                                <TouchableOpacity style={styles.unlikeButton} onPress={()=> handleUnlikeEvent(item.id, screenType)}>
+                                  <AntDesign name="heart" size={16} color="#ce2029" />
+                                </TouchableOpacity>
+                              }
+                            </View>}
+                          </View>}
                         </View>
                         <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImageUrl}} borderRadius={10} ></ImageBackground>
                         {screenType === 'like' ? 

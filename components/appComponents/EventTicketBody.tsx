@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import moment from 'moment';
 import { Link } from 'expo-router';
+import { uploadData, getUrl } from '@aws-amplify/storage';
 
 
 
@@ -19,19 +20,49 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function EventTicketBody({item, screenType}: {screenType: string | string []}) {
 
+
+  const [loadingImage, setLoadingImage] = useState<boolean>(true)
+  const [mainImageUrl, setMainImageUrl] = useState<string>('')
+
+    const handleGetImageUrl = async () => {
    
+       try {
+   
+         setLoadingImage(true)
+   
+         const linkToStorageFile = await getUrl({
+           path: item.eventMainImage.url,
+           options: {
+             useAccelerateEndpoint: true
+           }
+       })
+   
+       setMainImageUrl(linkToStorageFile.url.toString())
+   
+       setLoadingImage(false)
+   
+       } catch(e) {
+   
+         setLoadingImage(false)
+   
+       }
+   
+       
+    
+   
+     }
 
 
     return (
         <ThemedView>
             
-              <Link href={{pathname: '/(tabs)/tickets/event', params: {screenType: 'tickets', id: item._id}}} asChild>
+              <Link href={{pathname: '/(tabs)/tickets/event', params: {screenType: 'tickets', id: item.id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody2}>
                       {item.eventMainImage.aspectRatio === 'a'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                           <View style={styles.eventforeground}>
                             <View style={styles.eventImageBody}>
-                                <ImageBackground style={styles.eventImageRatioA} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                                <ImageBackground style={styles.eventImageRatioA} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
                             </View>
                             
                             <View style={styles.eventDetailsContainer}>
@@ -41,7 +72,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                         <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
                                         <ThemedText>4 Tickets</ThemedText>
-                                        <ThemedText>{moment("2025-01-13T00:00:00.000Z").format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                        <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                         
                                     </View>
                                     
@@ -52,10 +83,10 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                           
                       </ImageBackground> : null}
                       {item.eventMainImage.aspectRatio === 'b'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover' >
+                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover' >
                           <View style={styles.eventforeground}>
                             <View style={styles.eventImageBody}>
-                                <ImageBackground style={styles.eventImageRatioB} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                                <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
                             </View>
                             
                             <View style={styles.eventDetailsContainer}>
@@ -66,7 +97,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                         <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
                                         <ThemedText>4 Tickets</ThemedText>
-                                        <ThemedText>{moment("2025-01-13T00:00:00.000Z").format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                        <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                     </View>
                                     
                                 </View>
@@ -76,11 +107,11 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                           
                       </ImageBackground> : null}
                       {item.eventMainImage.aspectRatio === 'c'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: item.eventMainImage.url}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                         
                         <View style={styles.eventforeground}>
                             <View style={styles.eventImageBody}>
-                                <ImageBackground style={styles.eventImageRatioC} source={{uri: item.eventMainImage.url}} borderRadius={5} ></ImageBackground>
+                                <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
                             </View>
                             
                             <View style={styles.eventDetailsContainer}>
@@ -90,7 +121,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                         <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
                                         <ThemedText>4 Tickets</ThemedText>
-                                        <ThemedText>{moment("2025-01-13T00:00:00.000Z").format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                        <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                     </View>
                                     
                                 </View>

@@ -46,6 +46,8 @@ interface IEvent {
 interface IEventContextValue {
     likedEvents?:IEvent[]
     loadingLikedEvents?: loadingEvents
+    likedEventsError?: string
+    setLikedEventsError?: (data: string) => void
     setLoadingLikedEvents:(data: loadingEvents) => void
     setLikedEventList:(data:IEvent[]) => void
     handleGetLikedEvents: () => void
@@ -55,6 +57,8 @@ interface IEventContextValue {
 const initialList: IEventContextValue = {
     likedEvents:[],
     loadingLikedEvents: false,
+    likedEventsError: '',
+    setLikedEventsError: (data) => {},
     setLoadingLikedEvents:(data) => {},
     setLikedEventList: (data) => {},
     handleGetLikedEvents: () => {}
@@ -79,30 +83,47 @@ export function LikeProvider({children}: ChildrenProps) {
 
   const [likedEvents, setLikedEventList] = useState<IEvent[] | []>([])
   const [loadingLikedEvents, setLoadingLikedEvents] = useState<boolean>(true)
+  const [likedEventsError, setLikedEventsError] = useState<string>('')
+
+
 
   const handleGetLikedEvents = async () => {
 
     try {
 
+      setLoadingLikedEvents(false)
+      setLikedEventsError('')
+
       const { data, errors } = await client.models.LikedEvent.list({
 
-       // filter: {
-        //  userEmail: {
-         //   beginsWith: userDetails?.username
-        //  }
-       // }
+        filter: {
+          userEmail: {
+            beginsWith: userDetails?.username
+          }
+        }
       });
 
+      setLikedEventList(data)
+      
+
+      setLoadingLikedEvents(false)
+
     } catch(e) {
+
+      setLikedEventsError(e?.message)
+      setLoadingLikedEvents(false)
 
     }
   }
 
+
   useEffect(()=> {
 
-  
+    handleGetLikedEvents()
 
   },[])
+
+
 
   return(
     <LikedContext.Provider value={{likedEvents, setLikedEventList, loadingLikedEvents, setLoadingLikedEvents, handleGetLikedEvents}} >{children}</LikedContext.Provider>

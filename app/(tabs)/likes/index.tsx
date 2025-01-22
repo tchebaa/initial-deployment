@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, ActivityIndicator } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, ActivityIndicator, View } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link } from 'expo-router';
 import EventBody from '@/components/appComponents/EventBody';
+import {useLikes} from "../../../context/LikedContext"
 import moment from 'moment';
 import {useLocation} from '../../../context/LocationContext'
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
@@ -25,49 +26,8 @@ const windowHeight = Dimensions.get('window').height
 export default function LikesScreen() {
 
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
-    
-        const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
-        const [errorLoadingEvents, setErrorLoadingEvents] = useState<string>('')
-        const [events, setEvents] = useState([])
-        const [startDate, setStartDate] = useState<string>(moment(new Date).format().toString())
-
-
-
-    const handleGetEvents = async () => {
-        
-                try {
-    
-                    setLoadingEvents(true)
-        
-                    const { data, errors } = await client.queries.searchEventsWithFilter({
-                           
-                    startDate: startDate,
-                    latitude: userLocation?.latitude,
-                    longitude: userLocation?.longitude
-                    
-                        
-                    });
-    
-                    setEvents(data)
-                    setLoadingEvents(false)
-                    
-        
-                } catch(e) {
-    
-                    setLoadingEvents(e?.message)
-                    
-        
-                }
-        
-                
-            }
-        
-    
-            useEffect(()=> {
-    
-                handleGetEvents()
-    
-            },[])
+    const {likedEvents, loadingLikedEvents} = useLikes()
+  
 
     
 
@@ -87,13 +47,18 @@ export default function LikesScreen() {
             </ThemedView>
             
         <ThemedView >
-            {!loadingEvents ? 
+            {!loadingLikedEvents ? 
+            <View>
+            {likedEvents.length > 0 ?
             <FlatList 
                 contentContainerStyle={{paddingBottom: 150}}
-                data={events}
+                data={likedEvents}
                 renderItem={renderEvents}
                 keyExtractor={(item)=> item.id} 
                 showsVerticalScrollIndicator={false}/>
+                :
+                <ThemedView><ThemedText>No events found</ThemedText></ThemedView>}
+            </View>
                 :
                 <ThemedView><ActivityIndicator /></ThemedView>}
         </ThemedView>

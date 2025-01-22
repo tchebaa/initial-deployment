@@ -61,7 +61,7 @@ export default function ProfileScreen() {
             </ThemedView>
             
             <ThemedView style={styles.buttonsBody}>
-                <Link href={{pathname: '/(tabs)/profile/postEvent', params: {screenName: 'post'}}} asChild>
+                <Link href={{pathname: '/(tabs)/profile/postEvent', params: {screenName: 'post', id: null}}} asChild>
                     <Pressable style={styles.button}>
                         <ThemedText style={styles.buttonText} type='defaultSemiBold'>Post Event</ThemedText>
                         <FontAwesome name='calendar-plus-o' size={24}/>

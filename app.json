@@ -4,7 +4,7 @@
     "slug": "tchebaamobileapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/fulllogo_transparent.png",
+    "icon": "./assets/images/tchebaa-logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/fulllogo_transparent.png",
+        "foregroundImage": "./assets/images/tchebaa-logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.tchebaaapp.tchebaamobileapp",
@@ -25,14 +25,14 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/tchebaa-logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/tchebaa-logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

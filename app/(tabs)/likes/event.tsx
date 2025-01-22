@@ -32,8 +32,8 @@ export default function EventScreen() {
     const { screenType, id } = useLocalSearchParams();
 
     const [event, setEvent] = useState()
-        const [loadingEvent, setLoadingEvent] = useState(true)
-        const [loadingEventError, setLoadingEventError] = useState<string>('')
+    const [loadingEvent, setLoadingEvent] = useState(true)
+    const [loadingEventError, setLoadingEventError] = useState<string>('')
         
         
             const handleGetEvent = async () => {
@@ -74,9 +74,7 @@ export default function EventScreen() {
         {!loadingEvent ? 
                 <ThemedView style={styles.body}>
                     <EventHeader item={event} screenType={screenType}/>
-                    
-                        <EventScreenBody item={event} screenType={screenType}/>
-                    
+                    <EventScreenBody item={event} screenType={screenType}/>
                 </ThemedView>: 
                 <ThemedView  style={styles.body}>
                     <ActivityIndicator/>

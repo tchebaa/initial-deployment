@@ -9,6 +9,11 @@ import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link } from 'expo-router';
 import EventTicketBody from '@/components/appComponents/EventTicketBody';
+import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
+import { uploadData, getUrl } from '@aws-amplify/storage';
+import { generateClient } from 'aws-amplify/data';
+import {useUser} from '../../../context/UserContext'
+const client = generateClient<Schema>();
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -428,7 +433,21 @@ const events = [
 
 export default function TicketsScreen() {
 
+    const [events, setEvents] = useState([])
+    const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
+    const [leadingEventsError, setLoadingEventsError] = useState<string>('')
 
+
+    const handleGetBookedEvents = async () => {
+
+
+
+        try{
+
+        } catch (e) {
+
+        }
+    }
 
     const renderEvents = ({item}) => {
                 return(
