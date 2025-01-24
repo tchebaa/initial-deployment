@@ -91,7 +91,7 @@ export function LikeProvider({children}: ChildrenProps) {
 
     try {
 
-      setLoadingLikedEvents(false)
+      setLoadingLikedEvents(true)
       setLikedEventsError('')
 
       const { data, errors } = await client.models.LikedEvent.list({

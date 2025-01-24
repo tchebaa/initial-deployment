@@ -28,26 +28,7 @@ export default function LocationScreen() {
 
     const client = generateClient<Schema>();
 
-    async function createToDo () {
 
-      try { 
-
-        const toDo = await client.models.Todo.create({
-          content: "My new todo",
-          
-        }).then((e)=> console.log(e))
-
-        console.log(toDo)
-
-      } catch (error) {
-        console.log(error)
-      }
-
-    
-
-    
-
-    }
 
     const router = useRouter()
 
@@ -56,6 +37,7 @@ export default function LocationScreen() {
     async function getCurrentLocation() {
       
       setLoadingAddress(true)
+
       let location = await Location.getCurrentPositionAsync({});
       
       setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
@@ -71,6 +53,7 @@ export default function LocationScreen() {
             return;
           }
           setLocationPermission(true)
+         
       }
 
     async function checkPermissions () {
@@ -81,9 +64,7 @@ export default function LocationScreen() {
 
     }
 
-    useEffect(()=> {
-
-    },[locationPermission])
+   
 
     useEffect(()=> {
 
@@ -92,10 +73,7 @@ export default function LocationScreen() {
       
     },[])
 
-    useEffect(()=> {
-      
 
-    },[locationPermission, userLocation])
     
   
 

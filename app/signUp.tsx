@@ -57,6 +57,7 @@ export default function SignUp() {
       if(userId) {
 
         setUserDetails({username: username, userId: userId})
+
         router.push('/locationScreen')
         
       }
@@ -74,13 +75,9 @@ export default function SignUp() {
       
       checkCurrentUser()
 
-      if(userDetails) {
+      
 
-        router.push('/locationScreen')
-
-      }
-
-    },[loadingSignUp, userDetails])
+    },[loadingSignUp])
 
 
     const handleConfirm = async () => {
@@ -95,7 +92,8 @@ export default function SignUp() {
             confirmationCode: codeConfirm
           })
   
-          console.log(isSignUpComplete)
+          
+          
   
           if(isSignUpComplete) {
 
@@ -124,15 +122,8 @@ export default function SignUp() {
     }
 
 
-    useEffect(()=> {
+    
 
-      if(userDetails) {
-
-        router.push('/locationScreen')
-
-      }
-
-    },[userDetails])
 
 
     const handleSignup = async () => {

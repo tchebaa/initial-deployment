@@ -24,6 +24,8 @@ export default function TabLayout() {
   const {userDetails, setUserDetails} = useUser()
 
   useEffect(()=> {
+
+     //console.log(userDetails)
     if(!userDetails) {
       router.push('/')
     }

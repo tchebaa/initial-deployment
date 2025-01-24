@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tchebaaapp.tchebaamobileapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +20,7 @@
       "package": "com.tchebaaapp.tchebaamobileapp",
       "newArchEnabled": false,
       "experimental": {
-      "enableFabricRenderer": false
+        "enableFabricRenderer": false
       }
     },
     "web": {

@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, View, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -24,6 +24,7 @@ export default function ProfileScreen() {
     const router = useRouter()
 
     const [openSignOutModal, setOpenSignOutModal] = useState<boolean>(false)
+    const [loadingSignOut, setLoadingSignOut] = useState<boolean>(false)
 
     
 
@@ -31,9 +32,15 @@ export default function ProfileScreen() {
 
         try {
 
+            setLoadingSignOut(true)
+
             await signOut().then((e)=> {setUserDetails(null)})
 
+            setLoadingSignOut(false)
+
         } catch(e) {
+
+            setLoadingSignOut(false)
 
         }
 
@@ -46,6 +53,7 @@ export default function ProfileScreen() {
             {openSignOutModal ? 
             <ThemedView style={styles.signOutModal}>
                 <ThemedText>Are you sure you want to sign out?</ThemedText>
+                {loadingSignOut ? <ActivityIndicator /> : 
                 <ThemedView style={styles.signOutOptionBody}>
                     <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setOpenSignOutModal(false)}>
                         <ThemedText type='defaultSemiBold'>No</ThemedText>
@@ -53,7 +61,7 @@ export default function ProfileScreen() {
                     <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleSignOut()}>
                         <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>Yes</ThemedText>
                     </TouchableOpacity>
-                </ThemedView>
+                </ThemedView>}
             </ThemedView>: null}
             <ThemedView style={styles.pageHeader}>
                 <Ionicons name="person-circle-outline" size={24} color="black" />

@@ -59,6 +59,8 @@ export default function EventBody({item, screenType}: {screenType: string}) {
 
       } catch(e) {
 
+        setLoadingImage(false)
+
       }
 
       

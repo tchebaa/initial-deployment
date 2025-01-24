@@ -46,7 +46,9 @@ export default function SignInScreen() {
       
 
       if(userId) {
+
         setUserDetails({username: signInDetails?.loginId, userId: userId})
+        
         router.push('/locationScreen')
       }
 
@@ -65,15 +67,7 @@ export default function SignInScreen() {
     
     },[loadingLogIn])
 
-    useEffect(()=> {
-      
-      if(userDetails) {
-
-        router.push('/locationScreen')
-
-      }
-
-    },[userDetails])
+    
 
 
     const handleLogin = async () => {
@@ -94,7 +88,7 @@ export default function SignInScreen() {
             const user = await signIn({
               username: email,
               password: password,
-            }).then((e)=> { setLoginError(''); setLoadingLogin(false); console.log(e); router.push('/locationScreen')})
+            }).then((e)=> { setLoginError(''); setLoadingLogin(false); console.log(e)})
     
             
     

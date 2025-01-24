@@ -52,6 +52,12 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
    
      }
 
+     useEffect(()=> {
+
+      handleGetImageUrl()
+
+     },[])
+
 
     return (
         <ThemedView>
@@ -59,7 +65,34 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
               <Link href={{pathname: '/(tabs)/tickets/event', params: {screenType: 'tickets', id: item.id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody2}>
                       {item.eventMainImage.aspectRatio === 'a'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                      <ThemedView>
+                       {loadingImage ? 
+                        <ThemedView style={styles.eventImage2} >
+                            <View style={styles.eventforeground}>
+                              <View style={styles.eventImageBody}>
+                                  <ActivityIndicator />
+                              </View>
+                              
+                              <View style={styles.eventDetailsContainer}>
+                                  <View style={styles.eventDetailsBody}>
+                                      <View style={styles.detailsBackground}></View>
+                                      <View style={styles.detailsBodyText}>
+                                          <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
+                                          <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                          : 
+                                          <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                          <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                          
+                                      </View>
+                                      
+                                  </View>
+                              </View>
+                                  
+                            </View>
+                            
+                        </ThemedView>:
+                        <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                           <View style={styles.eventforeground}>
                             <View style={styles.eventImageBody}>
                                 <ImageBackground style={styles.eventImageRatioA} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
@@ -71,7 +104,9 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                     <View style={styles.detailsBodyText}>
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                         <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                        <ThemedText>4 Tickets</ThemedText>
+                                        {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                        : 
+                                        <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
                                         <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                         
                                     </View>
@@ -80,55 +115,120 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                             </View>
                                 
                           </View>
-                          
-                      </ImageBackground> : null}
-                      {item.eventMainImage.aspectRatio === 'b'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover' >
-                          <View style={styles.eventforeground}>
-                            <View style={styles.eventImageBody}>
-                                <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
-                            </View>
-                            
-                            <View style={styles.eventDetailsContainer}>
-
-                                <View style={styles.eventDetailsBody}>
-                                    <View style={styles.detailsBackground}></View>
-                                    <View style={styles.detailsBodyText}>
-                                        <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
-                                        <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                        <ThemedText>4 Tickets</ThemedText>
-                                        <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
-                                    </View>
-                                    
-                                </View>
-                            </View>
-                                
-                          </View>
-                          
-                      </ImageBackground> : null}
-                      {item.eventMainImage.aspectRatio === 'c'  ? 
-                      <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                         
-                        <View style={styles.eventforeground}>
-                            <View style={styles.eventImageBody}>
-                                <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
+                        </ImageBackground>
+                        }
+                      </ThemedView> : null}
+                      {item.eventMainImage.aspectRatio === 'b'  ? 
+                      <ThemedView>
+                        {loadingImage ? 
+                        <ThemedView style={styles.eventImage2} >
+                            <View style={styles.eventforeground}>
+                              <View style={styles.eventImageBody}>
+                                <ActivityIndicator />
+                              </View>
+                              
+                              <View style={styles.eventDetailsContainer}>
+
+                                  <View style={styles.eventDetailsBody}>
+                                      <View style={styles.detailsBackground}></View>
+                                      <View style={styles.detailsBodyText}>
+                                          <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
+                                          <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                            : 
+                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                          <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                      </View>
+                                      
+                                  </View>
+                              </View>
+                                  
                             </View>
                             
-                            <View style={styles.eventDetailsContainer}>
-                                <View style={styles.eventDetailsBody}>
-                                    <View style={styles.detailsBackground}></View>
-                                    <View style={styles.detailsBodyText}>
-                                        <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
-                                        <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                        <ThemedText>4 Tickets</ThemedText>
-                                        <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
-                                    </View>
-                                    
-                                </View>
+                        </ThemedView>
+                        :
+                        <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover' >
+                            <View style={styles.eventforeground}>
+                              <View style={styles.eventImageBody}>
+                                <ImageBackground style={styles.eventImageRatioB} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
+                              </View>
+                              
+                              <View style={styles.eventDetailsContainer}>
+
+                                  <View style={styles.eventDetailsBody}>
+                                      <View style={styles.detailsBackground}></View>
+                                      <View style={styles.detailsBodyText}>
+                                          <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
+                                          <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                            : 
+                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                          <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                      </View>
+                                      
+                                  </View>
+                              </View>
+                                  
                             </View>
-                                
-                          </View>
-                      </ImageBackground> : null}
+                            
+                        </ImageBackground>
+                        }
+                      </ThemedView> : null}
+                      {item.eventMainImage.aspectRatio === 'c'  ? 
+                      <ThemedView>
+                       {loadingImage ? 
+                        <ThemedView style={styles.eventImage2} >
+                          
+                          <View style={styles.eventforeground}>
+                              <View style={styles.eventImageBody}>
+                                  <ActivityIndicator />
+                              </View>
+                              
+                              <View style={styles.eventDetailsContainer}>
+                                  <View style={styles.eventDetailsBody}>
+                                      <View style={styles.detailsBackground}></View>
+                                      <View style={styles.detailsBodyText}>
+                                          <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
+                                          <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                            : 
+                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                          <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                      </View>
+                                      
+                                  </View>
+                              </View>
+                                  
+                            </View>
+                        </ThemedView> 
+                        :
+                        <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
+                          
+                          <View style={styles.eventforeground}>
+                              <View style={styles.eventImageBody}>
+                                  <ImageBackground style={styles.eventImageRatioC} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
+                              </View>
+                              
+                              <View style={styles.eventDetailsContainer}>
+                                  <View style={styles.eventDetailsBody}>
+                                      <View style={styles.detailsBackground}></View>
+                                      <View style={styles.detailsBodyText}>
+                                          <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
+                                          <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                            : 
+                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                          <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
+                                      </View>
+                                      
+                                  </View>
+                              </View>
+                                  
+                            </View>
+                        </ImageBackground> 
+                        }
+                      </ThemedView> : null}
                       
                   </TouchableOpacity>
                 </Link>
