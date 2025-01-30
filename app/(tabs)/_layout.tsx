@@ -12,11 +12,13 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {useUser} from '../../context/UserContext'
 import { Link, useRouter } from 'expo-router';
+import {useLanguage} from '../../context/LanguageContext'
 
 
 export default function TabLayout() {
 
 
+  const {t} = useLanguage()
   const colorScheme = useColorScheme();
 
   const router = useRouter()
@@ -49,35 +51,35 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: t('home'),
           tabBarIcon: ({ color }) => <AntDesign size={24} name="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search',
+          title: t('search'),
           tabBarIcon: ({ color }) => <AntDesign size={24} name="search1" color={color} />,
         }}
       />
       <Tabs.Screen
         name="likes"
         options={{
-          title: 'Likes',
+          title: t('likes'),
           tabBarIcon: ({ color }) => <AntDesign size={24} name="hearto" color={color} />,
         }}
       />
       <Tabs.Screen
         name="tickets"
         options={{
-          title: 'Tickets',
+          title: t('tickets'),
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="ticket" color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: t('profile'),
           tabBarIcon: ({ color }) => <Ionicons size={24} name="person-outline" color={color} />,
         }}
       />

@@ -4,7 +4,7 @@
     "slug": "tchebaamobileapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/tchebaa-logo.png",
+    "icon": "./assets/images/iconTchebaa.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/tchebaa-logo.png",
+        "foregroundImage": "./assets/images/adaptiveTchebaa.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.tchebaaapp.tchebaamobileapp",
@@ -26,14 +26,15 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/tchebaa-logo.png"
+      "favicon": "./assets/images/iconTchebaa.png"
     },
     "plugins": [
       "expo-router",
+
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/tchebaa-logo.png",
+          "image": "./assets/images/splashTchebaa.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -67,7 +68,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Tchebaa to use your location."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

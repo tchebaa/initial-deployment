@@ -8,7 +8,7 @@ import { ThemedView } from '@/components/ThemedView';
 import moment from 'moment';
 import { Link } from 'expo-router';
 import { uploadData, getUrl } from '@aws-amplify/storage';
-
+import {useLanguage} from '../../context/LanguageContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,6 +21,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function EventTicketBody({item, screenType}: {screenType: string | string []}) {
 
 
+  const {t} = useLanguage()
   const [loadingImage, setLoadingImage] = useState<boolean>(true)
   const [mainImageUrl, setMainImageUrl] = useState<string>('')
 
@@ -79,9 +80,9 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} ${t('tickets')}`}</ThemedText>
                                           : 
-                                          <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                          <ThemedText>{`${item.totalTicketNumber} ${t('ticket')}`}</ThemedText>}
                                           <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                           
                                       </View>
@@ -104,9 +105,9 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                     <View style={styles.detailsBodyText}>
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                         <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                        {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                        {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} ${t('tickets')}`}</ThemedText>
                                         : 
-                                        <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                        <ThemedText>{`${item.totalTicketNumber} ${t('ticket')}`}</ThemedText>}
                                         <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                         
                                     </View>
@@ -135,9 +136,9 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} ${t('tickets')}`}</ThemedText>
                                             : 
-                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                            <ThemedText>{`${item.totalTicketNumber} ${t('ticket')}`}</ThemedText>}
                                           <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                       </View>
                                       
@@ -161,9 +162,9 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} ${t('tickets')}`}</ThemedText>
                                             : 
-                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                            <ThemedText>{`${item.totalTicketNumber} ${t('ticket')}`}</ThemedText>}
                                           <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                       </View>
                                       
@@ -191,9 +192,9 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} ${t('tickets')}`}</ThemedText>
                                             : 
-                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                            <ThemedText>{`${item.totalTicketNumber} ${t('ticket')}`}</ThemedText>}
                                           <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                       </View>
                                       
@@ -216,9 +217,9 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} Tickets`}</ThemedText>
+                                          {item.totalTicketNumber > 1 ? <ThemedText>{`${item.totalTicketNumber} ${t('tickets')}`}</ThemedText>
                                             : 
-                                            <ThemedText>{`${item.totalTicketNumber} Ticket`}</ThemedText>}
+                                            <ThemedText>{`${item.totalTicketNumber} ${t('ticket')}`}</ThemedText>}
                                           <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                                       </View>
                                       

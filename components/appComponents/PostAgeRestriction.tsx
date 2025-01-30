@@ -5,7 +5,7 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import {useLanguage} from '../../context/LanguageContext'
 import { Link } from 'expo-router';
 
 
@@ -19,14 +19,15 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function PostAgeRestriction({ageRestriction, handleAddRemoveAgeGroup}: {ageRestriction: string [], handleAddRemoveAgeGroup: (item: string) => void}) {
 
+  const {t} = useLanguage()
 
 
     return (
         <ThemedView style={styles.container}>
               <ThemedView>
-                <ThemedText type='defaultSemiBold'>Age restriction</ThemedText>
+                <ThemedText type='defaultSemiBold'>{t('age.restriction')}</ThemedText>
                 <ThemedView style={styles.adultBody}>
-                    <ThemedText>Adult</ThemedText>
+                    <ThemedText>{t('adult')}</ThemedText>
                     <ThemedText>18+</ThemedText>
                 </ThemedView>
                 <TouchableOpacity style={styles.adultBody} onPress={()=> handleAddRemoveAgeGroup('adolescent')}>
@@ -34,7 +35,7 @@ export default function PostAgeRestriction({ageRestriction, handleAddRemoveAgeGr
                      <MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/>
                      :
                     <MaterialCommunityIcons name='radiobox-blank' size={16}/>}
-                    <ThemedText style={styles.ageGroupTitle}>Adolescent</ThemedText>
+                    <ThemedText style={styles.ageGroupTitle}>{t('adolescent')}</ThemedText>
                     <ThemedText style={styles.ageDetailsText}>13 - 17</ThemedText>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.adultBody} onPress={()=> handleAddRemoveAgeGroup('child')}>
@@ -42,7 +43,7 @@ export default function PostAgeRestriction({ageRestriction, handleAddRemoveAgeGr
                      <MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/>
                      :
                     <MaterialCommunityIcons name='radiobox-blank' size={16}/>}
-                    <ThemedText style={styles.ageGroupTitle}>Child</ThemedText>
+                    <ThemedText style={styles.ageGroupTitle}>{t('child')}</ThemedText>
                     <ThemedText style={styles.ageDetailsText}>0 - 12</ThemedText>
                 </TouchableOpacity>
               </ThemedView>

@@ -5,7 +5,7 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import {useLanguage} from '../../context/LanguageContext'
 import { Link } from 'expo-router';
 
 
@@ -26,7 +26,7 @@ export default function PostPhotoUpload({mainImage, image2, image3, image4, hand
     setImage4: Dispatch<SetStateAction<string>>, setImage2: Dispatch<SetStateAction<string>>, setImage3: Dispatch<SetStateAction<string>>, mainImageError: boolean,
 handleRemoveImage: (item: string) => void}) {
 
-    
+    const {t} = useLanguage()
 
 
     return (
@@ -69,10 +69,10 @@ handleRemoveImage: (item: string) => void}) {
                 </ThemedView> 
                 : 
                 <TouchableOpacity onPress={()=>handleOpenImageRatioModal('mainImage')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Main Image</ThemedText>
-                    <ThemedText style={styles.imageDetailsText}>(required)</ThemedText>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{t('main.image')}</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>{`(${t('required')})`}</ThemedText>
                 </TouchableOpacity>}
-                {mainImageError ? <ThemedText>Main Image required</ThemedText>: <ThemedText></ThemedText>}
+                {mainImageError ? <ThemedText>{`${t('main.image')} ${t('required')}`}</ThemedText>: <ThemedText></ThemedText>}
             {image2 ? 
                 <ThemedView>
                 {image2AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image2}}>
@@ -108,8 +108,8 @@ handleRemoveImage: (item: string) => void}) {
                 </ImageBackground>: null}
                 </ThemedView> : 
                 <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image2')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 2</ThemedText>
-                    <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 2`}</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>}
             {image3 ? 
                 <ThemedView>
@@ -147,8 +147,8 @@ handleRemoveImage: (item: string) => void}) {
                 </ThemedView>
                 : 
                 <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image3')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 3</ThemedText>
-                    <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 3`}</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>
             }
             {image4 ? 
@@ -187,8 +187,8 @@ handleRemoveImage: (item: string) => void}) {
                 </ThemedView>
                 : 
                 <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image4')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>Image 4</ThemedText>
-                    <ThemedText style={styles.imageDetailsText}>(optional)</ThemedText>
+                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 4`}</ThemedText>
+                    <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>
             }
             
@@ -210,7 +210,6 @@ handleRemoveImage: (item: string) => void}) {
                     <ThemedText>4:3</ThemedText>
                 </TouchableOpacity>
             </ThemedView> : null}
-            <TouchableOpacity onPress={()=> handleChangeBlob()}><ThemedText>convert</ThemedText></TouchableOpacity>
             </ScrollView>
         </ThemedView>      
                   

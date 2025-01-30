@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {useLocation} from '../../context/LocationContext'
-
+import {useLanguage} from '../../context/LanguageContext'
 import { Link, router } from 'expo-router';
 import * as Location from 'expo-location';
 
@@ -25,6 +25,7 @@ export default function LocationDirection({originDirection, getDirections, setOr
     setLoadingDirections: Dispatch<SetStateAction<boolean>>, openExternalMap: () => void}) {
 
 
+    const {t} = useLanguage()
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
     async function getCurrentLocation() {
@@ -45,7 +46,7 @@ export default function LocationDirection({originDirection, getDirections, setOr
               <ThemedView style={styles.locationContainer}>
                 <MaterialIcons name='location-on' size={24} color={'#1184e8'} />
                 <GooglePlacesAutocomplete
-                    placeholder='Search location' 
+                    placeholder={t('search.location')} 
                     nearbyPlacesAPI='GooglePlacesSearch'
                     minLength={2}
                     onPress={(data, details = null)=>{
@@ -89,13 +90,13 @@ export default function LocationDirection({originDirection, getDirections, setOr
                   <ThemedView style={{marginRight: 5}}>
                       <MaterialIcons name='my-location' size={16} color={'#1184e8'} />
                   </ThemedView>
-                  <ThemedText style={styles.myLocationText}>My current location</ThemedText>            
+                  <ThemedText style={styles.myLocationText}>{t('my.current.location')}</ThemedText>            
                     
                 </TouchableOpacity>
                 {originDirection ? 
                 <ThemedView style={styles.getDirectionBody}>
                     <TouchableOpacity onPress={()=> getDirections()}>
-                        <ThemedText>Get Directions</ThemedText>
+                        <ThemedText>{t('get.directions')}</ThemedText>
                     </TouchableOpacity>
                 </ThemedView>: null}
                 {loadingDirections ? 
@@ -109,7 +110,7 @@ export default function LocationDirection({originDirection, getDirections, setOr
                 <ThemedView style={styles.externalMapBody}>
                   <View></View>
                   <TouchableOpacity style={styles.openMapsButton} onPress={()=> openExternalMap()}>
-                    <ThemedText>Open Maps</ThemedText>
+                    <ThemedText>{t('open.maps')}</ThemedText>
                   </TouchableOpacity>
                 </ThemedView>
         </ThemedView>      

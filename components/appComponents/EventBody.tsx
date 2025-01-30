@@ -11,6 +11,7 @@ import {useUser} from '../../context/UserContext';
 import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
 import { generateClient } from 'aws-amplify/data';
 import { Link } from 'expo-router';
+import {useLanguage} from '../../context/LanguageContext'
 
 
 const client = generateClient<Schema>();
@@ -26,7 +27,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function EventBody({item, screenType}: {screenType: string}) {
 
-    
+    const {t} = useLanguage()
     const {userDetails} = useUser()
     const {likedEvents, handleGetLikedEvents, loadingLikedEvents} = useLikes()
 

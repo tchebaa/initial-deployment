@@ -10,6 +10,7 @@ import {FontAwesome, MaterialCommunityIcons, AntDesign, Ionicons} from '@expo/ve
 import { Link, useRouter } from 'expo-router';
 import {signOut} from '@aws-amplify/auth'
 import {useUser} from '../../../context/UserContext'
+import {useLanguage} from '../../../context/LanguageContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -20,6 +21,7 @@ const windowHeight = Dimensions.get('window').height
 export default function ProfileScreen() {
 
     const {userDetails, setUserDetails} = useUser()
+    const {t} = useLanguage()
 
     const router = useRouter()
 
@@ -56,10 +58,10 @@ export default function ProfileScreen() {
                 {loadingSignOut ? <ActivityIndicator /> : 
                 <ThemedView style={styles.signOutOptionBody}>
                     <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setOpenSignOutModal(false)}>
-                        <ThemedText type='defaultSemiBold'>No</ThemedText>
+                        <ThemedText type='defaultSemiBold'>{t('no')}</ThemedText>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleSignOut()}>
-                        <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>Yes</ThemedText>
+                        <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>{t('yes')}</ThemedText>
                     </TouchableOpacity>
                 </ThemedView>}
             </ThemedView>: null}
@@ -71,31 +73,31 @@ export default function ProfileScreen() {
             <ThemedView style={styles.buttonsBody}>
                 <Link href={{pathname: '/(tabs)/profile/postEvent', params: {screenName: 'post', id: null}}} asChild>
                     <Pressable style={styles.button}>
-                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>Post Event</ThemedText>
+                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('post.event')}</ThemedText>
                         <FontAwesome name='calendar-plus-o' size={24}/>
                     </Pressable>
                 </Link>
                 <Link href={'/(tabs)/profile/manageEvents'} asChild>
                     <Pressable style={styles.button}>
-                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>Manage Events</ThemedText>
+                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('manage.events')}</ThemedText>
                         <MaterialCommunityIcons name="calendar-cursor" size={24} color="black" />
                     </Pressable>
                 </Link>
                 <Link href={'/(tabs)/profile/message'} asChild>
                     <Pressable style={styles.button}>
-                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>Messages</ThemedText>
+                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('messages')}</ThemedText>
                         <MaterialCommunityIcons name="message-outline" size={24} color="black" />
                     </Pressable>
                 </Link>
                 <Link href={'/(tabs)/profile/settings'} asChild>
                     <Pressable style={styles.button}>
-                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>Settings</ThemedText>
+                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('settings')}</ThemedText>
                         <AntDesign name="setting" size={24} color="black" />
                     </Pressable>
                 </Link>
                 <ThemedView style={styles.signOutBody}>
                     <TouchableOpacity style={styles.loginButton} onPress={()=> setOpenSignOutModal(true)}>
-                        <ThemedText style={styles.loginText}>Sign Out</ThemedText>
+                        <ThemedText style={styles.loginText}>{t('sign.out')}</ThemedText>
                     </TouchableOpacity>
                 </ThemedView>
                 

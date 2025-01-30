@@ -18,6 +18,7 @@ import { generateClient } from 'aws-amplify/data';
 import {useUser} from '../../../context/UserContext';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import EventManageBody from '@/components/appComponents/EventManageBody';
+import {useLanguage} from '../../../context/LanguageContext'
 
 const client = generateClient<Schema>();
 
@@ -31,11 +32,14 @@ const windowHeight = Dimensions.get('window').height
 
 export default function ManageEvents() {
 
-    const [pageType, setPageType] = useState<string>('manage')
+    const {userDetails} = useUser()
+    const {t} = useLanguage()
+
+    const [pageType, setPageType] = useState<string>(t('manage'))
     const [events, setEvents] = useState()
     const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
     const [loadingError, setLoadingError] = useState<string>('')
-    const {userDetails} = useUser()
+    
 
 
     const handleGetEvents = async () => {

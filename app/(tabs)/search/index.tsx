@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link } from 'expo-router';
-import { FontAwesome, Ionicons, MaterialCommunityIcons, Foundation, MaterialIcons, FontAwesome5, Entypo, Feather } from '@expo/vector-icons'; 
+import { FontAwesome, Ionicons, MaterialCommunityIcons, Foundation, MaterialIcons, FontAwesome5, Entypo, Feather, Octicons } from '@expo/vector-icons'; 
 import EventBody from '@/components/appComponents/EventBody';
 import LocationComponent from '@/components/appComponents/LocationComponent';
 import {useLocation} from '../../../context/LocationContext'
@@ -16,7 +16,7 @@ import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import { generateClient } from 'aws-amplify/data';
 import moment from 'moment';
 import RNDateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
-
+import {useLanguage} from '../../../context/LanguageContext'
 
 
 const client = generateClient<Schema>();
@@ -26,118 +26,6 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
-//Events Categories List
-
-const eventsCategories = [
-    {icon:<FontAwesome name="music" size={24} color="black"/>,
-    title: 'Music',
-    name:'music'},
-    {
-    icon: <Ionicons name="moon-sharp" size={24} color="black"/>, 
-    title: 'Night party',
-    name:'night'},
-    {icon:<MaterialCommunityIcons name="drama-masks" size={25} color="black" />,
-    
-    title: 'Performing & visuals',
-    name: 'visuals'},
-    {icon:<Foundation name="camera" size={24} color="black"/>,
-    
-    title: 'Photography & film',
-    name:'photography'},
-    {icon:<Entypo name="laptop" size={24} color="black" />,
-     
-    title: 'Software & tech',
-    name: 'software'},
-    {icon:<MaterialCommunityIcons name="stethoscope" size={24} color="black" />,
-    
-    title: 'Health',
-    name:'health'},
-    {icon:<Ionicons name="fast-food-outline" size={24} color="black" />,
-     
-    title: 'Food & drink',
-    name:'food'},
-    {
-    icon: <FontAwesome name="briefcase" size={24} color="black"/>, 
-    title: 'Business',
-    name:'business'},
-    {icon:<MaterialIcons name="directions-run" size={24} color="black"/>,
-    
-    title: 'Sports & fitness',
-    name:'sports'},
-    {icon:<FontAwesome5 name="globe-africa" size={24} color="black" />,
-    
-    title: 'Travel & tourism',
-    name:'travel'},
-    {icon:<MaterialCommunityIcons name="corn" size={24} color="black"  />,
-     
-    title: 'Agriculture',
-    name:'agriculture'},
-    {
-    icon: <MaterialCommunityIcons name="pine-tree" size={24} color="black"  />, 
-    title: 'Environment',
-    name:'environment'},
-    {icon:<MaterialCommunityIcons name="hand-heart-outline" size={24} color="black"  />,
-     
-    title: 'Charity & fundraising',
-    name:'charity'},
-    {icon:<FontAwesome5 name="pray" size={24} color="black"/>,
-     
-    title: 'Religion & spirituality',
-    name:'religion'},
-    {icon:<FontAwesome5 name="mountain" size={24} color="black"/>,
-     
-    title: 'Outdoor activities',
-    name:'outdoor'},
-    {icon:<Ionicons name="brush-outline" size={24} color="black"/>,
-     
-    title: 'Art',
-    name: 'art'},
-    {icon:<Entypo name="game-controller" size={24} color="black" />,
-    
-    title: 'Games & esports',
-    name: 'game'},
-    {icon:<FontAwesome name="gears" size={24} color="black" />,
-     
-    title: 'Engineering',
-    name:'engineering'},
-]
-
-//Dats Filter List
-
-const dayRanges = [
-    {
-        name: 'All',
-        code: 'all'
-    },
-    {
-        name: 'Today',
-        code: 'today'
-    },
-    {
-        name: 'Tomorrow',
-        code: 'tomorrow'
-    },
-    {
-        name: 'This week',
-        code: 'thisweek'
-    },
-    {
-        name: 'This weekend',
-        code: 'thisweekend'
-    },
-    {
-        name: 'Next week',
-        code: 'nextweek'
-    },
-    {
-        name: 'This month',
-        code: 'thismonth'
-    },
-    {
-        name: 'Next month',
-        code: 'nextmonth'
-    },
-]
 
 
 
@@ -167,6 +55,7 @@ export default function SearchScreen() {
     
 
 
+    const {t} = useLanguage()
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
     type categoryItemSelected = string
@@ -316,7 +205,8 @@ export default function SearchScreen() {
                 categories: selectedCategories,
                 startDate: startDate,
                 latitude: userLocation?.latitude,
-                longitude: userLocation?.longitude
+                longitude: userLocation?.longitude,
+                endDate: endDate
                 
                     
                 });
@@ -341,9 +231,145 @@ export default function SearchScreen() {
 
             handleGetEvents()
 
-        },[selectedCategories, userLocation])
+        },[selectedCategories, userLocation, startDate, endDate])
         
 
+
+
+
+        
+
+//Dats Filter List
+
+        const dayRanges = [
+            {
+                name: t('all'),
+                code: 'all'
+            },
+            {
+                name: t('today'),
+                code: 'today'
+            },
+            {
+                name: t('tomorrow'),
+                code: 'tomorrow'
+            },
+            {
+                name: t('this.week'),
+                code: 'thisweek'
+            },
+            {
+                name: t('this.weekend'),
+                code: 'thisweekend'
+            },
+            {
+                name: t('next.week'),
+                code: 'nextweek'
+            },
+            {
+                name: t('this.month'),
+                code: 'thismonth'
+            },
+            {
+                name: t('next.month'),
+                code: 'nextmonth'
+            },
+        ]
+
+
+        //Events Categories List
+
+        const eventsCategories = [
+            {icon:<Entypo name="graduation-cap" size={24} color="black" />,
+            title: t('education'),
+            name:'education'},
+            {icon:<FontAwesome name="music" size={24} color="black"/>,
+            title: t('music'),
+            name:'music'},
+            {
+            icon: <Ionicons name="moon-sharp" size={24} color="black"/>, 
+            title: t('night.party'),
+            name:'night'},
+            {icon:<Feather name="video" size={24} color="black" />,
+            
+            title: t('entertainment'),
+            name: 'entertainment'},
+            {icon:<Octicons name="graph" size={24} color="black" />,
+            
+            title: t('markets'),
+            name: 'markets'},
+            {icon:<MaterialCommunityIcons name="drama-masks" size={25} color="black" />,
+            
+            title: t('performance.visuals'),
+            name: 'visuals'},
+            {icon:<Foundation name="camera" size={24} color="black"/>,
+            
+            title: t('photography'),
+            name:'photography'},
+            {icon:<FontAwesome5 name="laptop-code" size={24} color="black" />,
+            title: t('software.tech'),
+            name: 'software'},
+            {icon:<Entypo name="laptop" size={24} color="black" />, 
+            title: t('information.technology'),
+            name: 'informationtechnology'},
+            {icon:<MaterialCommunityIcons name="stethoscope" size={24} color="black" />,
+            title: t('health'),
+            name:'health'},
+            {icon:<FontAwesome5 name="hospital-symbol" size={24} color="black" />,
+            title: t('hospitals.and.clinics'),
+            name:'hospital'},
+            {icon:<MaterialIcons name="medication" size={24} color="black" />,
+            title: t('pharmacy'),
+            name:'pharmacy'},
+            {icon:<Ionicons name="fast-food-outline" size={24} color="black" />,
+             
+            title: t('food.drink'),
+            name:'food'},
+            {
+            icon: <FontAwesome name="briefcase" size={24} color="black"/>, 
+            title: t('business'),
+            name:'business'},
+            {icon:<MaterialIcons name="directions-run" size={24} color="black"/>,
+            
+            title: t('sports.fitness'),
+            name:'sports'},
+            {icon:<FontAwesome5 name="globe-africa" size={24} color="black" />,
+            
+            title: t('travel.tourism'),
+            name:'travel'},
+            {icon:<MaterialCommunityIcons name="corn" size={24} color="black"  />,
+             
+            title: t('agriculture'),
+            name:'agriculture'},
+            {
+            icon: <MaterialCommunityIcons name="pine-tree" size={24} color="black"  />, 
+            title: t('environment'),
+            name:'environment'},
+            {icon:<MaterialCommunityIcons name="hand-heart-outline" size={24} color="black"  />,
+             
+            title: t('charity.fundraising'),
+            name:'charity'},
+            {icon:<FontAwesome5 name="pray" size={24} color="black"/>,
+             
+            title: t('religion.spirituality'),
+            name:'religion'},
+            {icon:<FontAwesome5 name="mountain" size={24} color="black"/>,
+             
+            title: t('outdoor.activities'),
+            name:'outdoor'},
+            {icon:<Ionicons name="brush-outline" size={24} color="black"/>,
+             
+            title: t('art'),
+            name: 'art'},
+            {icon:<Entypo name="game-controller" size={24} color="black" />,
+            
+            title: t('games.esports'),
+            name: 'game'},
+            {icon:<FontAwesome name="gears" size={24} color="black" />,
+             
+            title: t('engineering'),
+            name:'engineering'},
+        ]
 
 
   return (

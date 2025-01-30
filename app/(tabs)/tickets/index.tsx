@@ -13,6 +13,7 @@ import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import { uploadData, getUrl } from '@aws-amplify/storage';
 import { generateClient } from 'aws-amplify/data';
 import {useUser} from '../../../context/UserContext'
+import {useLanguage} from '../../../context/LanguageContext'
 
 const client = generateClient<Schema>();
 
@@ -26,6 +27,7 @@ const windowHeight = Dimensions.get('window').height
 export default function TicketsScreen() {
 
 
+    const {t} = useLanguage()
     const {userDetails} = useUser()
 
     const [events, setEvents] = useState([])
@@ -81,7 +83,7 @@ export default function TicketsScreen() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ThemedView style={styles.headerTextBody}>
-                <ThemedText type='subtitle'>I'm going!</ThemedText>
+                <ThemedText type='subtitle'>{t('im.going')}</ThemedText>
             </ThemedView>
             {loadingEvents ? 
             <ThemedView>

@@ -10,7 +10,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import GoogleLoginButton from '../components/appComponents/GoogleLoginButton'
 import { Link, useRouter } from 'expo-router';
 import {useUser} from '../context/UserContext'
-
+import {useLanguage} from '../context/LanguageContext'
 import {signUp, getCurrentUser, confirmSignUp, resendSignUpCode, signIn} from '@aws-amplify/auth'
 
 
@@ -23,6 +23,7 @@ export default function SignUp() {
 
 
     const {userDetails, setUserDetails} = useUser()
+    const {t} = useLanguage()
 
     const [email, setEmail] = useState<string>('')
     const [emailError, setEmailError] = useState<string>('')
@@ -186,16 +187,16 @@ export default function SignUp() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title" >Let's get started!</ThemedText>
+                <ThemedText type="title" >{t('lets.get.started')}</ThemedText>
                
             </ThemedView>
             <ThemedView style={styles.stepContainer}>
-                <ThemedText type="subtitle">Sign up</ThemedText>
+                <ThemedText type="subtitle">{t('sign.up')}</ThemedText>
                 
             </ThemedView>
            {confirmModal ? <ThemedView style={styles.confirmSignUp}>
                 <ThemedView style={styles.titleContainer}>
-                    <ThemedText type="title" >Almost there!</ThemedText>
+                    <ThemedText type="title" >{t('almost.there')}</ThemedText>
                   
                 </ThemedView>
                 <ThemedView style={styles.stepContainer}>
@@ -203,19 +204,19 @@ export default function SignUp() {
                   
                 </ThemedView>
                 <ThemedView>
-                  <ThemedText>Check Email</ThemedText>
-                  <ThemedText numberOfLines={2}>{`A code has been sent to ${email}`}</ThemedText>
+                  <ThemedText>{t('check.email')}</ThemedText>
+                  <ThemedText numberOfLines={2}>{`${t('a.code.has.been.sent.to')} ${email}`}</ThemedText>
                 </ThemedView>
                 <ThemedView>
-                  <TextInput style={styles.inputContainer} value={codeConfirm} placeholder='Enter code' onChangeText={(e)=> setCodeConfirm(e)}/>
+                  <TextInput style={styles.inputContainer} value={codeConfirm} placeholder={t('enter.code')} onChangeText={(e)=> setCodeConfirm(e)}/>
                 </ThemedView>
                 <ThemedView style={styles.loginButton}>
                   {codeConfirm.length > 0 ? 
                   <TouchableOpacity onPress={()=> handleConfirm()}>
-                    <ThemedText style={styles.loginText}>Confirm</ThemedText>
+                    <ThemedText style={styles.loginText}>{t('confirm')}</ThemedText>
                   </TouchableOpacity>:
                   <TouchableOpacity>
-                    <ThemedText style={styles.loginText}>Confirm</ThemedText>
+                    <ThemedText style={styles.loginText}>{t('confirm')}</ThemedText>
                   </TouchableOpacity>
                   }
                 </ThemedView>
@@ -223,11 +224,11 @@ export default function SignUp() {
             </ThemedView>: null}
             {loadingSignUp ? 
             <ThemedView style={styles.loadingSignUpModal}>
-              <ThemedText>Signing Up...</ThemedText>
+              <ThemedText>{t('signing.up')}</ThemedText>
               <ActivityIndicator />
             </ThemedView>: null}
             <ThemedView style={styles.loginContainer}>
-                <TextInput placeholder='Email' style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
                 <TextInput placeholder='Password' secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
                   {passwordError ? <ThemedText style={styles.errorText}>{passwordError}</ThemedText>: null}
@@ -237,31 +238,31 @@ export default function SignUp() {
                 <ThemedView style={styles.forgotPasswordBody}>
                   <Link href={{pathname: "/confirmAccount", params: {screen: 'signUp'}}} asChild>
                     <TouchableOpacity>
-                        <ThemedText type='default'>Didn't confirm email? Resend code.</ThemedText>
+                        <ThemedText type='default'>{t('didnt.confirm.email.resend.code')}</ThemedText>
                     </TouchableOpacity>
                   </Link>
                     
                 </ThemedView>
                 {loadingSignUp ? 
                 <TouchableOpacity style={styles.loginButton}>
-                    <ThemedText style={styles.loginText}>Sign up</ThemedText>
+                    <ThemedText style={styles.loginText}>{t('sign.up')}</ThemedText>
                 </TouchableOpacity>:
                 <TouchableOpacity style={styles.loginButton} onPress={()=> handleSignup()}>
-                    <ThemedText style={styles.loginText}>Sign up</ThemedText>
+                    <ThemedText style={styles.loginText}>{t('sign.up')}</ThemedText>
                 </TouchableOpacity>}
             </ThemedView>
             <GoogleLoginButton />
             
             <ThemedView style={styles.signupContainer}>
-                <ThemedText type='default'>Already have an account?</ThemedText>
+                <ThemedText type='default'>{t('already.have.an.account')}</ThemedText>
                 {!loadingSignUp ? 
                 <Link href={'/'} asChild>
                     <TouchableOpacity>
-                        <ThemedText style={styles.signupText}>Log in</ThemedText>
+                        <ThemedText style={styles.signupText}>{t('log.in')}</ThemedText>
                     </TouchableOpacity>
                 </Link>:
                 <TouchableOpacity>
-                    <ThemedText style={styles.signupText}>Log in</ThemedText>
+                    <ThemedText style={styles.signupText}>{t('log.in')}</ThemedText>
                 </TouchableOpacity>
                 }
             </ThemedView>

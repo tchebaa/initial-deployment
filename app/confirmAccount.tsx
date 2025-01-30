@@ -11,6 +11,7 @@ import GoogleLoginButton from '../components/appComponents/GoogleLoginButton'
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import {signIn, getCurrentUser, confirmSignUp, resendSignUpCode} from '@aws-amplify/auth'
 import {useUser} from '../context/UserContext'
+import { t } from 'i18next';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -183,7 +184,7 @@ export default function confirmAccount() {
             </ThemedView>
             {confirmModal ? 
               <ThemedView style={styles.loadingLoginModal}>
-                <ThemedText>Loading</ThemedText>
+                <ThemedText>{t('loading')}</ThemedText>
                 <ActivityIndicator />
               </ThemedView>: null}
               {loadingSendCode ? 
@@ -208,7 +209,7 @@ export default function confirmAccount() {
                 
             </ThemedView>
             <ThemedView style={styles.codeInputContainer}>
-                <TextInput placeholder='Email' style={styles.inputContainer} value={confirmEmail} onChangeText={(e)=> setConfirmEmail(e)}/>
+                <TextInput placeholder={t('email')} style={styles.inputContainer} value={confirmEmail} onChangeText={(e)=> setConfirmEmail(e)}/>
                 <TextInput placeholder='Enter code' style={styles.inputContainer} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
                 <TouchableOpacity style={styles.loginButton} onPress={()=> handleConfirm()}>
                     <ThemedText style={styles.loginText}>Confirm Account</ThemedText>
@@ -217,7 +218,7 @@ export default function confirmAccount() {
             </ThemedView>
             <ThemedView style={styles.signupContainer}>
                     <TouchableOpacity style={styles.gotToLoginButton} onPress={()=> router.back()}>
-                        <ThemedText >Go back</ThemedText>
+                        <ThemedText >{t('go.back')}</ThemedText>
                     </TouchableOpacity>
                    
             </ThemedView>

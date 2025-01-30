@@ -11,6 +11,7 @@ import GoogleLoginButton from '../components/appComponents/GoogleLoginButton'
 import { Link, useRouter } from 'expo-router';
 import {signIn, getCurrentUser} from '@aws-amplify/auth'
 import {useUser} from '../context/UserContext'
+import {useLanguage} from '../context/LanguageContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,7 +22,7 @@ const windowHeight = Dimensions.get('window').height
 export default function SignInScreen() {
 
     const {userDetails, setUserDetails} = useUser()
-
+    const {t} = useLanguage()
     const [email, setEmail] = useState<string>('')
     const [emailError, setEmailError] = useState<string>('')
     const [password, setPassword] = useState<string>('')
@@ -128,20 +129,20 @@ export default function SignInScreen() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title" >Let's get started!</ThemedText>
+                <ThemedText type="title" >{t('lets.get.started')}</ThemedText>
                
             </ThemedView>
             <ThemedView style={styles.stepContainer}>
-                <ThemedText type="subtitle">Log in</ThemedText>
+                <ThemedText type="subtitle">{t('log.in')}</ThemedText>
                 
             </ThemedView>
             {loadingLogIn ? 
               <ThemedView style={styles.loadingLoginModal}>
-                <ThemedText>Logging in...</ThemedText>
+                <ThemedText>{t('logging.in')}</ThemedText>
                 <ActivityIndicator />
               </ThemedView>: null}
             <ThemedView style={styles.loginContainer}>
-                <TextInput placeholder='Email' style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
                 <TextInput placeholder='Password' secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
                   {passwordError ? <ThemedText style={styles.errorText}>{passwordError}</ThemedText>: null}
@@ -157,21 +158,21 @@ export default function SignInScreen() {
                 <ThemedView style={styles.forgotPasswordBody}>
                     <Link href={'/confirmAccount'} asChild>
                       <TouchableOpacity>
-                          <ThemedText type='default'>Didn't confirm email? Resend code.</ThemedText>
+                          <ThemedText type='default'>{t('didnt.confirm.email.resend.code')}</ThemedText>
                       </TouchableOpacity>
                     </Link>
                 </ThemedView>
                 <TouchableOpacity style={styles.loginButton} onPress={()=> handleLogin()}>
-                    <ThemedText style={styles.loginText}>Login</ThemedText>
+                    <ThemedText style={styles.loginText}>{t('log.in')}</ThemedText>
                 </TouchableOpacity>
             </ThemedView>
             <GoogleLoginButton />
             
             <ThemedView style={styles.signupContainer}>
-                <ThemedText type='default'>New user?</ThemedText>
+                <ThemedText type='default'>{t('new.user')}</ThemedText>
                 <Link href={{pathname: "/signUp", params: {screenType: 'login'}}} asChild>
                     <Pressable>
-                        <ThemedText style={styles.signupText}>Sign up</ThemedText>
+                        <ThemedText style={styles.signupText}>{t('sign.up')}</ThemedText>
                     </Pressable>
                 </Link>
                 

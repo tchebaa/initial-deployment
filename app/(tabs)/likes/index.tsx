@@ -14,8 +14,9 @@ import moment from 'moment';
 import {useLocation} from '../../../context/LocationContext'
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import { generateClient } from 'aws-amplify/data';
+import {useLanguage} from '../../../context/LanguageContext'
 
-const client = generateClient<Schema>();
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
@@ -25,6 +26,7 @@ const windowHeight = Dimensions.get('window').height
 
 export default function LikesScreen() {
 
+    const {t} = useLanguage()
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
     const {likedEvents, loadingLikedEvents} = useLikes()
   
@@ -43,7 +45,7 @@ export default function LikesScreen() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ThemedView style={styles.headerTextBody}>
-                <ThemedText type='subtitle'>Let's go.</ThemedText>
+                <ThemedText type='subtitle'>{t('lets.go')}</ThemedText>
             </ThemedView>
             
         <ThemedView >

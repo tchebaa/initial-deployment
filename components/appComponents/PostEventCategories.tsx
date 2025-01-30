@@ -5,7 +5,7 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import {useLanguage} from '../../context/LanguageContext'
 import { Link } from 'expo-router';
 import { Pressable } from 'react-native-gesture-handler';
 

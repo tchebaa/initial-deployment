@@ -14,6 +14,7 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {useLocation} from '../context/LocationContext'
 import {generateClient} from 'aws-amplify/data'
 import { type Schema} from '../tchebaa-backend/amplify/data/resource'
+import {useLanguage} from '../context/LanguageContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -24,9 +25,8 @@ const windowHeight = Dimensions.get('window').height
 export default function LocationScreen() {
 
 
+    const {t, currentLanguageCode} = useLanguage()
     const [locationPermission, setLocationPermission] = useState(false)
-
-    const client = generateClient<Schema>();
 
 
 
@@ -82,17 +82,17 @@ export default function LocationScreen() {
         {locationPermission ? 
         <ThemedView style={styles.body}>
             <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title" >Events in...</ThemedText>
+                <ThemedText type="title" >{t('events.in')}</ThemedText>
                
             </ThemedView>
             <ThemedView style={styles.stepContainer}>
-                <ThemedText type="subtitle">Location</ThemedText>
+                <ThemedText type="subtitle">{t('location')}</ThemedText>
                 
             </ThemedView>
             <ThemedView style={styles.locationContainer}>
               <MaterialIcons name='location-on' size={24} color={'#1184e8'} />
               <GooglePlacesAutocomplete
-                placeholder='Search location' 
+                placeholder={t('search.location')} 
                 nearbyPlacesAPI='GooglePlacesSearch'
                 minLength={2}
                 onPress={(data, details = null)=>{
@@ -127,7 +127,7 @@ export default function LocationScreen() {
                 enablePoweredByContainer={false}
                 query={{
                     key: 'AIzaSyCGzT9TA6GF716zU_JaSqprPUEaBoA9wgk',
-                    language: 'en'
+                    language: currentLanguageCode
                 }}/>
             </ThemedView>
             
@@ -135,7 +135,7 @@ export default function LocationScreen() {
               <ThemedView style={{marginRight: 5}}>
                   <MaterialIcons name='my-location' size={24} color={'#1184e8'} />
               </ThemedView>
-              <ThemedText style={styles.myLocationText}>My current location</ThemedText>
+              <ThemedText style={styles.myLocationText}>{t('my.current.location')}</ThemedText>
             </TouchableOpacity>
             <ThemedView style={styles.addressBody}>
               <ThemedText numberOfLines={1}>{userAddress}</ThemedText>
@@ -155,9 +155,9 @@ export default function LocationScreen() {
           
         </ThemedView>:
         <ThemedView style={styles.body}>
-          <ThemedText style={styles.locationHeaderText} type='boldSmallTitle'>Location is required to use this app</ThemedText>
+          <ThemedText style={styles.locationHeaderText} type='boldSmallTitle'>{t('location.is.required.to.use.this.app')}</ThemedText>
           <TouchableOpacity style={styles.grantPermissionButton}>
-            <ThemedText>Grant permission</ThemedText>
+            <ThemedText>{t('grant.permission')}</ThemedText>
           </TouchableOpacity>
         </ThemedView>}
         

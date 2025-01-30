@@ -12,6 +12,7 @@ const pin = require('../../assets/images/location-pin.png')
 import { Link } from 'expo-router';
 import {useLocation} from '../../context/LocationContext'
 import { geometry } from '@turf/helpers';
+import {useLanguage} from '../../context/LanguageContext'
 
 const accessToken = 'pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig'
 
@@ -34,6 +35,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
     setCoordinates: Dispatch<SetStateAction<{latitude: number, longitude:number} | null>>
 }) {
 
+  const {t} = useLanguage()
   const [showMap, setShowMap] = useState<boolean>(false)
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false)
 
@@ -170,7 +172,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                         <TouchableOpacity onPress={()=> setShowMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={'black'} /></ThemedView></TouchableOpacity>
                     </View>
                     <GooglePlacesAutocomplete
-                        placeholder='Location' 
+                        placeholder={t('location')}
                         nearbyPlacesAPI='GooglePlacesSearch'
                         minLength={2}
                         onPress={(data, details = null)=>{
@@ -218,17 +220,17 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                         <ThemedView style={styles.confirmAddressBody}>
                           <ThemedText numberOfLines={1}>{address}</ThemedText>
                           <TouchableOpacity style={styles.confirmButton} onPress={()=> setShowMap(false)}>
-                            <ThemedText>Confirm</ThemedText>
+                            <ThemedText>{t('confirm')}</ThemedText>
                           </TouchableOpacity>
                         </ThemedView>: null}
                       </View>
             </ThemedView>
             : null}
             <ThemedView style={styles.container}>
-              <ThemedText type='defaultSemiBold'>Location</ThemedText>
+              <ThemedText type='defaultSemiBold'>{t('location')}</ThemedText>
                 <TouchableOpacity style={styles.pickLocationButton} onPress={()=> setShowMap(true)}>
                   <MaterialIcons name='location-on' size={16} color={'#1184e8'} />
-                    <ThemedText style={styles.pickLocationText}>Pick Location</ThemedText>
+                    <ThemedText style={styles.pickLocationText}>{t('pick.location')}Pick Location</ThemedText>
                     
                 </TouchableOpacity>
                 <ThemedView>
@@ -236,13 +238,13 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                   {eventAddressError ? <ThemedText>Event Location is required</ThemedText>: <ThemedText></ThemedText>}
                 </ThemedView>
                 <ThemedView>
-                    <ThemedText type='defaultSemiBold'>Event name</ThemedText>
-                    <TextInput style={styles.inputContainer} placeholder='Event name' value={eventName} onChangeText={(e)=> setEventName(e)}/>
+                    <ThemedText type='defaultSemiBold'>{t('event.name')}</ThemedText>
+                    <TextInput style={styles.inputContainer} placeholder={t('event.name')} value={eventName} onChangeText={(e)=> setEventName(e)}/>
                 </ThemedView>
                 {eventNameError ? <ThemedText>Event name required</ThemedText>: <ThemedText></ThemedText>}
                 <ThemedView>
-                    <ThemedText type='defaultSemiBold'>Event Description</ThemedText>
-                    <TextInput style={styles.descriptionTextAreaInput} multiline={true} numberOfLines={10} placeholder='Event description' value={eventDescription} onChangeText={(e)=> setEventDescription(e)}/>
+                    <ThemedText type='defaultSemiBold'>{t('event.description')}</ThemedText>
+                    <TextInput style={styles.descriptionTextAreaInput} multiline={true} numberOfLines={10} placeholder={t('event.description')} value={eventDescription} onChangeText={(e)=> setEventDescription(e)}/>
                 </ThemedView>
                 {eventNameError ? <ThemedText>Event description required</ThemedText>: <ThemedText></ThemedText>}
             </ThemedView>

@@ -5,7 +5,7 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import {useLanguage} from '../../context/LanguageContext'
 import { Link } from 'expo-router';
 
 
@@ -25,14 +25,15 @@ export default function PostEventPerson({personType, setPersonType, companyName,
     }) {
 
 
+    const {t} = useLanguage()
 
     return (
         <ThemedView style={styles.container}>
 
               {personType ? 
-              <ThemedText>I am an..</ThemedText> 
+              <ThemedText>{t('i.am.an')}</ThemedText> 
               :
-              <ThemedText>I am a..</ThemedText>
+              <ThemedText>{t('i.am.a')}</ThemedText>
               }
               <ThemedView style={styles.buttonComponent}>
                 <Pressable style={styles.radioButton} onPress={()=> setPersonType(!personType)}>
@@ -41,7 +42,7 @@ export default function PostEventPerson({personType, setPersonType, companyName,
                     :
                     <MaterialCommunityIcons name='radiobox-blank' size={16}/>
                     }
-                    <ThemedText style={styles.buttonText}>Individual</ThemedText>
+                    <ThemedText style={styles.buttonText}>{t('individual')}</ThemedText>
                 </Pressable>
                 <Pressable style={styles.radioButton} onPress={()=> setPersonType(!personType)}>
                     {!personType ? 
@@ -49,12 +50,12 @@ export default function PostEventPerson({personType, setPersonType, companyName,
                     :
                     <MaterialCommunityIcons name='radiobox-blank' size={16}/> 
                     }
-                    <ThemedText style={styles.buttonText}>Company</ThemedText>
+                    <ThemedText style={styles.buttonText}>{t('company')}</ThemedText>
                 </Pressable>
               </ThemedView>
               {!personType ? 
               <ThemedView style={styles.companyInputComponent}>
-                <TextInput placeholder='Company Name' style={styles.inputContainer} value={companyName} onChangeText={(e)=> setCompanyName(e)}/>
+                <TextInput placeholder={t('company.name')} style={styles.inputContainer} value={companyName} onChangeText={(e)=> setCompanyName(e)}/>
                 {!companyNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Company name required</ThemedText>}
                 <TextInput placeholder='Company Email' style={styles.inputContainer} value={companyEmail} onChangeText={(e)=> setCompanyEmail(e)}/>
                 {!companyEmailError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Company email required</ThemedText>}

@@ -11,6 +11,7 @@ import GoogleLoginButton from '../components/appComponents/GoogleLoginButton'
 import { Link, useRouter } from 'expo-router';
 import {signIn, getCurrentUser, confirmSignUp, resetPassword, confirmResetPassword} from '@aws-amplify/auth'
 import {useUser} from '../context/UserContext'
+import {useLanguage} from '../context/LanguageContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,7 +22,7 @@ const windowHeight = Dimensions.get('window').height
 export default function forgotPassword() {
 
     const {userDetails, setUserDetails} = useUser()
-    
+    const {t} = useLanguage()
     
         const [email, setEmail] = useState<string>('')
         const [emailError, setEmailError] = useState<string>('')
@@ -163,7 +164,7 @@ export default function forgotPassword() {
         <SafeAreaView style={styles.container}>
             <ThemedView style={styles.body}>
                 <ThemedView style={styles.titleContainer}>
-                    <ThemedText type="title" >My account.</ThemedText>
+                    <ThemedText type="title" >{t('my.account')}My account.</ThemedText>
                    
                 </ThemedView>
                 <ThemedView style={styles.stepContainer}>
@@ -172,7 +173,7 @@ export default function forgotPassword() {
                 </ThemedView>
                 {confirmModal ? 
                   <ThemedView style={styles.loadingLoginModal}>
-                    <ThemedText>Loading</ThemedText>
+                    <ThemedText>{t('loading')}</ThemedText>
                     <ActivityIndicator />
                   </ThemedView>: null}
                   {loadingSendCode ? 
@@ -181,7 +182,7 @@ export default function forgotPassword() {
                     <ActivityIndicator />
                   </ThemedView>: null}
                 <ThemedView style={styles.loginContainer}>
-                    <TextInput placeholder='Email' style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                    <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
                       {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
     
                       {loginError ? <ThemedText style={styles.errorText}>{loginError}</ThemedText>: null}
@@ -204,7 +205,7 @@ export default function forgotPassword() {
                 </ThemedView>: null}
                 <ThemedView style={styles.signupContainer}>
                         <TouchableOpacity style={styles.gotToLoginButton} onPress={()=> router.back()}>
-                            <ThemedText >Go back</ThemedText>
+                            <ThemedText >{t('go.back')}</ThemedText>
                         </TouchableOpacity>
                        
                 </ThemedView>

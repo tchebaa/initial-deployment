@@ -14,7 +14,10 @@ import EventHeader from '@/components/appComponents/EventHeader';
 import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import moment from 'moment';
+import { generateClient } from 'aws-amplify/data';
+import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 
+const client = generateClient<Schema>();
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -116,6 +119,12 @@ export default function Message() {
     }
 
   },[scrollRef, chats])
+
+
+  useEffect(()=> {
+
+
+  },[])
 
 
 /** 

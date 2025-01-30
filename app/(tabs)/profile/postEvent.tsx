@@ -23,6 +23,7 @@ import { uploadData, getUrl } from '@aws-amplify/storage';
 import { generateClient } from 'aws-amplify/data';
 import {useUser} from '../../../context/UserContext'
 import PostEventPreview from '@/components/appComponents/PostEventPreview';
+import {useLanguage} from '../../../context/LanguageContext'
 
 const client = generateClient<Schema>();
 
@@ -31,88 +32,12 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
-//Events Categories List
-
-const eventsCategories = [
-    {
-    title: 'Music',
-    name:'music'},
-    {
-    
-    title: 'Night party',
-    name:'night'},
-    {
-    
-    title: 'Performing & visuals',
-    name: 'visuals'},
-    {
-    
-    title: 'Photography & film',
-    name:'photography'},
-    {
-    
-    title: 'Software & tech',
-    name: 'software'},
-    {
-    
-    title: 'Health',
-    name:'health'},
-    {
-     
-    title: 'Food & drink',
-    name:'food'},
-    {
-    
-    title: 'Business',
-    name:'business'},
-    {
-    
-    title: 'Sports & fitness',
-    name:'sports'},
-    {
-    
-    title: 'Travel & tourism',
-    name:'travel'},
-    {
-     
-    title: 'Agriculture',
-    name:'agriculture'},
-    {
-    
-    title: 'Environment',
-    name:'environment'},
-    {
-     
-    title: 'Charity & fundraising',
-    name:'charity'},
-    {
-     
-    title: 'Religion & spirituality',
-    name:'religion'},
-    {
-     
-    title: 'Outdoor activities',
-    name:'outdoor'},
-    {
-     
-    title: 'Art',
-    name: 'art'},
-    {
-    
-    title: 'Games & esports',
-    name: 'game'},
-    {
-     
-    title: 'Engineering',
-    name:'engineering'},
-]
-
-
 
 
 export default function postEvent() {
 
 
+    const {t} = useLanguage()
     const {screenName, id} = useLocalSearchParams()
     const {userDetails} = useUser()
     const router = useRouter()
@@ -183,6 +108,101 @@ export default function postEvent() {
     const [uploadPercent, setUploadPercent] = useState<number>(0)
     const [uploadingDetail, setUploadingDetail] = useState<string>('')
     const [uploadLoading, setUploadLoading] = useState<boolean>(false)
+
+
+       //Events Categories List
+
+       const eventsCategories = [
+        {
+        title: t('education'),
+        name:'education'},
+        {
+        title: t('music'),
+        name:'music'},
+        {
+       
+        title: t('night.party'),
+        name:'night'},
+        {
+        
+        title: t('entertainment'),
+        name: 'entertainment'},
+        {
+        
+        title: t('markets'),
+        name: 'markets'},
+        {
+        
+        title: t('performance.visuals'),
+        name: 'visuals'},
+        {
+        
+        title: t('photography'),
+        name:'photography'},
+        {
+        title: t('software.tech'),
+        name: 'software'},
+        {
+        title: t('information.technology'),
+        name: 'informationtechnology'},
+        {
+        title: t('health'),
+        name:'health'},
+        {
+        title: t('hospitals.and.clinics'),
+        name:'hospital'},
+        {
+        title: t('pharmacy'),
+        name:'pharmacy'},
+        {
+         
+        title: t('food.drink'),
+        name:'food'},
+        {
+        
+        title: t('business'),
+        name:'business'},
+        {
+        
+        title: t('sports.fitness'),
+        name:'sports'},
+        {
+        
+        title: t('travel.tourism'),
+        name:'travel'},
+        {
+         
+        title: t('agriculture'),
+        name:'agriculture'},
+        {
+         
+        title: t('environment'),
+        name:'environment'},
+        {
+         
+        title: t('charity.fundraising'),
+        name:'charity'},
+        {
+         
+        title: t('religion.spirituality'),
+        name:'religion'},
+        {
+         
+        title: t('outdoor.activities'),
+        name:'outdoor'},
+        {
+         
+        title: t('art'),
+        name: 'art'},
+        {
+        
+        title: t('games.esports'),
+        name: 'game'},
+        {
+         
+        title: t('engineering'),
+        name:'engineering'},
+    ]
 
 
 
@@ -766,7 +786,7 @@ export default function postEvent() {
               }
 
               setUploadPercent(100)
-              setUploadingDetail('Upload Successfull. Closing')
+              setUploadingDetail('Upload Successful. Closing')
               setTimeout(()=> {
                 setUploadLoading(false)
                 router.replace("/(tabs)/profile/manageEvents")
@@ -975,7 +995,7 @@ export default function postEvent() {
             <ThemedView style={styles.pageButtons}>
                 {pageSection === 0 ? <ThemedText></ThemedText>: 
                 <Pressable onPress={()=> handlePrevDisplay()}>
-                    <ThemedText>Prev</ThemedText>
+                    <ThemedText>{t('previous')}</ThemedText>
                 </Pressable>}
                 
                 {pageSection === 6 ? 
@@ -987,7 +1007,7 @@ export default function postEvent() {
                             <ThemedText>Post</ThemedText>
                         </TouchableOpacity>:
                         <TouchableOpacity>
-                            <ThemedText>Edit</ThemedText>
+                            <ThemedText>{t('edit')}</ThemedText>
                         </TouchableOpacity>
                         }
                     </ThemedView>:
@@ -997,14 +1017,14 @@ export default function postEvent() {
                             <ThemedText>Post</ThemedText>
                         </TouchableOpacity>:
                         <TouchableOpacity onPress={()=> handleUpdateEvent()}>
-                            <ThemedText>Edit</ThemedText>
+                            <ThemedText>{t('edit')}</ThemedText>
                         </TouchableOpacity>
                         }
                     </ThemedView>
                     }
                 </ThemedView>:
                 <TouchableOpacity onPress={()=> handleNextDisplay()}>
-                    <ThemedText>Next</ThemedText>
+                    <ThemedText>{t('next')}</ThemedText>
                 </TouchableOpacity>}
             </ThemedView>
         </ThemedView>}

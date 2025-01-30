@@ -18,6 +18,7 @@ import { uploadData, getUrl } from '@aws-amplify/storage';
 import {useUser} from '../../context/UserContext';
 import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
 import { generateClient } from 'aws-amplify/data';
+import {useLanguage} from '../../context/LanguageContext'
 import pin from '../../assets/images/location-pin.png'
 import PinImage from '../../assets/images/location-pin.png'
 
@@ -44,6 +45,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function EventScreenBody({item, screenType}: {screenType: string | string []}) {
 
 
+  const {t} = useLanguage()
   const {userDetails} = useUser()
 
   const router = useRouter()
@@ -350,7 +352,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
               </View>
               {openDirection ? 
               <ThemedView style={styles.directionLocationSection}>
-                  <ThemedText type='defaultSemiBold'>Directions from</ThemedText>
+                  <ThemedText type='defaultSemiBold'>{t('directions.from')}</ThemedText>
                   <LocationDirection originDirection={originDirection} getDirections={getDirections} setOriginDirection={setOriginDirection} loadingDirections={loadingDirections} 
                   setLoadingDirections={setLoadingDirections} loadingDirectionsError={loadingDirectionsError} openExternalMap={openExternalMap}/>
               </ThemedView>: null}
@@ -390,7 +392,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                     </View>
                     
                     <ThemedView>
-                      <ThemedText>Total</ThemedText>
+                      <ThemedText>{t('total')}</ThemedText>
                       <ThemedText>{eventTotalPrice}</ThemedText>
                     </ThemedView>
                     <ThemedView>
@@ -400,7 +402,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                         <ThemedText>Booking</ThemedText>
                       </ThemedView>:
                       <TouchableOpacity style={styles.checkoutButton} onPress={()=> handleBookEvent()}>
-                        <ThemedText>Checkout</ThemedText>
+                        <ThemedText>{t('checkout')}</ThemedText>
                       </TouchableOpacity>}
                       {bookingError ? <ThemedView><ThemedText>{bookingError}</ThemedText></ThemedView>: null}
                     </ThemedView>
@@ -424,7 +426,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                               </ThemedView>
                               <View style={styles.ageGroupPrice}>
                                 <View style={styles.ageGroupSection}>
-                                  <ThemedText type='defaultSemiBold'>Adult</ThemedText>
+                                  <ThemedText type='defaultSemiBold'>{t('adult')}</ThemedText>
                                   <Text style={styles.ageGroupDetails}>+18</Text>
                                 </View>
                                 <View style={styles.addMinusSection}>
@@ -438,7 +440,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                               </View>
                               <View style={styles.ageGroupPrice}>
                                 <View style={styles.ageGroupSection}>
-                                  <ThemedText type='defaultSemiBold'>Adolescent</ThemedText>
+                                  <ThemedText type='defaultSemiBold'>{t('adolescent')}</ThemedText>
                                   <Text style={styles.ageGroupDetails}>13 - 17</Text>
                                 </View>
                                 <View style={styles.addMinusSection}>
@@ -451,7 +453,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                               </View>
                               <View style={styles.ageGroupPrice}>
                                 <View style={styles.ageGroupSection}>
-                                  <ThemedText type='defaultSemiBold'>Child</ThemedText>
+                                  <ThemedText type='defaultSemiBold'>{t('child')}</ThemedText>
                                   <Text style={styles.ageGroupDetails}>0 - 12</Text>
                                 </View>
                                 <View style={styles.addMinusSection}>
@@ -465,7 +467,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                               <View style={styles.ageGroupFinalPrice}>
                                 <ThemedText>Adult price</ThemedText>
                                 {item.adultPrice === 0 ? 
-                                <ThemedText>Free</ThemedText>:
+                                <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
                                   <ThemedText>{adultNumber}</ThemedText>
                                   <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
@@ -475,7 +477,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                               <View style={styles.ageGroupFinalPrice}>
                                 <ThemedText>Adolescent price</ThemedText>
                                 {item.adolescentPrice === 0 ? 
-                                <ThemedText>Free</ThemedText>:
+                                <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
                                   <ThemedText>{adolescentNumber}</ThemedText>
                                   <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
@@ -485,7 +487,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                               <View style={styles.ageGroupFinalPrice}>
                                 <ThemedText>Child price</ThemedText>
                                 {item.childPrice === 0 ? 
-                                <ThemedText>Free</ThemedText>:
+                                <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
                                   <ThemedText>{childNumber}</ThemedText>
                                   <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
@@ -493,16 +495,16 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 </ThemedView>}
                               </View>
                               <View style={styles.ageGroupFinalPrice}>
-                                <ThemedText type='defaultSemiBold'>Total</ThemedText>
+                                <ThemedText type='defaultSemiBold'>{t('total')}</ThemedText>
                                 <ThemedText>{(adultNumber * item.adultPrice) + (adolescentNumber * item.adolescentPrice) + (childNumber * item.childPrice )}</ThemedText>
                               </View>
                               <ThemedView style={styles.finalBookingButtonSection}>
                                 {adultNumber > 0 || adolescentNumber > 0 || childNumber > 0 ? 
                                 <TouchableOpacity style={styles.bookButtonActive} onPress={()=> handleOpenCheckoutModal(Number((adultNumber * item.adultPrice) + (adolescentNumber * item.adolescentPrice) + (childNumber * item.childPrice )))}>
-                                  <ThemedText style={styles.bookingTextActive}>Book</ThemedText>
+                                  <ThemedText style={styles.bookingTextActive}>{t('book')}</ThemedText>
                                 </TouchableOpacity>:
                                 <TouchableOpacity style={styles.bookButton}>
-                                  <ThemedText style={styles.bookingText}>Book</ThemedText>
+                                  <ThemedText style={styles.bookingText}>{t('book')}</ThemedText>
                                 </TouchableOpacity>}
                                 
                               </ThemedView>
@@ -556,7 +558,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                     <ThemedView style={styles.eventBody}>
                         <ThemedText type='subtitle'>{item.eventName}</ThemedText>
                         <View style={styles.locationBody}>
-                            <ThemedText type='defaultSemiBold'>Location</ThemedText>
+                            <ThemedText type='defaultSemiBold'>{t('location')}</ThemedText>
                             <View style={styles.locationSection}>
                                 <MaterialIcons name='location-on' size={16} color={'#1184e8'} />
                                 <ThemedText>{item.eventAddress}</ThemedText>
@@ -564,7 +566,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                         </View>
                         
                         <View style={styles.descriptionBody}>
-                            <ThemedText type='defaultSemiBold'>About this event</ThemedText>
+                            <ThemedText type='defaultSemiBold'>{t('about.this.event')}</ThemedText>
                             <ThemedText style={styles.eventDescription}>{item.eventDescription}</ThemedText>
                         </View>
                         <ThemedView>
@@ -596,7 +598,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                     
             </ScrollView>
             <ThemedView style={styles.dateSelectionComponent}>
-              <ThemedText>Choose date:</ThemedText>
+              <ThemedText>{t('choose.date')}:</ThemedText>
               <ThemedView>
                 {!loadSortingDates ? 
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -640,10 +642,10 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                 <View></View>
                 {eventDate ? 
                 <TouchableOpacity style={styles.selectedBookButton} onPress={()=> setBookingModal(true)}>
-                  <ThemedText>Book</ThemedText>
+                  <ThemedText>{t('book')}</ThemedText>
                 </TouchableOpacity>:
                 <TouchableOpacity style={styles.unselectedBookButton}>
-                  <ThemedText>Book</ThemedText>
+                  <ThemedText>{t('book')}</ThemedText>
                 </TouchableOpacity>
                 }
               </View>

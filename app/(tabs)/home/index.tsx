@@ -13,6 +13,8 @@ import moment from 'moment';
 import {useLocation} from '../../../context/LocationContext'
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import { generateClient } from 'aws-amplify/data';
+import {useLanguage} from '../../../context/LanguageContext'
+
 
 
 
@@ -28,6 +30,10 @@ const windowHeight = Dimensions.get('window').height
 
 export default function HomeScreen() {
 
+
+    const {t, currentLanguageCode} = useLanguage()
+
+    moment.locale(currentLanguageCode);
 
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
@@ -87,7 +93,7 @@ export default function HomeScreen() {
         <ThemedView style={styles.body}>
             <Link href={'/(tabs)/search'} asChild>
                 <TouchableOpacity style={styles.searchButton}>
-                    <ThemedText >Search events</ThemedText>
+                    <ThemedText >{t('search.events')}</ThemedText>
                     <AntDesign size={24} name="search1" color={'#1184e8'} />
                 </TouchableOpacity>
             </Link>

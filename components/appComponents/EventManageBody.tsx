@@ -11,7 +11,7 @@ import {useUser} from '../../context/UserContext';
 import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
 import { generateClient } from 'aws-amplify/data';
 import { Link } from 'expo-router';
-
+import {useLanguage} from '../../context/LanguageContext'
 
 const client = generateClient<Schema>();
 
@@ -27,6 +27,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function EventManageBody({item, screenType}: {screenType: string}) {
 
 
+    const {t} = useLanguage()
     const [loadingImage, setLoadingImage] = useState<boolean>(true)
     const [loadingImageError, setLoadingImageError] = useState<string>('')
     const [mainImageUrl, setMainImageUrl] = useState<string>('')
@@ -101,10 +102,10 @@ export default function EventManageBody({item, screenType}: {screenType: string}
                     
                     <ThemedView style={styles.signOutOptionBody}>
                         <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setDeleteModal(false)}>
-                            <ThemedText type='defaultSemiBold'>No</ThemedText>
+                            <ThemedText type='defaultSemiBold'>{t('no')}</ThemedText>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.acceptSignOutButton}>
-                            <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>Yes</ThemedText>
+                            <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>{t('yes')}</ThemedText>
                         </TouchableOpacity>
                     </ThemedView>
                 </ThemedView>: null}
@@ -139,11 +140,11 @@ export default function EventManageBody({item, screenType}: {screenType: string}
                     <View style={styles.eventDetailsSearchBody}>
                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                          <TouchableOpacity style={styles.bookingsButton}><ThemedText>View Bookings</ThemedText></TouchableOpacity>
+                          <TouchableOpacity style={styles.bookingsButton}><ThemedText>{t('view.bookings')}</ThemedText></TouchableOpacity>
                           <ThemedView style={styles.buttonsContainer}>
-                            <TouchableOpacity style={styles.bookingsButton} onPress={()=> handleOpenDeleteModal(item.eventName, item.id, item.eventAddress)}><ThemedText>delete</ThemedText></TouchableOpacity>
+                            <TouchableOpacity style={styles.bookingsButton} onPress={()=> handleOpenDeleteModal(item.eventName, item.id, item.eventAddress)}><ThemedText>{t('delete')}</ThemedText></TouchableOpacity>
                             <Link href={{pathname: '/(tabs)/profile/postEvent' , params: {screenName: screenType, id: item.id}}} asChild>
-                                <TouchableOpacity style={styles.editButton}><ThemedText>edit</ThemedText></TouchableOpacity>
+                                <TouchableOpacity style={styles.editButton}><ThemedText>{t('edit')}</ThemedText></TouchableOpacity>
                             </Link>
                           </ThemedView>
                       </View>

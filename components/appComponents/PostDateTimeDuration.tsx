@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import RNDateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
 import moment from 'moment';
-
+import {useLanguage} from '../../context/LanguageContext'
 
 import { Link } from 'expo-router';
 
@@ -22,7 +22,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function PostDateTimeDuration({ageRestriction, dateTimePrice, setDateTimePrice}: {ageRestriction: string [], dateTimePrice: string [], setDateTimePrice: Dispatch<SetStateAction<string []>>}) {
 
-    
+    const {t} = useLanguage()
 
     const [date, setDate] = useState(new Date())
     const [mode, setMode] = useState<string | "date" | "time" | "datetime" | "countdown" | undefined>('')
@@ -359,7 +359,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                             <MaterialCommunityIcons name="calendar" size={24} color="black" />
                             {!selectedDate ? 
                             <View style={styles.selectDateTimeDetailsSection}>
-                                <ThemedText>Select date</ThemedText>
+                                <ThemedText>{t('select.date')}</ThemedText>
                                 <ThemedText></ThemedText>
                             </View>:
                             <View style={styles.selectDateTimeDetailsSection}>
@@ -371,7 +371,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                             <Feather name="clock" size={24} color="black" />
                             {!selectedTime ? 
                             <View style={styles.selectDateTimeDetailsSection}>
-                                <ThemedText>Select time</ThemedText>
+                                <ThemedText>{t('select.time')}</ThemedText>
                                 <ThemedText></ThemedText>
                             </View>:
                             <View style={styles.selectDateTimeDetailsSection}>
@@ -381,20 +381,20 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                         </TouchableOpacity>
                     </ThemedView>
                     <ThemedView style={styles.eventDurationSection}>
-                        <ThemedText>Event Duration</ThemedText>
+                        <ThemedText>{t('event.duration')}</ThemedText>
                         <ThemedView style={styles.eventDurationInputSection}>
                             <ThemedView style={styles.eventDurationInput}>
-                                <ThemedText>Days</ThemedText>
-                                <TextInput  placeholder='days'  value={days.toString()} keyboardType='numeric' onChangeText={(e)=> setDays(Number(e))}/>
+                                <ThemedText>{t('days')}</ThemedText>
+                                <TextInput  placeholder={t('days')}  value={days.toString()} keyboardType='numeric' onChangeText={(e)=> setDays(Number(e))}/>
                         
                             </ThemedView>
                             <ThemedView style={styles.eventDurationInput}>
-                                <ThemedText>Hours</ThemedText>
-                                <TextInput  placeholder='hours' value={hours.toString()} onChangeText={(e)=> setHours(Number(e))} keyboardType='numeric'/>
+                                <ThemedText>{t('hours')}</ThemedText>
+                                <TextInput  placeholder={t('hours')} value={hours.toString()} onChangeText={(e)=> setHours(Number(e))} keyboardType='numeric'/>
                             </ThemedView>
                             <ThemedView style={styles.eventDurationInput}>
-                                <ThemedText>Minutes</ThemedText>
-                                <TextInput placeholder='minutes' value={minutes.toString()} onChangeText={(e)=> setMinutes(Number(e))} keyboardType='numeric'/>
+                                <ThemedText>{t('minutes')}</ThemedText>
+                                <TextInput placeholder={t('minutes')} value={minutes.toString()} onChangeText={(e)=> setMinutes(Number(e))} keyboardType='numeric'/>
                             </ThemedView>
                             
                         </ThemedView>
@@ -413,40 +413,40 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                     <TouchableOpacity onPress={()=> handleRemoveTicketOption(Number(i))}><AntDesign name='close' size={20} color={'black'} /></TouchableOpacity>
                                 </ThemedView>: null}
                                 <ThemedView style={styles.ticketTitleSection}>
-                                    <ThemedText>Ticket title</ThemedText>
-                                    <ThemedText style={styles.ageDetailsText}>eg. VIP, Regular or Economy</ThemedText>
+                                    <ThemedText>{t('ticket.title')}</ThemedText>
+                                    <ThemedText style={styles.ageDetailsText}>{t('eg.vip.regular.economy')}</ThemedText>
                                     
                                 </ThemedView>
-                                <TextInput value={parsedItem.ticketTitle} style={styles.ticketTitleInput} placeholder='eg. VIP, Regular or Economy (optional)' onChangeText={(e)=> handleChangeTicketArrayInput('ticketTitle', e, i)}/>
-                                    <ThemedText style={styles.ticketNumberHeader}>Ticket Number</ThemedText>
-                                <TextInput value={parsedItem.ticketNumber.toString()} placeholder='Ticket Number' keyboardType='numeric' style={styles.ticketNumberInput} onChangeText={(e)=> handleChangeTicketArrayInput('ticketNumber', Number(e), i)}/>
+                                <TextInput value={parsedItem.ticketTitle} style={styles.ticketTitleInput} placeholder={t('eg.vip.regular.economy')} onChangeText={(e)=> handleChangeTicketArrayInput('ticketTitle', e, i)}/>
+                                    <ThemedText style={styles.ticketNumberHeader}>{t('ticket.number')}</ThemedText>
+                                <TextInput value={parsedItem.ticketNumber.toString()} placeholder={t('ticket.number')} keyboardType='numeric' style={styles.ticketNumberInput} onChangeText={(e)=> handleChangeTicketArrayInput('ticketNumber', Number(e), i)}/>
                             
                         
                                 <ThemedView style={styles.eventPriceDetailsHeader}>
-                                    <ThemedText>Event Price</ThemedText>
-                                    <ThemedText style={styles.eventPriceDetailsText}>(If free enter 0)</ThemedText>
+                                    <ThemedText>{t('event.price')}</ThemedText>
+                                    <ThemedText style={styles.eventPriceDetailsText}>{`(${t('if.free.enter.o')})`}</ThemedText>
                                 </ThemedView>
                                 
                                 <ThemedView style={styles.priceComponent}>
                                     <ThemedView style={styles.ageAndDetailsSection}>
-                                        <ThemedText >Adult</ThemedText>
+                                        <ThemedText >{t('adult')}</ThemedText>
                                         <ThemedText style={styles.ageDetailsText}>18+</ThemedText>
                                     </ThemedView>
                                     <TextInput style={styles.priceInput} value={parsedItem.adultPrice.toString()} placeholder='Adult Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('adultPrice', Number(e), i)} />
                                 </ThemedView>
                                 <ThemedView style={styles.priceComponent}>
                                     <ThemedView style={styles.ageAndDetailsSection}>
-                                        <ThemedText >Adolescent</ThemedText>
+                                        <ThemedText >{t('adolescent')}</ThemedText>
                                         <ThemedText style={styles.ageDetailsText}>13 - 17</ThemedText>
                                     </ThemedView>
-                                    <TextInput style={styles.priceInput} value={parsedItem.adolescentPrice.toString()} placeholder='Adult Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('adolescentPrice', Number(e), i)} />
+                                    <TextInput style={styles.priceInput} value={parsedItem.adolescentPrice.toString()} placeholder='Adolescent Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('adolescentPrice', Number(e), i)} />
                                 </ThemedView>
                                 <ThemedView style={styles.priceComponent}>
                                     <ThemedView style={styles.ageAndDetailsSection}>
-                                        <ThemedText >Child</ThemedText>
+                                        <ThemedText >{t('child')}</ThemedText>
                                         <ThemedText style={styles.ageDetailsText}>0 - 12</ThemedText>
                                     </ThemedView>
-                                    <TextInput style={styles.priceInput} value={parsedItem.childPrice.toString()} placeholder='Adult Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('childPrice', Number(e), i)} />
+                                    <TextInput style={styles.priceInput} value={parsedItem.childPrice.toString()} placeholder='Child Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('childPrice', Number(e), i)} />
                                 </ThemedView>
                             </ThemedView>
 
@@ -458,7 +458,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                     <ThemedView style={styles.addTicketOptionSection}>
                         <TouchableOpacity style={styles.addTicketOptionButton} onPress={()=> handleAddTicketOption()}>
                             <AntDesign name='plussquareo' color={'black'} size={24} />
-                            <ThemedText>Add another ticket option</ThemedText>
+                            <ThemedText>{t('add.another.ticket.option')}</ThemedText>
                         </TouchableOpacity>
                     </ThemedView>
                     
@@ -471,7 +471,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                 <AntDesign name="plussquareo" size={24} color="white" />
                             </View>
                             <View style={styles.saveTextSection}>
-                                <ThemedText style={styles.saveText} type='boldSmallTitle'>Edit</ThemedText>
+                                <ThemedText style={styles.saveText} type='boldSmallTitle'>{t('edit')}</ThemedText>
                             </View>
                             
                         </TouchableOpacity>
@@ -483,7 +483,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                 <AntDesign name="plussquareo" size={24} color="white" />
                             </View>
                             <View style={styles.saveTextSection}>
-                                <ThemedText style={styles.saveText} type='boldSmallTitle'>Save</ThemedText>
+                                <ThemedText style={styles.saveText} type='boldSmallTitle'>{t('save')}</ThemedText>
                             </View>
                             
                         </TouchableOpacity>
@@ -500,7 +500,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                             <ThemedView style={styles.ticketCloseView}>
                                     <View></View>
                                     <TouchableOpacity style={styles.editButton} onPress={()=> handleOpenEditForm(parsedItem, i)}>
-                                        <ThemedText style={styles.editText}>Edit</ThemedText>
+                                        <ThemedText style={styles.editText}>{t('edit')}</ThemedText>
                                         <Feather name='edit' size={24} color={'#1184e8'} />
                                     </TouchableOpacity>
                                 </ThemedView>
@@ -517,25 +517,25 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                     <Feather name="clock" size={24} color="black" />
                                 
                                     <View style={styles.selectDateTimeDetailsSection}>
-                                        <ThemedText>Event Time</ThemedText>
+                                        <ThemedText>{t('event.duration')}</ThemedText>
                                         <ThemedText>{moment(parsedItem.eventDate).format('LT')}</ThemedText>
                                     </View>
                                 </ThemedView>
                             </ThemedView>
                             <ThemedView style={styles.eventDurationSection}>
-                                <ThemedText>Event Duration</ThemedText>
+                                <ThemedText>{t('event.duration')}</ThemedText>
                                 <ThemedView style={styles.eventDurationInputSection}>
                                     <ThemedView style={styles.eventDurationInput}>
-                                        <ThemedText>Days</ThemedText>
+                                        <ThemedText>{t('days')}</ThemedText>
                                         <ThemedText>{parsedItem.eventDays}</ThemedText>
                                 
                                     </ThemedView>
                                     <ThemedView style={styles.eventDurationInput}>
-                                        <ThemedText>Hours</ThemedText>
+                                        <ThemedText>{t('hours')}</ThemedText>
                                         <ThemedText>{parsedItem.eventHours}</ThemedText>
                                     </ThemedView>
                                     <ThemedView style={styles.eventDurationInput}>
-                                        <ThemedText>Minutes</ThemedText>
+                                        <ThemedText>{t('minutes')}</ThemedText>
                                         <ThemedText>{parsedItem.eventMinutes}</ThemedText>
                                     </ThemedView>
                                     
@@ -548,36 +548,36 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                     <ThemedView style={styles.ticketSection} key={i}>
                                         
                                         <ThemedView style={styles.ticketTitleSection}>
-                                            <ThemedText>Ticket title</ThemedText>
+                                            <ThemedText>{t('ticket.title')}</ThemedText>
                                         </ThemedView>
                                         <ThemedText>{item.ticketTitle}</ThemedText>
-                                        <ThemedText style={styles.ticketNumberHeader}>Ticket Number</ThemedText>
+                                        <ThemedText style={styles.ticketNumberHeader}>{t('ticket.number')}</ThemedText>
                                         <ThemedText>{item.ticketNumber}</ThemedText>
                                        
                                     
                                 
                                         <ThemedView style={styles.eventPriceDetailsHeader}>
-                                            <ThemedText>Event Price</ThemedText>
+                                            <ThemedText>{t('event.price')}</ThemedText>
                                             
                                         </ThemedView>
                                         
                                         <ThemedView style={styles.priceComponent}>
                                             <ThemedView style={styles.ageAndDetailsSection}>
-                                                <ThemedText >Adult</ThemedText>
+                                                <ThemedText >{t('adult')}</ThemedText>
                                                 <ThemedText style={styles.ageDetailsText}>18+</ThemedText>
                                             </ThemedView>
                                             <ThemedText>{item.adultPrice}</ThemedText>
                                         </ThemedView>
                                         <ThemedView style={styles.priceComponent}>
                                             <ThemedView style={styles.ageAndDetailsSection}>
-                                                <ThemedText >Adolescent</ThemedText>
+                                                <ThemedText >{t('adolescent')}</ThemedText>
                                                 <ThemedText style={styles.ageDetailsText}>13 - 17</ThemedText>
                                             </ThemedView>
                                             <ThemedText>{item.adolescentPrice}</ThemedText>
                                         </ThemedView>
                                         <ThemedView style={styles.priceComponent}>
                                             <ThemedView style={styles.ageAndDetailsSection}>
-                                                <ThemedText >Child</ThemedText>
+                                                <ThemedText >{t('child')}</ThemedText>
                                                 <ThemedText style={styles.ageDetailsText}>0 - 12</ThemedText>
                                             </ThemedView>
                                             <ThemedText>{item.childPrice}</ThemedText>
