@@ -95,7 +95,7 @@ export default function forgotPassword() {
                     setResendCodeError('')
                     await resetPassword({
                         username: email
-                    }).then(()=> { setResendCodeSuccess(`Code sent to ${email}. Enter code below to continue.`)})
+                    }).then(()=> { setResendCodeSuccess(`${t('code.sent.to')} ${email}. ${t('enter.code.below.to.continue')}`)})
     
                 } catch(e) {
     
@@ -106,7 +106,7 @@ export default function forgotPassword() {
     
     
             } else {
-                setEmailError('Email required')
+                setEmailError(t('email.required'))
             }
         }
     
@@ -147,7 +147,7 @@ export default function forgotPassword() {
             
     
             } else {
-                setConfirmEmailError('Email required')
+                setConfirmEmailError(t('email.required'))
             }
     
               
@@ -164,11 +164,11 @@ export default function forgotPassword() {
         <SafeAreaView style={styles.container}>
             <ThemedView style={styles.body}>
                 <ThemedView style={styles.titleContainer}>
-                    <ThemedText type="title" >{t('my.account')}My account.</ThemedText>
+                    <ThemedText type="title" >{t('my.account')}</ThemedText>
                    
                 </ThemedView>
                 <ThemedView style={styles.stepContainer}>
-                    <ThemedText type="subtitle">Reset password.</ThemedText>
+                    <ThemedText type="subtitle">{t('reset.password')}</ThemedText>
                     
                 </ThemedView>
                 {confirmModal ? 
@@ -178,7 +178,7 @@ export default function forgotPassword() {
                   </ThemedView>: null}
                   {loadingSendCode ? 
                   <ThemedView style={styles.loadingLoginModal}>
-                    <ThemedText>Sending code</ThemedText>
+                    <ThemedText>{t('sending.code')}</ThemedText>
                     <ActivityIndicator />
                   </ThemedView>: null}
                 <ThemedView style={styles.loginContainer}>
@@ -189,17 +189,17 @@ export default function forgotPassword() {
                     
                     {resendCodeSuccess ? null : 
                     <TouchableOpacity style={styles.loginButton} onPress={()=> handleResendCode()}>
-                        <ThemedText style={styles.loginText}>Send code</ThemedText>
+                        <ThemedText style={styles.loginText}>{t('send.code')}</ThemedText>
                     </TouchableOpacity>}
-                    {resendCodeSuccess ? <ThemedText style={styles.confirmText}>{`Code sent to ${email}. Enter code below to continue.`}</ThemedText>: null}
+                    {resendCodeSuccess ? <ThemedText style={styles.confirmText}>{`${t('code.sent.to')} ${email}. ${t('enter.code.below.to.continue')}`}</ThemedText>: null}
                     {resendCodeError ? <ThemedText style={styles.errorText}>{resendCodeError}</ThemedText>: null}
                 </ThemedView>
                 {resendCodeSuccess ? 
                 <ThemedView style={styles.codeInputContainer}>
-                    <TextInput placeholder='Enter code' style={styles.inputContainer} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
-                    <TextInput placeholder='New Password' secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
+                    <TextInput placeholder={t('enter.code')} style={styles.inputContainer} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
+                    <TextInput placeholder={t('new.password')} secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
                     <TouchableOpacity style={styles.loginButton} onPress={()=> handleConfirm()}>
-                        <ThemedText style={styles.loginText}>Change Password</ThemedText>
+                        <ThemedText style={styles.loginText}>{t('change.password')}</ThemedText>
                     </TouchableOpacity>
                     {confirmError ? <ThemedText style={styles.errorText}>{confirmError}</ThemedText>: null}
                 </ThemedView>: null}

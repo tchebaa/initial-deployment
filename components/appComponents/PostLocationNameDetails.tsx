@@ -142,7 +142,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
           setLoadingAddress(false)
 
     } catch(error) {
-        setAddress('Error getting description')
+        setAddress(t('error.getting.description'))
         setLoadingAddress(false)
     }
   } 
@@ -178,9 +178,9 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                         onPress={(data, details = null)=>{
         
                           setLoadingAddress(true)
-                            console.log(details)
+                            
                             if(details){
-                                console.log(details.geometry.location.lat, details.geometry.location.lng)
+                                
                                 setCoordinates({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng})
                                 setMapCoordinates({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng})
                                 getUserAddress({latitude:Number(details.geometry.location.lat), longitude: Number(details.geometry.location.lng)})
@@ -213,7 +213,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                         }}/>
                         {loadingAddress ? 
                         <ThemedView style={styles.loadingLocationBody}>
-                          <ThemedText>Loading location</ThemedText>
+                          <ThemedText>{t('loading.location')}</ThemedText>
                         <ActivityIndicator />
                         </ThemedView> : null}
                         {address && !loadingAddress ? 
@@ -230,23 +230,23 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
               <ThemedText type='defaultSemiBold'>{t('location')}</ThemedText>
                 <TouchableOpacity style={styles.pickLocationButton} onPress={()=> setShowMap(true)}>
                   <MaterialIcons name='location-on' size={16} color={'#1184e8'} />
-                    <ThemedText style={styles.pickLocationText}>{t('pick.location')}Pick Location</ThemedText>
+                    <ThemedText style={styles.pickLocationText}>{t('pick.location')}</ThemedText>
                     
                 </TouchableOpacity>
                 <ThemedView>
                   <ThemedText>{address}</ThemedText>
-                  {eventAddressError ? <ThemedText>Event Location is required</ThemedText>: <ThemedText></ThemedText>}
+                  {eventAddressError ? <ThemedText>{t('event.location.is.required')}</ThemedText>: <ThemedText></ThemedText>}
                 </ThemedView>
                 <ThemedView>
                     <ThemedText type='defaultSemiBold'>{t('event.name')}</ThemedText>
                     <TextInput style={styles.inputContainer} placeholder={t('event.name')} value={eventName} onChangeText={(e)=> setEventName(e)}/>
                 </ThemedView>
-                {eventNameError ? <ThemedText>Event name required</ThemedText>: <ThemedText></ThemedText>}
+                {eventNameError ? <ThemedText>{t('event.name.required')}</ThemedText>: <ThemedText></ThemedText>}
                 <ThemedView>
                     <ThemedText type='defaultSemiBold'>{t('event.description')}</ThemedText>
                     <TextInput style={styles.descriptionTextAreaInput} multiline={true} numberOfLines={10} placeholder={t('event.description')} value={eventDescription} onChangeText={(e)=> setEventDescription(e)}/>
                 </ThemedView>
-                {eventNameError ? <ThemedText>Event description required</ThemedText>: <ThemedText></ThemedText>}
+                {eventNameError ? <ThemedText>{t('event.description.required')}</ThemedText>: <ThemedText></ThemedText>}
             </ThemedView>
         </ThemedView>      
                   

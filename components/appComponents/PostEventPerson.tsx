@@ -56,13 +56,13 @@ export default function PostEventPerson({personType, setPersonType, companyName,
               {!personType ? 
               <ThemedView style={styles.companyInputComponent}>
                 <TextInput placeholder={t('company.name')} style={styles.inputContainer} value={companyName} onChangeText={(e)=> setCompanyName(e)}/>
-                {!companyNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Company name required</ThemedText>}
-                <TextInput placeholder='Company Email' style={styles.inputContainer} value={companyEmail} onChangeText={(e)=> setCompanyEmail(e)}/>
-                {!companyEmailError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Company email required</ThemedText>}
+                {!companyNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>{t('company.name.required')}</ThemedText>}
+                <TextInput placeholder={t('company.email')} style={styles.inputContainer} value={companyEmail} onChangeText={(e)=> setCompanyEmail(e)}/>
+                {!companyEmailError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>{t('company.email.required')}</ThemedText>}
               </ThemedView> : 
               <ThemedView style={styles.companyInputComponent}>
-                <TextInput placeholder='My name' style={styles.inputContainer} value={personName} onChangeText={(e)=> setPersonName(e)}/>
-                {!personNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Your name is required</ThemedText>}
+                <TextInput placeholder={t('my.name')} style={styles.inputContainer} value={personName} onChangeText={(e)=> setPersonName(e)}/>
+                {!personNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>{t('your.name.is.required')}</ThemedText>}
               </ThemedView>}
         </ThemedView>      
                   

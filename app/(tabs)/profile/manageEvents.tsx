@@ -109,7 +109,7 @@ export default function ManageEvents() {
                   keyExtractor={(item)=> item.id} 
                   showsVerticalScrollIndicator={false}/>
                   :
-                  <ThemedView><ThemedText>No events found</ThemedText></ThemedView>}
+                  <ThemedView><ThemedText>{t('no.events.found')}</ThemedText></ThemedView>}
             </ThemedView>
             }
           </ThemedView>

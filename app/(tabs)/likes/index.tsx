@@ -59,7 +59,7 @@ export default function LikesScreen() {
                 keyExtractor={(item)=> item.id} 
                 showsVerticalScrollIndicator={false}/>
                 :
-                <ThemedView><ThemedText>No events found</ThemedText></ThemedView>}
+                <ThemedView><ThemedText>{t('no.events.found')}</ThemedText></ThemedView>}
             </View>
                 :
                 <ThemedView><ActivityIndicator /></ThemedView>}

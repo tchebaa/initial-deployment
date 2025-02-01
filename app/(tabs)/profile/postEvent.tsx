@@ -459,7 +459,7 @@ export default function postEvent() {
 
         try {
 
-            setUploadingDetail('Updating Event Details')
+            setUploadingDetail(t('updating.event.details'))
             setUploadPercent(10)
             setUploadLoading(true)
 
@@ -503,7 +503,7 @@ export default function postEvent() {
 
                 if(mainImage && mainImageBlob) {
 
-                    setUploadingDetail('Updating Images')
+                    setUploadingDetail(t('updating.images'))
 
                     const result = await uploadData({
                         path: `picture-submissions/${mainImage}`,
@@ -601,7 +601,7 @@ export default function postEvent() {
                 }
 
                 setUploadPercent(100)
-                setUploadingDetail('Update Successfull. Closing')
+                setUploadingDetail(t('update.successful.closing'))
                 setTimeout(()=> {
                     setUploadLoading(false)
                     router.replace('/(tabs)/profile/manageEvents')
@@ -611,7 +611,7 @@ export default function postEvent() {
         } catch (e) {
             
             setUploadPercent(0)
-            setUploadingDetail('Upload Error')
+            setUploadingDetail(t('upload.error'))
             setUploadError(error.message)
 
             setTimeout(()=> {
@@ -643,7 +643,7 @@ export default function postEvent() {
 
            
 
-            setUploadingDetail('Uploading Event Details')
+            setUploadingDetail(t('uploading.event.details'))
             setUploadPercent(10)
             setUploadLoading(true)
 
@@ -689,7 +689,7 @@ export default function postEvent() {
 
               if(mainImage && mainImageBlob) {
 
-                setUploadingDetail('Uploading Images')
+                setUploadingDetail(t('uploading.images'))
 
                 const result = await uploadData({
                     path: `picture-submissions/${mainImage}`,
@@ -786,7 +786,7 @@ export default function postEvent() {
               }
 
               setUploadPercent(100)
-              setUploadingDetail('Upload Successful. Closing')
+              setUploadingDetail(t('upload.successful'))
               setTimeout(()=> {
                 setUploadLoading(false)
                 router.replace("/(tabs)/profile/manageEvents")
@@ -795,7 +795,7 @@ export default function postEvent() {
           } catch (error) {
             
             setUploadPercent(0)
-            setUploadingDetail('Upload Error')
+            setUploadingDetail(t('upload.error'))
             setUploadError(error.message)
 
             setTimeout(()=> {
@@ -986,7 +986,7 @@ export default function postEvent() {
             <ProfileHeader pageType={pageType} />
             {currentDisplay()}
             {uploadLoading? <ThemedView style={styles.createEventModal}>
-                <ThemedText>Uploading...</ThemedText>
+                <ThemedText>{t('uploading')}</ThemedText>
                 <ThemedText>{uploadingDetail}</ThemedText>
                 <ThemedText>{uploadPercent}</ThemedText>
                 <ThemedText style={styles.errorText}>{uploadError}</ThemedText>
@@ -1004,7 +1004,7 @@ export default function postEvent() {
                     <ThemedView>
                         {screenName === 'post' ? 
                         <TouchableOpacity >
-                            <ThemedText>Post</ThemedText>
+                            <ThemedText>{t('post')}</ThemedText>
                         </TouchableOpacity>:
                         <TouchableOpacity>
                             <ThemedText>{t('edit')}</ThemedText>
@@ -1014,7 +1014,7 @@ export default function postEvent() {
                     <ThemedView>
                     {screenName === 'post' ? 
                     <TouchableOpacity onPress={()=> handlePostEvent()}>
-                            <ThemedText>Post</ThemedText>
+                            <ThemedText>{t('post')}</ThemedText>
                         </TouchableOpacity>:
                         <TouchableOpacity onPress={()=> handleUpdateEvent()}>
                             <ThemedText>{t('edit')}</ThemedText>

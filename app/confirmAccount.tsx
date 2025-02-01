@@ -95,7 +95,7 @@ export default function confirmAccount() {
                 setResendCodeError('')
                 await resendSignUpCode({
                     username: email
-                }).then(()=> { setResendCodeSuccess(`Code sent to ${email}. Enter code below to continue.`)})
+                }).then(()=> { setResendCodeSuccess(`${t('code.sent.to')} ${email}. ${t('enter.code.below.to.continue')}`)})
 
             } catch(e) {
 
@@ -106,7 +106,7 @@ export default function confirmAccount() {
 
 
         } else {
-            setEmailError('Email required')
+            setEmailError(t('email.required'))
         }
     }
 
@@ -158,7 +158,7 @@ export default function confirmAccount() {
         
 
         } else {
-            setConfirmEmailError('Email required')
+            setConfirmEmailError(t('email.required'))
         }
 
           
@@ -175,11 +175,11 @@ export default function confirmAccount() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title" >Almost there!</ThemedText>
+                <ThemedText type="title" >{t('almost.there')}</ThemedText>
                
             </ThemedView>
             <ThemedView style={styles.stepContainer}>
-                <ThemedText type="subtitle">Confirm your account</ThemedText>
+                <ThemedText type="subtitle">{t('confirm.your.account')}</ThemedText>
                 
             </ThemedView>
             {confirmModal ? 
@@ -189,30 +189,30 @@ export default function confirmAccount() {
               </ThemedView>: null}
               {loadingSendCode ? 
               <ThemedView style={styles.loadingLoginModal}>
-                <ThemedText>Sending code</ThemedText>
+                <ThemedText>{t('sending.code')}</ThemedText>
                 <ActivityIndicator />
               </ThemedView>: null}
             <ThemedView style={styles.loginContainer}>
-                <TextInput placeholder='Email' style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
 
                   {loginError ? <ThemedText style={styles.errorText}>{loginError}</ThemedText>: null}
                 
                 <TouchableOpacity style={styles.loginButton} onPress={()=> handleResendCode()}>
-                    <ThemedText style={styles.loginText}>Resend code</ThemedText>
+                    <ThemedText style={styles.loginText}>{t('resend.code')}</ThemedText>
                 </TouchableOpacity>
-                {resendCodeSuccess ? <ThemedText style={styles.confirmText}>{`Code sent to ${email}. Enter code below to continue.`}</ThemedText>: null}
+                {resendCodeSuccess ? <ThemedText style={styles.confirmText}>{`${t('code.sent.to')} ${email}.${t('enter.code.below.to.continue')}`}</ThemedText>: null}
                 {resendCodeError ? <ThemedText style={styles.errorText}>{resendCodeError}</ThemedText>: null}
             </ThemedView>
             <ThemedView style={styles.confirmCodeContainer}>
-                <ThemedText type="subtitle">Already have a code?</ThemedText>
+                <ThemedText type="subtitle">{t('already.have.a.code')}</ThemedText>
                 
             </ThemedView>
             <ThemedView style={styles.codeInputContainer}>
                 <TextInput placeholder={t('email')} style={styles.inputContainer} value={confirmEmail} onChangeText={(e)=> setConfirmEmail(e)}/>
-                <TextInput placeholder='Enter code' style={styles.inputContainer} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
+                <TextInput placeholder={t('enter.code')} style={styles.inputContainer} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
                 <TouchableOpacity style={styles.loginButton} onPress={()=> handleConfirm()}>
-                    <ThemedText style={styles.loginText}>Confirm Account</ThemedText>
+                    <ThemedText style={styles.loginText}>{t('confirm.account')}</ThemedText>
                 </TouchableOpacity>
                 {confirmError ? <ThemedText style={styles.errorText}>{confirmError}</ThemedText>: null}
             </ThemedView>

@@ -163,17 +163,17 @@ export default function SignUp() {
 
 
           } else {
-            setRepeatPasswordError(`Passwords don't match`)
+            setRepeatPasswordError(t('passwords.dont.match'))
           }
 
 
         } else {
-          setPasswordError('Password is required')
+          setPasswordError(t('password.is.required'))
         }
 
       } else {
 
-        setEmailError('Email is required')
+        setEmailError(t('email.required'))
 
       }
 
@@ -200,7 +200,7 @@ export default function SignUp() {
                   
                 </ThemedView>
                 <ThemedView style={styles.stepContainer}>
-                  <ThemedText type="subtitle">Confirm your account</ThemedText>
+                  <ThemedText type="subtitle">{t('confirm.your.account')}</ThemedText>
                   
                 </ThemedView>
                 <ThemedView>
@@ -230,9 +230,9 @@ export default function SignUp() {
             <ThemedView style={styles.loginContainer}>
                 <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
-                <TextInput placeholder='Password' secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
+                <TextInput placeholder={t('password')} secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
                   {passwordError ? <ThemedText style={styles.errorText}>{passwordError}</ThemedText>: null}
-                <TextInput placeholder='Repeat Password' secureTextEntry={true} style={styles.inputContainer} value={repeatPassword} onChangeText={(e)=> setRepeatPassword(e)}/>
+                <TextInput placeholder={t('repeat.password')} secureTextEntry={true} style={styles.inputContainer} value={repeatPassword} onChangeText={(e)=> setRepeatPassword(e)}/>
                   {repeatPasswordError ? <ThemedText style={styles.errorText}>{repeatPasswordError}</ThemedText>: null}
                   {signUpError ? <ThemedText style={styles.errorText}>{signUpError}</ThemedText>: null}
                 <ThemedView style={styles.forgotPasswordBody}>

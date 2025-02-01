@@ -310,7 +310,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
     } catch (error) {
 
       
-      setLoadingDirectionsError('Error getting directions')
+      setLoadingDirectionsError(t('error.getting.directions'))
       setLoadingDirections(false)
 
     }
@@ -399,7 +399,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                       {loadingBooking ? 
                       <ThemedView>
                         <ActivityIndicator/>
-                        <ThemedText>Booking</ThemedText>
+                        <ThemedText>{t('booking')}</ThemedText>
                       </ThemedView>:
                       <TouchableOpacity style={styles.checkoutButton} onPress={()=> handleBookEvent()}>
                         <ThemedText>{t('checkout')}</ThemedText>
@@ -465,7 +465,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 </View>
                               </View>
                               <View style={styles.ageGroupFinalPrice}>
-                                <ThemedText>Adult price</ThemedText>
+                                <ThemedText>{t('adult.price')}</ThemedText>
                                 {item.adultPrice === 0 ? 
                                 <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
@@ -475,7 +475,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 </ThemedView>}
                               </View>
                               <View style={styles.ageGroupFinalPrice}>
-                                <ThemedText>Adolescent price</ThemedText>
+                                <ThemedText>{t('adolescent.price')}</ThemedText>
                                 {item.adolescentPrice === 0 ? 
                                 <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
@@ -485,7 +485,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 </ThemedView>}
                               </View>
                               <View style={styles.ageGroupFinalPrice}>
-                                <ThemedText>Child price</ThemedText>
+                                <ThemedText>{t('child.price')}</ThemedText>
                                 {item.childPrice === 0 ? 
                                 <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>

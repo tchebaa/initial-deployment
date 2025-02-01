@@ -101,7 +101,7 @@ export default function LocationDirection({originDirection, getDirections, setOr
                 </ThemedView>: null}
                 {loadingDirections ? 
                 <ThemedView>
-                  <ThemedText>Loading Directions...</ThemedText>
+                  <ThemedText>{t('loading.directions')}</ThemedText>
                   <ActivityIndicator />
                 </ThemedView>: null}
                 {loadingDirectionsError ? 

@@ -102,7 +102,7 @@ export default function HomeScreen() {
                 {errorLoadingEvents ?
 
                 <TouchableOpacity style={styles.errorButton}>
-                    <ThemedText>{`${errorLoadingEvents}...press to retry`}
+                    <ThemedText>{`${errorLoadingEvents}...${t('press.to.retry')}`}
                     </ThemedText>
                 </TouchableOpacity>
                 : null}
@@ -118,7 +118,7 @@ export default function HomeScreen() {
                 renderItem={renderSponsoredEvents}
                 keyExtractor={(item)=> item.id} 
                 showsVerticalScrollIndicator={false}/>:
-                <ThemedText style={styles.noEventsBody}>No events near you.</ThemedText>}
+                <ThemedText style={styles.noEventsBody}>{t('no.events.near.you')}</ThemedText>}
             </ThemedView>
             }
             </ThemedView>

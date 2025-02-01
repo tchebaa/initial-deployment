@@ -73,7 +73,7 @@ handleRemoveImage: (item: string) => void}) {
                     <ThemedText style={styles.imageDetailsText}>{`(${t('required')})`}</ThemedText>
                 </TouchableOpacity>}
                 {mainImageError ? <ThemedText>{`${t('main.image')} ${t('required')}`}</ThemedText>: <ThemedText></ThemedText>}
-            {image2 ? 
+                {image2 ? 
                 <ThemedView>
                 {image2AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image2}}>
                 <View style={styles.closeSection}>
@@ -111,7 +111,7 @@ handleRemoveImage: (item: string) => void}) {
                     <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 2`}</ThemedText>
                     <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>}
-            {image3 ? 
+                {image3 ? 
                 <ThemedView>
                 {image3AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} borderRadius={10} source={{uri:image3}}>
                 <View style={styles.closeSection}>
@@ -150,8 +150,8 @@ handleRemoveImage: (item: string) => void}) {
                     <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 3`}</ThemedText>
                     <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>
-            }
-            {image4 ? 
+                }
+                {image4 ? 
                 <ThemedView>
                 {image4AspectRatio === 'a' ? <ImageBackground style={styles.mainImage} source={{uri:image4}}>
                 <View style={styles.closeSection}>
@@ -196,7 +196,7 @@ handleRemoveImage: (item: string) => void}) {
             <ThemedView style={styles.aspectRatioModal}>
                 <ThemedView style={styles.closeSection}>
                     <View>
-                        <ThemedText type='default'>Select Image Aspect Ratio</ThemedText>
+                        <ThemedText type='default'>{t('select.image.aspect.ratio')}</ThemedText>
                     </View>
                     <TouchableOpacity onPress={()=> setImageRatioModal(false)}><AntDesign name='closesquareo' size={24} color={'black'} /></TouchableOpacity>
                 </ThemedView>

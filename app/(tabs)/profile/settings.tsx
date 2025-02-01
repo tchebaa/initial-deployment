@@ -38,7 +38,7 @@ export default function Settings() {
             <ProfileHeader pageType={pageType}/>
             <ThemedView style={styles.languageBody}>
                 <ThemedView style={styles.langaugeSection}>
-                    <ThemedText type='boldSmallTitle'>Language</ThemedText>
+                    <ThemedText type='boldSmallTitle'>{t('language')}</ThemedText>
                     <TouchableOpacity onPress={()=> {setLanguageSectionOption(!langaugeSectionOption)}}> 
                         {!langaugeSectionOption ? <MaterialIcons name='keyboard-arrow-down' size={20}/> 
                         : <MaterialIcons name='keyboard-arrow-up' size={20}/>}

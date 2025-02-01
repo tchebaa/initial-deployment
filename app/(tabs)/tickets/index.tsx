@@ -99,7 +99,7 @@ export default function TicketsScreen() {
                     showsVerticalScrollIndicator={false}/>
                     :
                     <ThemedView>
-                        <ThemedText>No booked events</ThemedText>
+                        <ThemedText>{t('no.boooked.events')}</ThemedText>
                     </ThemedView>}
             </ThemedView>}
             {loadingEventsError ? <ThemedView><ThemedText>{loadingEventsError}</ThemedText></ThemedView>: null}

@@ -54,7 +54,7 @@ export default function ProfileScreen() {
         <ThemedView style={styles.body}>
             {openSignOutModal ? 
             <ThemedView style={styles.signOutModal}>
-                <ThemedText>Are you sure you want to sign out?</ThemedText>
+                <ThemedText>{t('are.you.sure.you.want.to.sign.out')}</ThemedText>
                 {loadingSignOut ? <ActivityIndicator /> : 
                 <ThemedView style={styles.signOutOptionBody}>
                     <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setOpenSignOutModal(false)}>

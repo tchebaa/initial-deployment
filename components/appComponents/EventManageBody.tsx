@@ -95,7 +95,7 @@ export default function EventManageBody({item, screenType}: {screenType: string}
         <ThemedView style={styles.body}>
               {deleteModal ? 
                 <ThemedView style={styles.signOutModal}>
-                    <ThemedText>Are you sure you want to delete this event?</ThemedText>
+                    <ThemedText>{t('are.you.sure.you.want.to.delete.this.event')}</ThemedText>
                     <ThemedText>{eventName}</ThemedText>
                     <ThemedText>{eventAddress}</ThemedText>
                     <ThemedText>{eventId}</ThemedText>

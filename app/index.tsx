@@ -89,7 +89,7 @@ export default function SignInScreen() {
             const user = await signIn({
               username: email,
               password: password,
-            }).then((e)=> { setLoginError(''); setLoadingLogin(false); console.log(e)})
+            }).then((e)=> { setLoginError(''); setLoadingLogin(false)})
     
             
     
@@ -106,13 +106,13 @@ export default function SignInScreen() {
 
         } else {
 
-          setPasswordError('Password is required')
+          setPasswordError(t('password.is.required'))
 
         }
 
       } else {
 
-        setEmailError('Email is required')
+        setEmailError(t('email.required'))
 
       }
 
@@ -144,13 +144,13 @@ export default function SignInScreen() {
             <ThemedView style={styles.loginContainer}>
                 <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
-                <TextInput placeholder='Password' secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
+                <TextInput placeholder={t('password')} secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
                   {passwordError ? <ThemedText style={styles.errorText}>{passwordError}</ThemedText>: null}
                   {loginError ? <ThemedText style={styles.errorText}>{loginError}</ThemedText>: null}
                 <ThemedView style={styles.forgotPasswordBody}>
                   <Link href={'/forgotPassword'} asChild>
                     <TouchableOpacity>
-                        <ThemedText type='default'>Forgot Password?</ThemedText>
+                        <ThemedText type='default'>{t('forgot.password')}</ThemedText>
                     </TouchableOpacity>
                   </Link>
                     

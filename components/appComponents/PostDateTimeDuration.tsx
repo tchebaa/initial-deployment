@@ -8,7 +8,6 @@ import { ThemedView } from '@/components/ThemedView';
 import RNDateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {useLanguage} from '../../context/LanguageContext'
-
 import { Link } from 'expo-router';
 
 
@@ -363,7 +362,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                 <ThemedText></ThemedText>
                             </View>:
                             <View style={styles.selectDateTimeDetailsSection}>
-                                <ThemedText>Event date</ThemedText>
+                                <ThemedText>{t('event.date')}</ThemedText>
                                 <ThemedText>{moment(selectedDate).format('L')}</ThemedText>
                             </View>}
                         </TouchableOpacity>
@@ -375,7 +374,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                 <ThemedText></ThemedText>
                             </View>:
                             <View style={styles.selectDateTimeDetailsSection}>
-                                <ThemedText>Event time</ThemedText>
+                                <ThemedText>{t('event.time')}</ThemedText>
                                 <ThemedText>{moment(selectedTime).format('LT')}</ThemedText>
                             </View>}
                         </TouchableOpacity>
@@ -452,9 +451,9 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
 
                         )
                     })}
-                    {selectedDateError ? <ThemedText style={styles.errorText}>Event date required</ThemedText>: null}
-                    {selectedTimeError ? <ThemedText style={styles.errorText}>Event time required</ThemedText>: null}
-                    {durationError ? <ThemedText style={styles.errorText}>Event duration required</ThemedText>: null}
+                    {selectedDateError ? <ThemedText style={styles.errorText}>{t('event.date.required')}</ThemedText>: null}
+                    {selectedTimeError ? <ThemedText style={styles.errorText}>{t('event.time.required')}</ThemedText>: null}
+                    {durationError ? <ThemedText style={styles.errorText}>{t('event.duration.required')}</ThemedText>: null}
                     <ThemedView style={styles.addTicketOptionSection}>
                         <TouchableOpacity style={styles.addTicketOptionButton} onPress={()=> handleAddTicketOption()}>
                             <AntDesign name='plussquareo' color={'black'} size={24} />
@@ -509,7 +508,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                     <MaterialCommunityIcons name="calendar" size={24} color="black" />
                                 
                                     <View style={styles.selectDateTimeDetailsSection}>
-                                        <ThemedText>Event date</ThemedText>
+                                        <ThemedText>{t('event.date')}</ThemedText>
                                         <ThemedText>{moment(parsedItem.eventDate).format('L')}</ThemedText>
                                     </View>
                                 </ThemedView>
@@ -594,7 +593,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                             <ThemedView style={styles.addTicketOptionSection}>
                                 <TouchableOpacity style={styles.addTicketOptionButton} onPress={()=> handleAddDateTimeComponent()}>
                                     <AntDesign name='plussquareo' color={'black'} size={24} />
-                                    <ThemedText>Add another Date and Time</ThemedText>
+                                    <ThemedText>{t('add.another.date.time')}</ThemedText>
                                 </TouchableOpacity>
                             </ThemedView>: null
                         }

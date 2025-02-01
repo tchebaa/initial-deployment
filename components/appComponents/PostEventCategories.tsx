@@ -22,12 +22,13 @@ export default function PostEventCategories({selectedCategories, handleAddRemove
   {selectedCategories: string [], categoriesError: boolean, handleAddRemoveCategory: (item: string) => void, eventCategories: {name: string, title: string}[]}) {
 
 
+    const {t} = useLanguage()
 
     return (
         <ThemedView style={styles.container}>
             <ThemedView style={styles.categoryHeaderSection}>
-                <ThemedText type='defaultSemiBold'>Category</ThemedText>
-                <ThemedText style={styles.limitText}>min 1 - max -4 </ThemedText>
+                <ThemedText type='defaultSemiBold'>{t('category')}</ThemedText>
+                <ThemedText style={styles.limitText}>{t('min.max')}</ThemedText>
             </ThemedView>
               <ThemedView style={styles.categoriesBody}>
                 {eventCategories.map((item, i)=> {
@@ -45,7 +46,7 @@ export default function PostEventCategories({selectedCategories, handleAddRemove
                     )
                 })}
               </ThemedView>
-              {!categoriesError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>Categories required</ThemedText>}
+              {!categoriesError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>{t('categories.required')}</ThemedText>}
         </ThemedView>      
                   
         

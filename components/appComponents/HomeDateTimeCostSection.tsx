@@ -60,9 +60,6 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
         
        
 
-
-       
-
        })
        
        
@@ -90,12 +87,12 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
                         <View style={styles.dateBody}>
                             {option === 'homeNear' ? <Text style={styles.dateText} >{moment(firstEventDate.eventDate).fromNow()}</Text> : null}
                             {option === 'sponsored' ? <Text style={styles.dateText} >{moment(firstEventDate.eventDate).fromNow()}</Text> : null}
-                            <ThemedText style={styles.ongoingText} >ongoing</ThemedText>
+                            <ThemedText style={styles.ongoingText} >{t('ongoing')}</ThemedText>
                             
                         </View>
-                        {option === 'homeNear' ? <ThemedText style={styles.optionText} >{`ends in ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
+                        {option === 'homeNear' ? <ThemedText style={styles.optionText} >{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
 
-                        {option === 'sponsored' ? <ThemedText style={styles.optionText}>{`ends in ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
+                        {option === 'sponsored' ? <ThemedText style={styles.optionText}>{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
 
                     </View>:
                     <View>

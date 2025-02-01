@@ -142,14 +142,14 @@ export default function LocationScreen() {
             </ThemedView>
             {loadingAddress ? 
             <ThemedView>
-              <ThemedText>Loading location...</ThemedText>
+              <ThemedText>{t('loading.location')}</ThemedText>
               <ActivityIndicator />
             </ThemedView> : null}
             
             {userAddress && !loadingAddress ? 
             <ThemedView style={styles.continueButton}>
               <Link href={"/(tabs)/home"}>
-                <ThemedText >Continue</ThemedText>
+                <ThemedText >{t('continue')}</ThemedText>
               </Link>
             </ThemedView>: null} 
           
