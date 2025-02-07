@@ -17,6 +17,7 @@ import { generateClient } from 'aws-amplify/data';
 import moment from 'moment';
 import RNDateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
 import {useLanguage} from '../../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const client = generateClient<Schema>();
@@ -57,6 +58,7 @@ export default function SearchScreen() {
 
     const {t} = useLanguage()
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
+    const colorScheme = useColorScheme();
 
     type categoryItemSelected = string
 
@@ -280,92 +282,92 @@ export default function SearchScreen() {
         //Events Categories List
 
         const eventsCategories = [
-            {icon:<Entypo name="graduation-cap" size={24} color="black" />,
+            {icon:<Entypo name="graduation-cap" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             title: t('education'),
             name:'education'},
-            {icon:<FontAwesome name="music" size={24} color="black"/>,
+            {icon:<FontAwesome name="music" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>,
             title: t('music'),
             name:'music'},
             {
-            icon: <Ionicons name="moon-sharp" size={24} color="black"/>, 
+            icon: <Ionicons name="moon-sharp" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>, 
             title: t('night.party'),
             name:'night'},
-            {icon:<Feather name="video" size={24} color="black" />,
+            {icon:<Feather name="video" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             
             title: t('entertainment'),
             name: 'entertainment'},
-            {icon:<Octicons name="graph" size={24} color="black" />,
+            {icon:<Octicons name="graph" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             
             title: t('markets'),
             name: 'markets'},
-            {icon:<MaterialCommunityIcons name="drama-masks" size={25} color="black" />,
+            {icon:<MaterialCommunityIcons name="drama-masks" size={25} color={ colorScheme === 'dark' ? "white" : "black"}/>,
             
             title: t('performance.visuals'),
             name: 'visuals'},
-            {icon:<Foundation name="camera" size={24} color="black"/>,
+            {icon:<Foundation name="camera" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>,
             
             title: t('photography'),
             name:'photography'},
-            {icon:<FontAwesome5 name="laptop-code" size={24} color="black" />,
+            {icon:<FontAwesome5 name="laptop-code" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             title: t('software.tech'),
             name: 'software'},
-            {icon:<Entypo name="laptop" size={24} color="black" />, 
+            {icon:<Entypo name="laptop" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />, 
             title: t('information.technology'),
             name: 'informationtechnology'},
-            {icon:<MaterialCommunityIcons name="stethoscope" size={24} color="black" />,
+            {icon:<MaterialCommunityIcons name="stethoscope" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>,
             title: t('health'),
             name:'health'},
-            {icon:<FontAwesome5 name="hospital-symbol" size={24} color="black" />,
+            {icon:<FontAwesome5 name="hospital-symbol" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             title: t('hospitals.and.clinics'),
             name:'hospital'},
-            {icon:<MaterialIcons name="medication" size={24} color="black" />,
+            {icon:<MaterialIcons name="medication" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             title: t('pharmacy'),
             name:'pharmacy'},
-            {icon:<Ionicons name="fast-food-outline" size={24} color="black" />,
+            {icon:<Ionicons name="fast-food-outline" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
              
             title: t('food.drink'),
             name:'food'},
             {
-            icon: <FontAwesome name="briefcase" size={24} color="black"/>, 
+            icon: <FontAwesome name="briefcase" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>, 
             title: t('business'),
             name:'business'},
-            {icon:<MaterialIcons name="directions-run" size={24} color="black"/>,
+            {icon:<MaterialIcons name="directions-run" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>,
             
             title: t('sports.fitness'),
             name:'sports'},
-            {icon:<FontAwesome5 name="globe-africa" size={24} color="black" />,
+            {icon:<FontAwesome5 name="globe-africa" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             
             title: t('travel.tourism'),
             name:'travel'},
-            {icon:<MaterialCommunityIcons name="corn" size={24} color="black"  />,
+            {icon:<MaterialCommunityIcons name="corn" size={24} color={ colorScheme === 'dark' ? "white" : "black"}  />,
              
             title: t('agriculture'),
             name:'agriculture'},
             {
-            icon: <MaterialCommunityIcons name="pine-tree" size={24} color="black"  />, 
+            icon: <MaterialCommunityIcons name="pine-tree" size={24} color={ colorScheme === 'dark' ? "white" : "black"}  />, 
             title: t('environment'),
             name:'environment'},
-            {icon:<MaterialCommunityIcons name="hand-heart-outline" size={24} color="black"  />,
+            {icon:<MaterialCommunityIcons name="hand-heart-outline" size={24} color={ colorScheme === 'dark' ? "white" : "black"}  />,
              
             title: t('charity.fundraising'),
             name:'charity'},
-            {icon:<FontAwesome5 name="pray" size={24} color="black"/>,
+            {icon:<FontAwesome5 name="pray" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>,
              
             title: t('religion.spirituality'),
             name:'religion'},
-            {icon:<FontAwesome5 name="mountain" size={24} color="black"/>,
+            {icon:<FontAwesome5 name="mountain" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>,
              
             title: t('outdoor.activities'),
             name:'outdoor'},
-            {icon:<Ionicons name="brush-outline" size={24} color="black"/>,
+            {icon:<Ionicons name="brush-outline" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>,
              
             title: t('art'),
             name: 'art'},
-            {icon:<Entypo name="game-controller" size={24} color="black" />,
+            {icon:<Entypo name="game-controller" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             
             title: t('games.esports'),
             name: 'game'},
-            {icon:<FontAwesome name="gears" size={24} color="black" />,
+            {icon:<FontAwesome name="gears" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
              
             title: t('engineering'),
             name:'engineering'},

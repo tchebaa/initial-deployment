@@ -11,6 +11,7 @@ import { Link, useRouter } from 'expo-router';
 import {signOut} from '@aws-amplify/auth'
 import {useUser} from '../../../context/UserContext'
 import {useLanguage} from '../../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -23,6 +24,7 @@ export default function ProfileScreen() {
     const {userDetails, setUserDetails} = useUser()
     const {t} = useLanguage()
 
+    const colorScheme = useColorScheme();
     const router = useRouter()
 
     const [openSignOutModal, setOpenSignOutModal] = useState<boolean>(false)
@@ -66,7 +68,7 @@ export default function ProfileScreen() {
                 </ThemedView>}
             </ThemedView>: null}
             <ThemedView style={styles.pageHeader}>
-                <Ionicons name="person-circle-outline" size={24} color="black" />
+                <Ionicons name="person-circle-outline" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                 <View></View>
             </ThemedView>
             
@@ -74,25 +76,25 @@ export default function ProfileScreen() {
                 <Link href={{pathname: '/(tabs)/profile/postEvent', params: {screenName: 'post', id: null}}} asChild>
                     <Pressable style={styles.button}>
                         <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('post.event')}</ThemedText>
-                        <FontAwesome name='calendar-plus-o' size={24}/>
+                        <FontAwesome name='calendar-plus-o' size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
                     </Pressable>
                 </Link>
                 <Link href={'/(tabs)/profile/manageEvents'} asChild>
                     <Pressable style={styles.button}>
                         <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('manage.events')}</ThemedText>
-                        <MaterialCommunityIcons name="calendar-cursor" size={24} color="black" />
+                        <MaterialCommunityIcons name="calendar-cursor" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                     </Pressable>
                 </Link>
                 <Link href={'/(tabs)/profile/message'} asChild>
                     <Pressable style={styles.button}>
                         <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('messages')}</ThemedText>
-                        <MaterialCommunityIcons name="message-outline" size={24} color="black" />
+                        <MaterialCommunityIcons name="message-outline" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                     </Pressable>
                 </Link>
                 <Link href={'/(tabs)/profile/settings'} asChild>
                     <Pressable style={styles.button}>
                         <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('settings')}</ThemedText>
-                        <AntDesign name="setting" size={24} color="black" />
+                        <AntDesign name="setting" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                     </Pressable>
                 </Link>
                 <ThemedView style={styles.signOutBody}>

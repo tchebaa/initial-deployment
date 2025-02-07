@@ -13,7 +13,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
-export default function EvendDateTimeCostSection({eventTimelines, option}) {
+export default function EventDateTimeCostSection({eventTimelines, option}) {
 
 
     const {t, currentLanguageCode} = useLanguage()
@@ -33,9 +33,8 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
         })
 
 
-        
 
-        //setFirstEventDate(firstTimeline)
+        
 
         for (var i = 0 ; i < sortedTimelines.length; i++) {
 
@@ -75,7 +74,7 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
     return (
 
         <View style={styles.container}>
-            <Pressable >
+            
             {loadSortingDates ?
             <View ></View> :
             <View >
@@ -104,7 +103,8 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
                 </View>
                 <View style={styles.priceBody}>
                     <View>
-                        <View>{firstEventDate.ticketPriceArray[0].adultPrice > 0 ? 
+                        <View>
+                        {firstEventDate.ticketPriceArray[0].adultPrice > 0 ? 
                         <View>
                             {option === 'homeNear' ? <ThemedText  >{`${t('from')} ${firstEventDate.ticketPriceArray[0].adultPrice}`}</ThemedText>: null}
                             {option === 'sponsored' ? <ThemedText >{`${t('from')} ${firstEventDate.ticketPriceArray[0].adultPrice}`}</ThemedText>: null}
@@ -140,7 +140,7 @@ export default function EvendDateTimeCostSection({eventTimelines, option}) {
                 </View>
             </View>
             </View>}
-            </Pressable>
+           
         </View>
     )
 }

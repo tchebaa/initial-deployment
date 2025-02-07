@@ -25,7 +25,7 @@ export default function ProfileHeader({pageType}: {pageType: string}) {
                 <AntDesign name='arrowleft' size={24}/>
               </Pressable>
               <ThemedView>
-                <ThemedText>{pageType}</ThemedText>
+                {pageType === 'post'  ? <ThemedText type='boldSmallTitle'>Post Event</ThemedText> :<ThemedText>{pageType}</ThemedText>}
               </ThemedView>
         </ThemedView>      
                   
