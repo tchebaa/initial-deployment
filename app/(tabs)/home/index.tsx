@@ -33,7 +33,6 @@ export default function HomeScreen() {
 
     const {t, currentLanguageCode} = useLanguage()
 
-    moment.locale(currentLanguageCode);
 
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 

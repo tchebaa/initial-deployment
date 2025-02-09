@@ -25,7 +25,7 @@ const windowHeight = Dimensions.get('window').height
 
 export default function Settings() {
 
-    const {t, handleChangeLanguage} = useLanguage()
+    const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
   const [pageType, setPageType] = useState<string>('settings')
   const [langaugeSectionOption, setLanguageSectionOption] = useState<boolean>(false)
 
@@ -46,8 +46,13 @@ export default function Settings() {
                 </ThemedView>
                 {langaugeSectionOption ? 
                 <ThemedView>
+                    {currentLanguageCode === 'en' ? 
                     <TouchableOpacity style={styles.activeLanguage} onPress={()=> handleChangeLanguage('en')}><ThemedText>{t('english')}</ThemedText></TouchableOpacity>
-                    <TouchableOpacity onPress={()=> handleChangeLanguage('fr')}><ThemedText>{t('french')}</ThemedText></TouchableOpacity>
+                    :
+                    <TouchableOpacity style={styles.inactiveLanguage} onPress={()=> handleChangeLanguage('en')}><ThemedText>{t('english')}</ThemedText></TouchableOpacity>}
+                    {currentLanguageCode === 'fr' ? 
+                    <TouchableOpacity style={styles.activeLanguage} onPress={()=> handleChangeLanguage('fr')}><ThemedText>{t('french')}</ThemedText></TouchableOpacity>
+                    :<TouchableOpacity style={styles.inactiveLanguage}  onPress={()=> handleChangeLanguage('fr')}><ThemedText>{t('french')}</ThemedText></TouchableOpacity>}
                 </ThemedView>: null}
             </ThemedView>
         </ThemedView>

@@ -60,7 +60,7 @@ export default function LocationScreen() {
 
       const status = await Location.getForegroundPermissionsAsync()
 
-      console.log(status)
+      //console.log(status)
 
     }
 

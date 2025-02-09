@@ -86,6 +86,8 @@ export function LanguageProvider({children}: ChildrenProps) {
 
         i18next.changeLanguage(item)
 
+        setCurrentLanguageCode(item)
+
         try {
 
           await AsyncStorage.setItem('languagecode', item);

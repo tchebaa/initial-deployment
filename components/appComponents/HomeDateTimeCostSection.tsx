@@ -79,6 +79,7 @@ export default function EventDateTimeCostSection({eventTimelines, option}) {
             <View ></View> :
             <View >
                 
+                {firstEventDate ? 
                 <View>
                     {moment(firstEventDate.eventDate).format() < moment(new Date()).format() ?
                     <View >
@@ -100,7 +101,11 @@ export default function EventDateTimeCostSection({eventTimelines, option}) {
                         {option === 'sponsored' ? <ThemedText style={styles.optionText}>{moment(firstEventDate.eventDate).format('MMMM Do YYYY, h:mm a')} 
                         </ThemedText> : null}
                     </View>}
-                </View>
+                </View>:
+                <View>
+                    <ThemedText style={styles.optionText}>Ended</ThemedText>
+                </View>}
+                {firstEventDate ? 
                 <View style={styles.priceBody}>
                     <View>
                         <View>
@@ -138,7 +143,8 @@ export default function EventDateTimeCostSection({eventTimelines, option}) {
                         </View>}
                     </View>
                 </View>
-            </View>
+            </View>:
+            null}
             </View>}
            
         </View>

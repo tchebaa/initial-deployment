@@ -10,6 +10,7 @@ import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
 import { generateClient } from 'aws-amplify/data';
 import {useUser} from '../../context/UserContext';
 import { Link, router } from 'expo-router';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const client = generateClient<Schema>();
@@ -24,12 +25,15 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function EventHeader({item, screenType}: {screenType: string | string []}) {
 
+
+
     
 
     const {likedEvents, handleGetLikedEvents, loadingLikedEvents} = useLikes()
     const {userDetails} = useUser()
     const [loadingImageError, setLoadingImageError] = useState<string>('')
     const [loadingLikeUnlikeEvent, setLoadingLikeUnlikeEvent] = useState<boolean>(false)
+    const colorScheme = useColorScheme();
 
     
 
@@ -134,7 +138,7 @@ export default function EventHeader({item, screenType}: {screenType: string | st
     return (
         <ThemedView style={styles.container}>
               <TouchableOpacity onPress={()=> router.back()}>
-                <AntDesign name='arrowleft' size={24}/>
+                <AntDesign name='arrowleft' size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
               </TouchableOpacity>
               {screenType === 'tickets' ? <View></View> : 
               <View>
