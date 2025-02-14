@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {useLanguage} from '../../context/LanguageContext'
 import { Link } from 'expo-router';
+import {useColorScheme} from '../../hooks/useColorScheme'
 
 
 
@@ -25,6 +26,7 @@ export default function PostEventPerson({personType, setPersonType, companyName,
     }) {
 
 
+    const colorScheme = useColorScheme();
     const {t} = useLanguage()
 
     return (
@@ -40,7 +42,7 @@ export default function PostEventPerson({personType, setPersonType, companyName,
                     {personType ? 
                     <MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/>
                     :
-                    <MaterialCommunityIcons name='radiobox-blank' size={16}/>
+                    <MaterialCommunityIcons name='radiobox-blank' size={16} color={ colorScheme === 'dark' ? "white" : "black"}/>
                     }
                     <ThemedText style={styles.buttonText}>{t('individual')}</ThemedText>
                 </Pressable>
@@ -48,20 +50,20 @@ export default function PostEventPerson({personType, setPersonType, companyName,
                     {!personType ? 
                     <MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/>
                     :
-                    <MaterialCommunityIcons name='radiobox-blank' size={16}/> 
+                    <MaterialCommunityIcons name='radiobox-blank' size={16} color={ colorScheme === 'dark' ? "white" : "black"}/> 
                     }
                     <ThemedText style={styles.buttonText}>{t('company')}</ThemedText>
                 </Pressable>
               </ThemedView>
               {!personType ? 
               <ThemedView style={styles.companyInputComponent}>
-                <TextInput placeholder={t('company.name')} style={styles.inputContainer} value={companyName} onChangeText={(e)=> setCompanyName(e)}/>
+                <TextInput placeholder={t('company.name')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},  styles.inputContainer]} value={companyName} onChangeText={(e)=> setCompanyName(e)}/>
                 {!companyNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>{t('company.name.required')}</ThemedText>}
-                <TextInput placeholder={t('company.email')} style={styles.inputContainer} value={companyEmail} onChangeText={(e)=> setCompanyEmail(e)}/>
+                <TextInput placeholder={t('company.email')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},  styles.inputContainer]}  value={companyEmail} onChangeText={(e)=> setCompanyEmail(e)}/>
                 {!companyEmailError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>{t('company.email.required')}</ThemedText>}
               </ThemedView> : 
               <ThemedView style={styles.companyInputComponent}>
-                <TextInput placeholder={t('my.name')} style={styles.inputContainer} value={personName} onChangeText={(e)=> setPersonName(e)}/>
+                <TextInput placeholder={t('my.name')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'}  style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},  styles.inputContainer]}  value={personName} onChangeText={(e)=> setPersonName(e)}/>
                 {!personNameError ? <ThemedText></ThemedText> : <ThemedText style={styles.errorText}>{t('your.name.is.required')}</ThemedText>}
               </ThemedView>}
         </ThemedView>      
@@ -96,7 +98,9 @@ const styles = StyleSheet.create({
     width: '95%',
     marginTop: 10,
     paddingHorizontal: 10,
-    paddingVertical: 5
+    paddingVertical: 5,
+    
+    
   },
   errorText: {
     color: 'red',

@@ -5,7 +5,7 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { Link, router } from 'expo-router';
 
 
@@ -17,12 +17,12 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function ProfileHeader({pageType}: {pageType: string}) {
 
-
+  const colorScheme = useColorScheme();
 
     return (
         <ThemedView style={styles.container}>
               <Pressable onPress={()=> router.back()}>
-                <AntDesign name='arrowleft' size={24}/>
+                <AntDesign name='arrowleft' size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
               </Pressable>
               <ThemedView>
                 {pageType === 'post'  ? <ThemedText type='boldSmallTitle'>Post Event</ThemedText> :<ThemedText>{pageType}</ThemedText>}

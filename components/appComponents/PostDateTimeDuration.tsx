@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/ThemedView';
 import RNDateTimePicker, {DateTimePickerEvent} from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {useLanguage} from '../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { Link } from 'expo-router';
 
 
@@ -21,6 +22,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function PostDateTimeDuration({ageRestriction, dateTimePrice, setDateTimePrice}: {ageRestriction: string [], dateTimePrice: string [], setDateTimePrice: Dispatch<SetStateAction<string []>>}) {
 
+    const colorScheme = useColorScheme();
     const {t} = useLanguage()
 
     const [date, setDate] = useState(new Date())
@@ -348,14 +350,14 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
 
                 {showForm || dateTimePrice.length < 1 ? 
 
-                <ThemedView style={styles.container}>
+                <ThemedView style={[colorScheme === 'dark' ? {borderColor: 'white'} : {borderColor: 'gray'}, styles.container]}>
                     <ThemedView style={styles.closeFormSection}>
                         <View></View>
                         {dateTimePrice.length > 0 ? <TouchableOpacity><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>: <View></View>}
                     </ThemedView>
                     <ThemedView style={styles.dateTimeSection}>
-                        <TouchableOpacity style={styles.selectDateTimeButton} onPress={()=> handleOpenDateTimeModal('date')}>
-                            <MaterialCommunityIcons name="calendar" size={24} color="black" />
+                        <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.selectDateTimeButton]} onPress={()=> handleOpenDateTimeModal('date')}>
+                            <MaterialCommunityIcons name="calendar" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                             {!selectedDate ? 
                             <View style={styles.selectDateTimeDetailsSection}>
                                 <ThemedText>{t('select.date')}</ThemedText>
@@ -366,8 +368,8 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                 <ThemedText>{moment(selectedDate).format('L')}</ThemedText>
                             </View>}
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.selectDateTimeButton} onPress={()=> handleOpenDateTimeModal('time')}>
-                            <Feather name="clock" size={24} color="black" />
+                        <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'},styles.selectDateTimeButton]} onPress={()=> handleOpenDateTimeModal('time')}>
+                            <Feather name="clock" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                             {!selectedTime ? 
                             <View style={styles.selectDateTimeDetailsSection}>
                                 <ThemedText>{t('select.time')}</ThemedText>
@@ -379,21 +381,21 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                             </View>}
                         </TouchableOpacity>
                     </ThemedView>
-                    <ThemedView style={styles.eventDurationSection}>
+                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationSection]}>
                         <ThemedText>{t('event.duration')}</ThemedText>
-                        <ThemedView style={styles.eventDurationInputSection}>
-                            <ThemedView style={styles.eventDurationInput}>
+                        <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationInputSection]}>
+                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationInput]}>
                                 <ThemedText>{t('days')}</ThemedText>
-                                <TextInput  placeholder={t('days')}  value={days.toString()} keyboardType='numeric' onChangeText={(e)=> setDays(Number(e))}/>
+                                <TextInput  placeholder={t('days')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} value={days.toString()} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},]} keyboardType='numeric' onChangeText={(e)=> setDays(Number(e))}/>
                         
                             </ThemedView>
-                            <ThemedView style={styles.eventDurationInput}>
+                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationInput]}>
                                 <ThemedText>{t('hours')}</ThemedText>
-                                <TextInput  placeholder={t('hours')} value={hours.toString()} onChangeText={(e)=> setHours(Number(e))} keyboardType='numeric'/>
+                                <TextInput  placeholder={t('hours')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} value={hours.toString()} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},]} onChangeText={(e)=> setHours(Number(e))} keyboardType='numeric'/>
                             </ThemedView>
-                            <ThemedView style={styles.eventDurationInput}>
+                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationInput]}>
                                 <ThemedText>{t('minutes')}</ThemedText>
-                                <TextInput placeholder={t('minutes')} value={minutes.toString()} onChangeText={(e)=> setMinutes(Number(e))} keyboardType='numeric'/>
+                                <TextInput placeholder={t('minutes')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} value={minutes.toString()} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},]} onChangeText={(e)=> setMinutes(Number(e))} keyboardType='numeric'/>
                             </ThemedView>
                             
                         </ThemedView>
@@ -405,47 +407,47 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
 
                         return(
 
-                            <ThemedView style={styles.ticketSection} key={i}>
+                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ticketSection]} key={i}>
                                 {ticketPriceArray.length > 1 ? 
                                 <ThemedView style={styles.ticketCloseView}>
                                     <View></View>
                                     <TouchableOpacity onPress={()=> handleRemoveTicketOption(Number(i))}><AntDesign name='close' size={20} color={'black'} /></TouchableOpacity>
                                 </ThemedView>: null}
-                                <ThemedView style={styles.ticketTitleSection}>
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ticketTitleSection]}>
                                     <ThemedText>{t('ticket.title')}</ThemedText>
                                     <ThemedText style={styles.ageDetailsText}>{t('eg.vip.regular.economy')}</ThemedText>
                                     
                                 </ThemedView>
-                                <TextInput value={parsedItem.ticketTitle} style={styles.ticketTitleInput} placeholder={t('eg.vip.regular.economy')} onChangeText={(e)=> handleChangeTicketArrayInput('ticketTitle', e, i)}/>
+                                <TextInput value={parsedItem.ticketTitle} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.ticketTitleInput]} placeholder={t('eg.vip.regular.economy')} onChangeText={(e)=> handleChangeTicketArrayInput('ticketTitle', e, i)}/>
                                     <ThemedText style={styles.ticketNumberHeader}>{t('ticket.number')}</ThemedText>
-                                <TextInput value={parsedItem.ticketNumber.toString()} placeholder={t('ticket.number')} keyboardType='numeric' style={styles.ticketNumberInput} onChangeText={(e)=> handleChangeTicketArrayInput('ticketNumber', Number(e), i)}/>
+                                <TextInput value={parsedItem.ticketNumber.toString()} placeholder={t('ticket.number')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} keyboardType='numeric' style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},styles.ticketNumberInput]} onChangeText={(e)=> handleChangeTicketArrayInput('ticketNumber', Number(e), i)}/>
                             
                         
-                                <ThemedView style={styles.eventPriceDetailsHeader}>
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventPriceDetailsHeader]}>
                                     <ThemedText>{t('event.price')}</ThemedText>
                                     <ThemedText style={styles.eventPriceDetailsText}>{`(${t('if.free.enter.o')})`}</ThemedText>
                                 </ThemedView>
                                 
-                                <ThemedView style={styles.priceComponent}>
-                                    <ThemedView style={styles.ageAndDetailsSection}>
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.priceComponent]}>
+                                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ageAndDetailsSection]}>
                                         <ThemedText >{t('adult')}</ThemedText>
                                         <ThemedText style={styles.ageDetailsText}>18+</ThemedText>
                                     </ThemedView>
-                                    <TextInput style={styles.priceInput} value={parsedItem.adultPrice.toString()} placeholder='Adult Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('adultPrice', Number(e), i)} />
+                                    <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.priceInput]} value={parsedItem.adultPrice.toString()} placeholder={t('adult.price')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('adultPrice', Number(e), i)} />
                                 </ThemedView>
-                                <ThemedView style={styles.priceComponent}>
-                                    <ThemedView style={styles.ageAndDetailsSection}>
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.priceComponent]}>
+                                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ageAndDetailsSection]}>
                                         <ThemedText >{t('adolescent')}</ThemedText>
                                         <ThemedText style={styles.ageDetailsText}>13 - 17</ThemedText>
                                     </ThemedView>
-                                    <TextInput style={styles.priceInput} value={parsedItem.adolescentPrice.toString()} placeholder='Adolescent Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('adolescentPrice', Number(e), i)} />
+                                    <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.priceInput]} value={parsedItem.adolescentPrice.toString()} placeholder={t('adolescent.price')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('adolescentPrice', Number(e), i)} />
                                 </ThemedView>
-                                <ThemedView style={styles.priceComponent}>
-                                    <ThemedView style={styles.ageAndDetailsSection}>
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.priceComponent]}>
+                                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ageAndDetailsSection]}>
                                         <ThemedText >{t('child')}</ThemedText>
                                         <ThemedText style={styles.ageDetailsText}>0 - 12</ThemedText>
                                     </ThemedView>
-                                    <TextInput style={styles.priceInput} value={parsedItem.childPrice.toString()} placeholder='Child Price' keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('childPrice', Number(e), i)} />
+                                    <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.priceInput]} value={parsedItem.childPrice.toString()} placeholder={t('child.price')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} keyboardType='numeric' onChangeText={(e)=> handleChangeTicketArrayInput('childPrice', Number(e), i)} />
                                 </ThemedView>
                             </ThemedView>
 
@@ -455,8 +457,8 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                     {selectedTimeError ? <ThemedText style={styles.errorText}>{t('event.time.required')}</ThemedText>: null}
                     {durationError ? <ThemedText style={styles.errorText}>{t('event.duration.required')}</ThemedText>: null}
                     <ThemedView style={styles.addTicketOptionSection}>
-                        <TouchableOpacity style={styles.addTicketOptionButton} onPress={()=> handleAddTicketOption()}>
-                            <AntDesign name='plussquareo' color={'black'} size={24} />
+                        <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.addTicketOptionButton]} onPress={()=> handleAddTicketOption()}>
+                            <AntDesign name='plussquareo' color={ colorScheme === 'dark' ? "white" : "black"} size={24} />
                             <ThemedText>{t('add.another.ticket.option')}</ThemedText>
                         </TouchableOpacity>
                     </ThemedView>
@@ -465,8 +467,8 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
 
                     {editForm ? 
                     <ThemedView style={styles.saveComponent}>
-                        <TouchableOpacity style={styles.saveButton}>
-                            <View style={styles.plusSection}>
+                        <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.saveButton]}>
+                            <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.plusSection]}>
                                 <AntDesign name="plussquareo" size={24} color="white" />
                             </View>
                             <View style={styles.saveTextSection}>
@@ -477,8 +479,8 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                     </ThemedView>
                     :
                     <ThemedView style={styles.saveComponent}>
-                        <TouchableOpacity style={styles.saveButton} onPress={()=> handleAddDatePriceItem()}>
-                            <View style={styles.plusSection}>
+                        <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.saveButton]} onPress={()=> handleAddDatePriceItem()}>
+                            <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.plusSection]}>
                                 <AntDesign name="plussquareo" size={24} color="white" />
                             </View>
                             <View style={styles.saveTextSection}>
@@ -495,7 +497,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                     const parsedItem = JSON.parse(item)
 
                     return(
-                        <ThemedView style={styles.container} key={i}>
+                        <ThemedView style={[colorScheme === 'dark' ? {borderColor: 'white'} : {borderColor: 'gray'}, styles.container]} key={i}>
                             <ThemedView style={styles.ticketCloseView}>
                                     <View></View>
                                     <TouchableOpacity style={styles.editButton} onPress={()=> handleOpenEditForm(parsedItem, i)}>
@@ -504,16 +506,16 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                     </TouchableOpacity>
                                 </ThemedView>
                             <ThemedView style={styles.dateTimeSection}>
-                                <ThemedView style={styles.selectDateTimeButton} >
-                                    <MaterialCommunityIcons name="calendar" size={24} color="black" />
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.selectDateTimeButton]} >
+                                    <MaterialCommunityIcons name="calendar" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                                 
                                     <View style={styles.selectDateTimeDetailsSection}>
                                         <ThemedText>{t('event.date')}</ThemedText>
                                         <ThemedText>{moment(parsedItem.eventDate).format('L')}</ThemedText>
                                     </View>
                                 </ThemedView>
-                                <ThemedView style={styles.selectDateTimeButton} >
-                                    <Feather name="clock" size={24} color="black" />
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.selectDateTimeButton]} >
+                                    <Feather name="clock" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
                                 
                                     <View style={styles.selectDateTimeDetailsSection}>
                                         <ThemedText>{t('event.duration')}</ThemedText>
@@ -521,19 +523,19 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                     </View>
                                 </ThemedView>
                             </ThemedView>
-                            <ThemedView style={styles.eventDurationSection}>
+                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationSection]}>
                                 <ThemedText>{t('event.duration')}</ThemedText>
-                                <ThemedView style={styles.eventDurationInputSection}>
-                                    <ThemedView style={styles.eventDurationInput}>
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationInputSection]}>
+                                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'},styles.eventDurationInput]}>
                                         <ThemedText>{t('days')}</ThemedText>
                                         <ThemedText>{parsedItem.eventDays}</ThemedText>
                                 
                                     </ThemedView>
-                                    <ThemedView style={styles.eventDurationInput}>
+                                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationInput]}>
                                         <ThemedText>{t('hours')}</ThemedText>
                                         <ThemedText>{parsedItem.eventHours}</ThemedText>
                                     </ThemedView>
-                                    <ThemedView style={styles.eventDurationInput}>
+                                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventDurationInput]}>
                                         <ThemedText>{t('minutes')}</ThemedText>
                                         <ThemedText>{parsedItem.eventMinutes}</ThemedText>
                                     </ThemedView>
@@ -544,9 +546,9 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                             {parsedItem.ticketPriceArray.map((item, i)=> {
 
                                 return(
-                                    <ThemedView style={styles.ticketSection} key={i}>
+                                    <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ticketSection]} key={i}>
                                         
-                                        <ThemedView style={styles.ticketTitleSection}>
+                                        <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ticketTitleSection]}>
                                             <ThemedText>{t('ticket.title')}</ThemedText>
                                         </ThemedView>
                                         <ThemedText>{item.ticketTitle}</ThemedText>
@@ -555,27 +557,27 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                                        
                                     
                                 
-                                        <ThemedView style={styles.eventPriceDetailsHeader}>
+                                        <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.eventPriceDetailsHeader]}>
                                             <ThemedText>{t('event.price')}</ThemedText>
                                             
                                         </ThemedView>
                                         
-                                        <ThemedView style={styles.priceComponent}>
-                                            <ThemedView style={styles.ageAndDetailsSection}>
+                                        <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.priceComponent]}>
+                                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ageAndDetailsSection]}>
                                                 <ThemedText >{t('adult')}</ThemedText>
                                                 <ThemedText style={styles.ageDetailsText}>18+</ThemedText>
                                             </ThemedView>
                                             <ThemedText>{item.adultPrice}</ThemedText>
                                         </ThemedView>
-                                        <ThemedView style={styles.priceComponent}>
-                                            <ThemedView style={styles.ageAndDetailsSection}>
+                                        <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.priceComponent]}>
+                                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'},styles.ageAndDetailsSection]}>
                                                 <ThemedText >{t('adolescent')}</ThemedText>
                                                 <ThemedText style={styles.ageDetailsText}>13 - 17</ThemedText>
                                             </ThemedView>
                                             <ThemedText>{item.adolescentPrice}</ThemedText>
                                         </ThemedView>
-                                        <ThemedView style={styles.priceComponent}>
-                                            <ThemedView style={styles.ageAndDetailsSection}>
+                                        <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.priceComponent]}>
+                                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.ageAndDetailsSection]}>
                                                 <ThemedText >{t('child')}</ThemedText>
                                                 <ThemedText style={styles.ageDetailsText}>0 - 12</ThemedText>
                                             </ThemedView>
@@ -591,8 +593,8 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                     <ThemedView>
                         {dateTimePrice.length > 0 ? 
                             <ThemedView style={styles.addTicketOptionSection}>
-                                <TouchableOpacity style={styles.addTicketOptionButton} onPress={()=> handleAddDateTimeComponent()}>
-                                    <AntDesign name='plussquareo' color={'black'} size={24} />
+                                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.addTicketOptionButton]} onPress={()=> handleAddDateTimeComponent()}>
+                                    <AntDesign name='plussquareo' color={ colorScheme === 'dark' ? "white" : "black"} size={24} />
                                     <ThemedText>{t('add.another.date.time')}</ThemedText>
                                 </TouchableOpacity>
                             </ThemedView>: null
@@ -613,7 +615,7 @@ const styles = StyleSheet.create({
     },
     container: {
         marginTop: 10,
-        borderWidth: 1,
+        borderWidth: 0.5,
         padding: 5,
         
     
@@ -735,7 +737,7 @@ const styles = StyleSheet.create({
         
       },
       plusSection: {
-        backgroundColor: 'black',
+        
         alignItems: 'center',
         justifyContent: 'center',
         padding: 5,

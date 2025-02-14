@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {useLanguage} from '../../context/LanguageContext'
 import { Link } from 'expo-router';
-
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -26,6 +26,7 @@ export default function PostPhotoUpload({mainImage, image2, image3, image4, hand
     setImage4: Dispatch<SetStateAction<string>>, setImage2: Dispatch<SetStateAction<string>>, setImage3: Dispatch<SetStateAction<string>>, mainImageError: boolean,
 handleRemoveImage: (item: string) => void}) {
 
+    const colorScheme = useColorScheme();
     const {t} = useLanguage()
 
 
@@ -68,8 +69,8 @@ handleRemoveImage: (item: string) => void}) {
                     </ImageBackground>: null}
                 </ThemedView> 
                 : 
-                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('mainImage')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{t('main.image')}</ThemedText>
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('mainImage')} style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'},styles.imagePickerA]}>
+                    <ThemedText >{t('main.image')}</ThemedText>
                     <ThemedText style={styles.imageDetailsText}>{`(${t('required')})`}</ThemedText>
                 </TouchableOpacity>}
                 {mainImageError ? <ThemedText>{`${t('main.image')} ${t('required')}`}</ThemedText>: <ThemedText></ThemedText>}
@@ -107,8 +108,8 @@ handleRemoveImage: (item: string) => void}) {
                     <ImageBackground style={styles.eventImageRatioC} source={{uri: image2}} borderRadius={10} ></ImageBackground>
                 </ImageBackground>: null}
                 </ThemedView> : 
-                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image2')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 2`}</ThemedText>
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image2')} style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.imagePickerA]}>
+                    <ThemedText >{`${t('image')} 2`}</ThemedText>
                     <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>}
                 {image3 ? 
@@ -146,8 +147,8 @@ handleRemoveImage: (item: string) => void}) {
                 </ImageBackground>: null}
                 </ThemedView>
                 : 
-                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image3')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 3`}</ThemedText>
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image3')} style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.imagePickerA]}>
+                    <ThemedText >{`${t('image')} 3`}</ThemedText>
                     <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>
                 }
@@ -186,8 +187,8 @@ handleRemoveImage: (item: string) => void}) {
                 </ImageBackground>: null}
                 </ThemedView>
                 : 
-                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image4')} style={styles.imagePickerA}>
-                    <ThemedText style={{borderWidth: 1, borderColor: 'white'}}>{`${t('image')} 4`}</ThemedText>
+                <TouchableOpacity onPress={()=>handleOpenImageRatioModal('Image4')} style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.imagePickerA]}>
+                    <ThemedText >{`${t('image')} 4`}</ThemedText>
                     <ThemedText style={styles.imageDetailsText}>{`(${t('optional')})`}</ThemedText>
                 </TouchableOpacity>
             }
@@ -198,15 +199,15 @@ handleRemoveImage: (item: string) => void}) {
                     <View>
                         <ThemedText type='default'>{t('select.image.aspect.ratio')}</ThemedText>
                     </View>
-                    <TouchableOpacity onPress={()=> setImageRatioModal(false)}><AntDesign name='closesquareo' size={24} color={'black'} /></TouchableOpacity>
+                    <TouchableOpacity onPress={()=> setImageRatioModal(false)}><AntDesign name='closesquareo' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>
                 </ThemedView>
-                <TouchableOpacity style={styles.aspectRatioA} onPress={()=> handlePickImage('a')}>
+                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.aspectRatioA]} onPress={()=> handlePickImage('a')}>
                     <ThemedText>16:9</ThemedText>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.aspectRatioB} onPress={()=> handlePickImage('b')}>
+                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.aspectRatioB]} onPress={()=> handlePickImage('b')}>
                     <ThemedText>1:1</ThemedText>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.aspectRatioC} onPress={()=> handlePickImage('c')}>
+                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.aspectRatioC]} onPress={()=> handlePickImage('c')}>
                     <ThemedText>4:3</ThemedText>
                 </TouchableOpacity>
             </ThemedView> : null}

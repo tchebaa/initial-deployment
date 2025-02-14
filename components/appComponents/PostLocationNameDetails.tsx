@@ -13,6 +13,8 @@ import { Link } from 'expo-router';
 import {useLocation} from '../../context/LocationContext'
 import { geometry } from '@turf/helpers';
 import {useLanguage} from '../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
+
 
 const accessToken = 'pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig'
 
@@ -35,6 +37,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
     setCoordinates: Dispatch<SetStateAction<{latitude: number, longitude:number} | null>>
 }) {
 
+  const colorScheme = useColorScheme();
   const {t} = useLanguage()
   const [showMap, setShowMap] = useState<boolean>(false)
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false)
@@ -169,7 +172,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                 <View style={styles.placesComponent}>
                     <View style={styles.closeMapSection}>
                         <View></View>
-                        <TouchableOpacity onPress={()=> setShowMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={'black'} /></ThemedView></TouchableOpacity>
+                        <TouchableOpacity onPress={()=> setShowMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></ThemedView></TouchableOpacity>
                     </View>
                     <GooglePlacesAutocomplete
                         placeholder={t('location')}
@@ -228,7 +231,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
             : null}
             <ThemedView style={styles.container}>
               <ThemedText type='defaultSemiBold'>{t('location')}</ThemedText>
-                <TouchableOpacity style={styles.pickLocationButton} onPress={()=> setShowMap(true)}>
+                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'},styles.pickLocationButton]} onPress={()=> setShowMap(true)}>
                   <MaterialIcons name='location-on' size={16} color={'#1184e8'} />
                     <ThemedText style={styles.pickLocationText}>{t('pick.location')}</ThemedText>
                     
@@ -239,12 +242,12 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                 </ThemedView>
                 <ThemedView>
                     <ThemedText type='defaultSemiBold'>{t('event.name')}</ThemedText>
-                    <TextInput style={styles.inputContainer} placeholder={t('event.name')} value={eventName} onChangeText={(e)=> setEventName(e)}/>
+                    <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},  styles.inputContainer]} placeholder={t('event.name')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} value={eventName} onChangeText={(e)=> setEventName(e)}/>
                 </ThemedView>
                 {eventNameError ? <ThemedText>{t('event.name.required')}</ThemedText>: <ThemedText></ThemedText>}
                 <ThemedView>
                     <ThemedText type='defaultSemiBold'>{t('event.description')}</ThemedText>
-                    <TextInput style={styles.descriptionTextAreaInput} multiline={true} numberOfLines={10} placeholder={t('event.description')} value={eventDescription} onChangeText={(e)=> setEventDescription(e)}/>
+                    <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.descriptionTextAreaInput]} multiline={true} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} numberOfLines={10} placeholder={t('event.description')} value={eventDescription} onChangeText={(e)=> setEventDescription(e)}/>
                 </ThemedView>
                 {eventNameError ? <ThemedText>{t('event.description.required')}</ThemedText>: <ThemedText></ThemedText>}
             </ThemedView>

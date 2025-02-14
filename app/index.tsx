@@ -48,6 +48,8 @@ export default function SignInScreen() {
 
       if(userId) {
 
+        console.log(signInDetails, username)
+
         setUserDetails({username: signInDetails?.loginId, userId: userId})
         
         router.push('/locationScreen')

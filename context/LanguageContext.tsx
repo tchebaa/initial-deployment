@@ -49,7 +49,7 @@ export function LanguageProvider({children}: ChildrenProps) {
 
     type languageCode = string
 
-    const {languageCode} = getLocales<{languageCode: string,scriptCode?: string, countryCode: string, languageTag: string, isRTL: boolean}>()[0]
+    const {languageCode} = getLocales()[0]
     const {t} = useTranslation()
 
 

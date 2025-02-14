@@ -4,7 +4,7 @@ import {createContext, useContext, useState, useEffect, type Dispatch, type SetS
 
 
 interface IUserContextValue {
-    userDetails?:{username: string | null, userId: string} | null
+    userDetails?:{username: string , userId: string} | null
     setUserDetails:(data:{username: string, userId: string} | null) => void
   
 }
@@ -31,7 +31,7 @@ type ChildrenProps = { children?: ReactNode };
 
 export function UserProvider({children}: ChildrenProps) {
 
-    const [userDetails, setUserDetails] = useState<{username: string, userId: string} | null>(null)
+    const [userDetails, setUserDetails] = useState<{username: string, userId: string} | null >(null)
 
 
   return(

@@ -6,6 +6,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {useLanguage} from '../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { Link } from 'expo-router';
 
 
@@ -19,6 +20,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function PostAgeRestriction({ageRestriction, handleAddRemoveAgeGroup}: {ageRestriction: string [], handleAddRemoveAgeGroup: (item: string) => void}) {
 
+  const colorScheme = useColorScheme();
   const {t} = useLanguage()
 
 
@@ -34,7 +36,7 @@ export default function PostAgeRestriction({ageRestriction, handleAddRemoveAgeGr
                     {ageRestriction.includes('adolescent') ?
                      <MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/>
                      :
-                    <MaterialCommunityIcons name='radiobox-blank' size={16}/>}
+                    <MaterialCommunityIcons name='radiobox-blank' size={16} color={ colorScheme === 'dark' ? "white" : "black"}/>}
                     <ThemedText style={styles.ageGroupTitle}>{t('adolescent')}</ThemedText>
                     <ThemedText style={styles.ageDetailsText}>13 - 17</ThemedText>
                 </TouchableOpacity>
@@ -42,7 +44,7 @@ export default function PostAgeRestriction({ageRestriction, handleAddRemoveAgeGr
                 {ageRestriction.includes('child') ?
                      <MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/>
                      :
-                    <MaterialCommunityIcons name='radiobox-blank' size={16}/>}
+                    <MaterialCommunityIcons name='radiobox-blank' size={16} color={ colorScheme === 'dark' ? "white" : "black"}/>}
                     <ThemedText style={styles.ageGroupTitle}>{t('child')}</ThemedText>
                     <ThemedText style={styles.ageDetailsText}>0 - 12</ThemedText>
                 </TouchableOpacity>
