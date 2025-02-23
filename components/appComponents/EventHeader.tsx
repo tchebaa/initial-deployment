@@ -61,7 +61,7 @@ export default function EventHeader({item, screenType}: {screenType: string | st
                   categories: item.categories,
                   location: item.location,
                   eventId: item.id,
-                  userEmail: userDetails?.username
+                  userEmail: userDetails.username
               
           });
 

@@ -15,6 +15,7 @@ import {useLocation} from '../context/LocationContext'
 import {generateClient} from 'aws-amplify/data'
 import { type Schema} from '../tchebaa-backend/amplify/data/resource'
 import {useLanguage} from '../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -25,6 +26,7 @@ const windowHeight = Dimensions.get('window').height
 export default function LocationScreen() {
 
 
+    const colorScheme = useColorScheme();
     const {t, currentLanguageCode} = useLanguage()
     const [locationPermission, setLocationPermission] = useState(false)
 
@@ -116,14 +118,33 @@ export default function LocationScreen() {
                         flex:0,
                         marginTop: 5,
                         
-                        width: '90%'
+                        width: '90%',
+                        
+                        
                     },
                     textInput: {
                         borderBottomWidth: 1,
                         borderColor: 'gray',
                         fontFamily:"default",
+                        backgroundColor: colorScheme === 'dark' ?  '#202020': 'white',
+                        color: colorScheme === 'dark' ?  'white': 'black'
+                    },
+                    description: {
+                      color: colorScheme === 'dark' ?  'white': 'black'
+                    },
+                    
+                    separator: {
+                      backgroundColor: colorScheme === 'dark' ?  'white': 'black'
+                    },
+                    row:{
+                      backgroundColor: colorScheme === 'dark' ?  '#202020': 'white',
                     }
+                    
                 }}
+                textInputProps={{
+                  placeholderTextColor: colorScheme === 'dark' ?  'white': 'black'
+                }}
+                
                 enablePoweredByContainer={false}
                 query={{
                     key: 'AIzaSyCGzT9TA6GF716zU_JaSqprPUEaBoA9wgk',

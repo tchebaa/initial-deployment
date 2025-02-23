@@ -9,6 +9,7 @@ import moment from 'moment';
 import { Link } from 'expo-router';
 import { uploadData, getUrl } from '@aws-amplify/storage';
 import {useLanguage} from '../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,6 +22,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function EventTicketBody({item, screenType}: {screenType: string | string []}) {
 
 
+  const colorScheme = useColorScheme();
   const {t} = useLanguage()
   const [loadingImage, setLoadingImage] = useState<boolean>(true)
   const [mainImageUrl, setMainImageUrl] = useState<string>('')
@@ -101,7 +103,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                             
                             <View style={styles.eventDetailsContainer}>
                                 <View style={styles.eventDetailsBody}>
-                                    <View style={styles.detailsBackground}></View>
+                                    <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                     <View style={styles.detailsBodyText}>
                                         <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                         <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -132,7 +134,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                               <View style={styles.eventDetailsContainer}>
 
                                   <View style={styles.eventDetailsBody}>
-                                      <View style={styles.detailsBackground}></View>
+                                      <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -158,7 +160,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                               <View style={styles.eventDetailsContainer}>
 
                                   <View style={styles.eventDetailsBody}>
-                                      <View style={styles.detailsBackground}></View>
+                                      <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -188,7 +190,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                               
                               <View style={styles.eventDetailsContainer}>
                                   <View style={styles.eventDetailsBody}>
-                                      <View style={styles.detailsBackground}></View>
+                                      <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -213,7 +215,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
                               
                               <View style={styles.eventDetailsContainer}>
                                   <View style={styles.eventDetailsBody}>
-                                      <View style={styles.detailsBackground}></View>
+                                      <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                       <View style={styles.detailsBodyText}>
                                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName}</ThemedText>
                                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -353,7 +355,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    backgroundColor: 'white',
     opacity: 0.85,
     
     borderWidth: 0.5,

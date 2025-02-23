@@ -34,6 +34,9 @@ const windowHeight = Dimensions.get('window').height
 //Events Categories Item
 
 const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {item: { icon: string, title: string, name: string}, selectedCategories: string [], handleAddRemoveCategory: (item: string) => void}) => {
+    
+    const colorScheme = useColorScheme();
+
     return (
       
         <ThemedView>
@@ -41,7 +44,7 @@ const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {ite
                 <View >
                     {item.icon}
                 </View>
-                {selectedCategories.includes(item.name) ? <ThemedText style={styles.eventTextSelected} numberOfLines={1} >{item.title}</ThemedText> : 
+                {selectedCategories.includes(item.name) ? <ThemedText style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'gray'}, styles.eventTextSelected]} numberOfLines={1} >{item.title}</ThemedText> : 
                 <ThemedText style={styles.eventText} numberOfLines={1} >{item.title}</ThemedText> }
             </Pressable>
         </ThemedView>
@@ -377,18 +380,18 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
-            <ThemedView style={styles.searchInputComponent}>
-                <TextInput style={styles.searchInput} placeholder='Search...' value={searchTerm} onChangeText={(e)=> setSearchTerm(e)}/>
+            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.searchInputComponent]}>
+                <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.searchInput]} placeholder={t('search')} placeholderTextColor={colorScheme === 'light' ? 'gray': 'white'} value={searchTerm} onChangeText={(e)=> setSearchTerm(e)}/>
                 <TouchableOpacity style={styles.searchButton} onPress={()=> handleGetEvents()}>
                     <AntDesign size={24} name="search1" color={'#1184e8'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.filterButton} onPress={()=> setFilterModal(true)}>
-                    <MaterialCommunityIcons name='filter-variant' size={24} />
+                    <MaterialCommunityIcons name='filter-variant' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  />
                 </TouchableOpacity>
             </ThemedView>
             {filterModal ? 
             <ThemedView style={styles.filterModal}>
-                <ThemedView style={styles.filterModalCloseSection}><View></View><TouchableOpacity onPress={()=> setFilterModal(false)}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity></ThemedView>
+                <ThemedView style={styles.filterModalCloseSection}><View></View><TouchableOpacity onPress={()=> setFilterModal(false)}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity></ThemedView>
                 
                 <ThemedView style={styles.filterComponent}>
                     {dayRanges.map((item, i)=> {
@@ -414,7 +417,7 @@ export default function SearchScreen() {
                 
             </ThemedView>
             <Pressable style={styles.addressComponent} onPress={()=> setOpenLocationComponent(!openLocationComponent)}>
-                {!openLocationComponent ? <MaterialIcons name='keyboard-arrow-down' size={20}/> : <MaterialIcons name='keyboard-arrow-up' size={20}/> }
+                {!openLocationComponent ? <MaterialIcons name='keyboard-arrow-down' size={20} color={ colorScheme === 'dark' ? "white" : "black"}/> : <MaterialIcons name='keyboard-arrow-up' size={20} color={ colorScheme === 'dark' ? "white" : "black"}/> }
                 <MaterialIcons name='location-on' size={16} color={'#1184e8'} />
                 <ThemedText numberOfLines={1} style={styles.addressText} >{userAddress}</ThemedText>
             </Pressable>
@@ -492,7 +495,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         paddingHorizontal: 5,
         borderRadius: 5,
-        backgroundColor: 'gray'
+        
     },
     searchInputComponent: {
         width: '95%',
@@ -505,8 +508,9 @@ const styles = StyleSheet.create({
     searchInput: {
       
         
-        paddingHorizontal: 5,
+        paddingHorizontal: 10,
         width: '80%',
+        paddingVertical: 5
         
     },
     searchButton: {

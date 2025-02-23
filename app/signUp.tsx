@@ -12,6 +12,7 @@ import { Link, useRouter } from 'expo-router';
 import {useUser} from '../context/UserContext'
 import {useLanguage} from '../context/LanguageContext'
 import {signUp, getCurrentUser, confirmSignUp, resendSignUpCode, signIn} from '@aws-amplify/auth'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,7 +22,7 @@ const windowHeight = Dimensions.get('window').height
 
 export default function SignUp() {
 
-
+    const colorScheme = useColorScheme();
     const {userDetails, setUserDetails} = useUser()
     const {t} = useLanguage()
 
@@ -208,9 +209,9 @@ export default function SignUp() {
                   <ThemedText numberOfLines={2}>{`${t('a.code.has.been.sent.to')} ${email}`}</ThemedText>
                 </ThemedView>
                 <ThemedView>
-                  <TextInput style={styles.inputContainer} value={codeConfirm} placeholder={t('enter.code')} onChangeText={(e)=> setCodeConfirm(e)}/>
+                  <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={codeConfirm} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} placeholder={t('enter.code')} onChangeText={(e)=> setCodeConfirm(e)}/>
                 </ThemedView>
-                <ThemedView style={styles.loginButton}>
+                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.loginButton]}>
                   {codeConfirm.length > 0 ? 
                   <TouchableOpacity onPress={()=> handleConfirm()}>
                     <ThemedText style={styles.loginText}>{t('confirm')}</ThemedText>
@@ -228,11 +229,11 @@ export default function SignUp() {
               <ActivityIndicator />
             </ThemedView>: null}
             <ThemedView style={styles.loginContainer}>
-                <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                <TextInput placeholder={t('email')}   placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={email} onChangeText={(e)=> setEmail(e)}/>
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
-                <TextInput placeholder={t('password')} secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
+                <TextInput placeholder={t('password')}  placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} secureTextEntry={true} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={password} onChangeText={(e)=> setPassword(e)}/>
                   {passwordError ? <ThemedText style={styles.errorText}>{passwordError}</ThemedText>: null}
-                <TextInput placeholder={t('repeat.password')} secureTextEntry={true} style={styles.inputContainer} value={repeatPassword} onChangeText={(e)=> setRepeatPassword(e)}/>
+                <TextInput placeholder={t('repeat.password')}  placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} secureTextEntry={true} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={repeatPassword} onChangeText={(e)=> setRepeatPassword(e)}/>
                   {repeatPasswordError ? <ThemedText style={styles.errorText}>{repeatPasswordError}</ThemedText>: null}
                   {signUpError ? <ThemedText style={styles.errorText}>{signUpError}</ThemedText>: null}
                 <ThemedView style={styles.forgotPasswordBody}>
@@ -247,7 +248,7 @@ export default function SignUp() {
                 <TouchableOpacity style={styles.loginButton}>
                     <ThemedText style={styles.loginText}>{t('sign.up')}</ThemedText>
                 </TouchableOpacity>:
-                <TouchableOpacity style={styles.loginButton} onPress={()=> handleSignup()}>
+                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.loginButton]} onPress={()=> handleSignup()}>
                     <ThemedText style={styles.loginText}>{t('sign.up')}</ThemedText>
                 </TouchableOpacity>}
             </ThemedView>

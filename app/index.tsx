@@ -12,6 +12,7 @@ import { Link, useRouter } from 'expo-router';
 import {signIn, getCurrentUser} from '@aws-amplify/auth'
 import {useUser} from '../context/UserContext'
 import {useLanguage} from '../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,6 +22,7 @@ const windowHeight = Dimensions.get('window').height
 
 export default function SignInScreen() {
 
+    const colorScheme = useColorScheme();
     const {userDetails, setUserDetails} = useUser()
     const {t} = useLanguage()
     const [email, setEmail] = useState<string>('')
@@ -144,9 +146,9 @@ export default function SignInScreen() {
                 <ActivityIndicator />
               </ThemedView>: null}
             <ThemedView style={styles.loginContainer}>
-                <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                <TextInput placeholder={t('email')}  placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'}   style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={email} onChangeText={(e)=> setEmail(e)}/>
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
-                <TextInput placeholder={t('password')} secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
+                <TextInput placeholder={t('password')}   placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} secureTextEntry={true} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={password} onChangeText={(e)=> setPassword(e)}/>
                   {passwordError ? <ThemedText style={styles.errorText}>{passwordError}</ThemedText>: null}
                   {loginError ? <ThemedText style={styles.errorText}>{loginError}</ThemedText>: null}
                 <ThemedView style={styles.forgotPasswordBody}>
@@ -164,7 +166,7 @@ export default function SignInScreen() {
                       </TouchableOpacity>
                     </Link>
                 </ThemedView>
-                <TouchableOpacity style={styles.loginButton} onPress={()=> handleLogin()}>
+                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.loginButton]} onPress={()=> handleLogin()}>
                     <ThemedText style={styles.loginText}>{t('log.in')}</ThemedText>
                 </TouchableOpacity>
             </ThemedView>

@@ -595,7 +595,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                             <ThemedView style={styles.addTicketOptionSection}>
                                 <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.addTicketOptionButton]} onPress={()=> handleAddDateTimeComponent()}>
                                     <AntDesign name='plussquareo' color={ colorScheme === 'dark' ? "white" : "black"} size={24} />
-                                    <ThemedText>{t('add.another.date.time')}</ThemedText>
+                                    <ThemedText>{t('add.another.date.and.time')}</ThemedText>
                                 </TouchableOpacity>
                             </ThemedView>: null
                         }

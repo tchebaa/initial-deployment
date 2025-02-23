@@ -10,7 +10,7 @@ import {useLocation} from '../../context/LocationContext'
 import {useLanguage} from '../../context/LanguageContext'
 import { Link, router } from 'expo-router';
 import * as Location from 'expo-location';
-
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 
@@ -22,6 +22,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function LocationComponent() {
 
 
+    const colorScheme = useColorScheme();
     const {t} = useLanguage()
 
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
@@ -66,7 +67,22 @@ export default function LocationComponent() {
                             borderBottomWidth: 1,
                             borderColor: 'gray',
                             fontFamily:"default",
+                            backgroundColor: colorScheme === 'dark' ?  '#202020': 'white',
+                            color: colorScheme === 'dark' ?  'white': 'black'
+                        },
+                        description: {
+                          color: colorScheme === 'dark' ?  'white': 'black'
+                        },
+                        
+                        separator: {
+                          backgroundColor: colorScheme === 'dark' ?  'white': 'black'
+                        },
+                        row:{
+                          backgroundColor: colorScheme === 'dark' ?  '#202020': 'white',
                         }
+                    }}
+                    textInputProps={{
+                      placeholderTextColor: colorScheme === 'dark' ?  'white': 'black'
                     }}
                     enablePoweredByContainer={false}
                     query={{

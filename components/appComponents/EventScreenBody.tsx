@@ -19,6 +19,7 @@ import {useUser} from '../../context/UserContext';
 import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
 import { generateClient } from 'aws-amplify/data';
 import {useLanguage} from '../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 import pin from '../../assets/images/location-pin.png'
 import PinImage from '../../assets/images/location-pin.png'
 
@@ -44,7 +45,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function EventScreenBody({item, screenType}: {screenType: string | string []}) {
 
-
+  const colorScheme = useColorScheme();
   const {t} = useLanguage()
   const {userDetails} = useUser()
 
@@ -320,6 +321,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
   }
 
   const openExternalMap = () => {
+    
     const scheme = Platform.select({
       ios: `maps://?q=${item.eventAddress}&ll=${Number(item.location.coordinates[1])},${Number(item.location.coordinates[0])}`,
       android: `geo:${Number(item.location.coordinates[1])},${Number(item.location.coordinates[0])}?q=${Number(item.location.coordinates[1])},${Number(item.location.coordinates[0])}(${item.eventAddress})`,
@@ -344,9 +346,9 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
               <View style={styles.closeMapSection}>
                   <View></View>
                   <View style={styles.closeMapDirectionSection}>
-                    {!openDirection ? <TouchableOpacity style={styles.directionsButton} onPress={()=> setOpenDirections(!openDirection)}><ThemedView style={styles.directionIconContainer}><MaterialIcons name='directions' size={24} color={'black'} /></ThemedView></TouchableOpacity>
-                    : <TouchableOpacity style={styles.directionsButton} onPress={()=> setOpenDirections(!openDirection)}><ThemedView style={styles.openDirectionIconContainer}><MaterialIcons name='directions' size={24} color={'black'} /></ThemedView></TouchableOpacity>}
-                    <TouchableOpacity style={styles.closeMapButton} onPress={()=> setShowFullMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={'black'} /></ThemedView></TouchableOpacity>
+                    {!openDirection ? <TouchableOpacity style={styles.directionsButton} onPress={()=> setOpenDirections(!openDirection)}><ThemedView style={styles.directionIconContainer}><MaterialIcons name='directions' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></ThemedView></TouchableOpacity>
+                    : <TouchableOpacity style={styles.directionsButton} onPress={()=> setOpenDirections(!openDirection)}><ThemedView style={styles.openDirectionIconContainer}><MaterialIcons name='directions' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></ThemedView></TouchableOpacity>}
+                    <TouchableOpacity style={styles.closeMapButton} onPress={()=> setShowFullMap(false)}><ThemedView><AntDesign name='closesquareo' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></ThemedView></TouchableOpacity>
                   </View>
                   
               </View>
@@ -435,7 +437,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                     <ThemedText >{adultNumber}</ThemedText>
                                   </ThemedView>
                                   
-                                  <TouchableOpacity onPress={()=> handleAddTicket('adult')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
+                                  <TouchableOpacity onPress={()=> handleAddTicket('adult')}><AntDesign name="plussquareo" size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>
                                 </View>
                               </View>
                               <View style={styles.ageGroupPrice}>
@@ -448,7 +450,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                   <ThemedView style={styles.peopleNumberSection}>
                                     <ThemedText >{adolescentNumber}</ThemedText>
                                   </ThemedView>
-                                  <TouchableOpacity onPress={()=> handleAddTicket('adolescent')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
+                                  <TouchableOpacity onPress={()=> handleAddTicket('adolescent')}><AntDesign name="plussquareo" size={24} color={ colorScheme === 'dark' ? "white" : "black"}/></TouchableOpacity>
                                 </View>
                               </View>
                               <View style={styles.ageGroupPrice}>
@@ -461,7 +463,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                   <ThemedView style={styles.peopleNumberSection}>
                                     <ThemedText >{childNumber}</ThemedText>
                                   </ThemedView>
-                                  <TouchableOpacity onPress={()=> handleAddTicket('child')}><AntDesign name="plussquareo" size={24} color="black" /></TouchableOpacity>
+                                  <TouchableOpacity onPress={()=> handleAddTicket('child')}><AntDesign name="plussquareo" size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>
                                 </View>
                               </View>
                               <View style={styles.ageGroupFinalPrice}>
@@ -470,7 +472,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
                                   <ThemedText>{adultNumber}</ThemedText>
-                                  <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
+                                  <ThemedText><AntDesign name="close" size={16} color={ colorScheme === 'dark' ? "white" : "black"} /></ThemedText>
                                   <ThemedText>{item.adultPrice}</ThemedText>
                                 </ThemedView>}
                               </View>
@@ -480,7 +482,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
                                   <ThemedText>{adolescentNumber}</ThemedText>
-                                  <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
+                                  <ThemedText><AntDesign name="close" size={16} color={ colorScheme === 'dark' ? "white" : "black"} /></ThemedText>
                                   <ThemedText>{item.adolescentPrice}</ThemedText>
                                 </ThemedView>}
                               </View>
@@ -490,7 +492,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 <ThemedText>{t('free')}</ThemedText>:
                                 <ThemedView style={styles.finalPriceSection}>
                                   <ThemedText>{childNumber}</ThemedText>
-                                  <ThemedText><AntDesign name="close" size={16} color="black" /></ThemedText>
+                                  <ThemedText><AntDesign name="close" size={16} color={ colorScheme === 'dark' ? "white" : "black"} /></ThemedText>
                                   <ThemedText>{item.childPrice}</ThemedText>
                                 </ThemedView>}
                               </View>
@@ -574,7 +576,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                             <View></View>
                             <TouchableOpacity style={styles.showMapModalButton} onPress={()=> setShowFullMap(true)}>
                               <ThemedView>
-                                <MaterialIcons name="zoom-out-map" size={24} color="black" />
+                                <MaterialIcons name="zoom-out-map" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                               </ThemedView>
                               
                             </TouchableOpacity>

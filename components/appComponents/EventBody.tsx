@@ -12,6 +12,7 @@ import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
 import { generateClient } from 'aws-amplify/data';
 import { Link } from 'expo-router';
 import {useLanguage} from '../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const client = generateClient<Schema>();
@@ -27,6 +28,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function EventBody({item, screenType}: {screenType: string}) {
 
+    const colorScheme = useColorScheme();
     const {t} = useLanguage()
     const {userDetails} = useUser()
     const {likedEvents, handleGetLikedEvents, loadingLikedEvents} = useLikes()
@@ -103,7 +105,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                   categories: item.categories,
                   location: item.location,
                   eventId: item.id,
-                  userEmail: userDetails?.username
+                  userEmail: userDetails.username
               
           });
 
@@ -293,7 +295,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                           {screenType === 'like' ? 
                          
                               <View style={styles.eventDetailsBody}>
-                                  <View style={styles.detailsBackground}></View>
+                                  <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                   <View style={styles.detailsBodyText}>
                                       <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                       <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -343,7 +345,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                           {screenType === 'like' ? 
                           
                               <View style={styles.eventDetailsBody}>
-                                  <View style={styles.detailsBackground}></View>
+                                  <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                   <View style={styles.detailsBodyText}>
                                       <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                       <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -390,7 +392,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                         {screenType === 'like' ? 
                         
                             <View style={styles.eventDetailsBody}>
-                                <View style={styles.detailsBackground}></View>
+                                <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.detailsBackground]}></View>
                                 <View style={styles.detailsBodyText}>
                                     <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                     <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
@@ -625,7 +627,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    backgroundColor: 'white',
     opacity: 0.85,
     borderRadius: 5,
     borderWidth: 0.5,

@@ -103,6 +103,8 @@ export function LikeProvider({children}: ChildrenProps) {
         }
       });
 
+      console.log(data)
+
       setLikedEventList(data)
       
 
@@ -119,9 +121,14 @@ export function LikeProvider({children}: ChildrenProps) {
 
   useEffect(()=> {
 
-    handleGetLikedEvents()
+    if(userDetails) {
 
-  },[])
+      handleGetLikedEvents()
+
+    }
+    
+
+  },[userDetails])
 
 
 

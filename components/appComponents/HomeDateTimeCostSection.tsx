@@ -5,8 +5,9 @@ import moment from 'moment';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {useLanguage} from '../../context/LanguageContext'
-
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { Link } from 'expo-router';
+
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -15,7 +16,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function EventDateTimeCostSection({eventTimelines, option}) {
 
-
+    const colorScheme = useColorScheme();
     const {t, currentLanguageCode} = useLanguage()
     const [sortedDates, setSortedDates] = useState([])
     const [firstEventDate, setFirstEventDate] = useState('')
@@ -85,25 +86,25 @@ export default function EventDateTimeCostSection({eventTimelines, option}) {
                     <View >
                         
                         <View style={styles.dateBody}>
-                            {option === 'homeNear' ? <Text style={styles.dateText} >{moment(firstEventDate.eventDate).fromNow()}</Text> : null}
-                            {option === 'sponsored' ? <Text style={styles.dateText} >{moment(firstEventDate.eventDate).fromNow()}</Text> : null}
+                            {option === 'homeNear' ? <Text style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.dateText]} >{moment(firstEventDate.eventDate).fromNow()}</Text> : null}
+                            {option === 'sponsored' ? <Text style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.dateText]} >{moment(firstEventDate.eventDate).fromNow()}</Text> : null}
                             <ThemedText style={styles.ongoingText} >{t('ongoing')}</ThemedText>
                             
                         </View>
-                        {option === 'homeNear' ? <ThemedText style={styles.optionText} >{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
+                        {option === 'homeNear' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]} >{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
 
-                        {option === 'sponsored' ? <ThemedText style={styles.optionText}>{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
+                        {option === 'sponsored' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]}>{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
 
                     </View>:
                     <View>
-                        {option === 'homeNear' ? <ThemedText style={styles.optionText}>{moment(firstEventDate.eventDate).format('MMMM Do YYYY, h:mm a')} 
+                        {option === 'homeNear' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]}>{moment(firstEventDate.eventDate).format('MMMM Do YYYY, h:mm a')} 
                         </ThemedText> : null}
-                        {option === 'sponsored' ? <ThemedText style={styles.optionText}>{moment(firstEventDate.eventDate).format('MMMM Do YYYY, h:mm a')} 
+                        {option === 'sponsored' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]}>{moment(firstEventDate.eventDate).format('MMMM Do YYYY, h:mm a')} 
                         </ThemedText> : null}
                     </View>}
                 </View>:
                 <View>
-                    <ThemedText style={styles.optionText}>Ended</ThemedText>
+                    <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}]}>Ended</ThemedText>
                 </View>}
                 {firstEventDate ? 
                 <View style={styles.priceBody}>
@@ -160,12 +161,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     dateText: {
-        color: 'gray',
+        
         fontSize: 12,
        
     },
     optionText: {
-        color: 'gray',
+        
         fontSize: 12,
         marginTop: 1
     },
