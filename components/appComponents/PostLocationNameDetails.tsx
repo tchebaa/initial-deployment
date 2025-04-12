@@ -14,9 +14,11 @@ import {useLocation} from '../../context/LocationContext'
 import { geometry } from '@turf/helpers';
 import {useLanguage} from '../../context/LanguageContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {GOOGLE_API_KEY} from'@env'
+import {MAPBOX_ACCESS_TOKEN} from "@env"
 
 
-const accessToken = 'pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig'
+const accessToken = MAPBOX_ACCESS_TOKEN
 
 MapBox.setAccessToken(accessToken)
 
@@ -227,7 +229,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
                         }}
                         enablePoweredByContainer={false}
                         query={{
-                            key: 'AIzaSyDH5zRPyn7MLRhn8W3zlZINMQA2PTTbIFc',
+                            key: GOOGLE_API_KEY,
                             language: 'en'
                         }}/>
                         {loadingAddress ? 

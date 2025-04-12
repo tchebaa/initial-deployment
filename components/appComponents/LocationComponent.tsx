@@ -11,6 +11,7 @@ import {useLanguage} from '../../context/LanguageContext'
 import { Link, router } from 'expo-router';
 import * as Location from 'expo-location';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {GOOGLE_API_KEY} from '@env'
 
 
 
@@ -86,7 +87,7 @@ export default function LocationComponent() {
                     }}
                     enablePoweredByContainer={false}
                     query={{
-                        key: 'AIzaSyDH5zRPyn7MLRhn8W3zlZINMQA2PTTbIFc',
+                        key: GOOGLE_API_KEY,
                         language: 'en'
                     }}/>
                 </ThemedView>

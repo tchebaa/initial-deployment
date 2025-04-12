@@ -22,6 +22,7 @@ import {useLanguage} from '../../context/LanguageContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import pin from '../../assets/images/location-pin.png'
 import PinImage from '../../assets/images/location-pin.png'
+import {MAPBOX_ACCESS_TOKEN} from "@env"
 
 
 
@@ -30,7 +31,7 @@ const client = generateClient<Schema>();
 const DEFAULT_IMAGE = Image.resolveAssetSource(PinImage).uri;
 
 
-const accessToken = 'pk.eyJ1IjoiZm9uZG9sc2tpIiwiYSI6ImNtNXF0bDduNzAzbnIycXF1YXU5Z2NncDkifQ.MiUz8KNM1fPd5nr-EuQYig'
+const accessToken = MAPBOX_ACCESS_TOKEN
 
 MapBox.setAccessToken(accessToken)
 
