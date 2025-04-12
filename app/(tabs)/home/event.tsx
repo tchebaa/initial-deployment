@@ -9,11 +9,14 @@ import { ThemedView } from '@/components/ThemedView';
 import {AntDesign} from '@expo/vector-icons';
 import EventBody from '@/components/appComponents/EventBody';
 import { Link } from 'expo-router';
+
 import { useLocalSearchParams } from 'expo-router';
 import EventHeader from '@/components/appComponents/EventHeader';
 import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import { generateClient } from 'aws-amplify/data';
+import {useUser} from '../../../context/UserContext'
+import {useLocation} from '../../../context/LocationContext'
 
 const client = generateClient<Schema>();
 
@@ -21,6 +24,7 @@ const client = generateClient<Schema>();
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
+
 
 
 
@@ -35,6 +39,10 @@ export default function EventScreen() {
       };
 
     const { screenType, id } = useLocalSearchParams();
+    const {userDetails} = useUser()
+    const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
+
+    
 
     const [event, setEvent] = useState()
     const [loadingEvent, setLoadingEvent] = useState(true)
@@ -65,9 +73,39 @@ export default function EventScreen() {
     
         }
 
+        const handleUserEventViewed = async () => {
+
+            try {
+
+                const eventViewed = await client.models.EventViewed.create({
+                    email: userDetails?.username,
+                    eventId: id,
+                    locationAddress: userAddress,
+                    location:{
+                        type: "Point",
+                        coordinates: [Number(userLocation?.longitude), Number(userLocation?.latitude)]
+                    }
+                    
+                })
+
+                console.log('true')
+                console.log(eventViewed)
+
+            } catch (e) {
+
+                console.log('false')
+
+            }
+
+            
+        }
+
+
+        
         useEffect(()=> {
 
             handleGetEvent()
+            handleUserEventViewed()
 
         },[])
 

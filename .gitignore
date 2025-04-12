@@ -43,3 +43,5 @@ amplify_outputs*
 amplifyconfiguration*
 
 tchebaa-backend/node_modules
+
+google-service.json

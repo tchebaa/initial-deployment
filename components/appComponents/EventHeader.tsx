@@ -61,6 +61,7 @@ export default function EventHeader({item, screenType}: {screenType: string | st
                   categories: item.categories,
                   location: item.location,
                   eventId: item.id,
+                  sponsored: item.sponsored,
                   userEmail: userDetails.username
               
           });
@@ -152,7 +153,7 @@ export default function EventHeader({item, screenType}: {screenType: string | st
                   <ThemedView>
                     {likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
                     <TouchableOpacity onPress={()=> handleUnlikeEvent(item.id, screenType)}><AntDesign name='heart' size={20} color="#ce2029"/></TouchableOpacity> : 
-                    <TouchableOpacity onPress={()=> handleLikeEvent()}><AntDesign name='hearto' size={20}/></TouchableOpacity> }
+                    <TouchableOpacity onPress={()=> handleLikeEvent()}><AntDesign name='hearto' size={20} color={ colorScheme === 'dark' ? "white" : "black"}/></TouchableOpacity> }
                   </ThemedView>}
                 </ThemedView>}
               </View>}

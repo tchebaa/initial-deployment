@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Link, router } from 'expo-router';
+import {useLanguage} from '../../context/LanguageContext'
 
 
 
@@ -18,6 +19,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function ProfileHeader({pageType}: {pageType: string}) {
 
   const colorScheme = useColorScheme();
+  const {t} = useLanguage()
 
     return (
         <ThemedView style={styles.container}>
@@ -25,7 +27,7 @@ export default function ProfileHeader({pageType}: {pageType: string}) {
                 <AntDesign name='arrowleft' size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
               </Pressable>
               <ThemedView>
-                {pageType === 'post'  ? <ThemedText type='boldSmallTitle'>Post Event</ThemedText> :<ThemedText>{pageType}</ThemedText>}
+                {pageType === 'post'  ? <ThemedText type='boldSmallTitle'>{t('post.event')}</ThemedText> :<ThemedText>{pageType}</ThemedText>}
               </ThemedView>
         </ThemedView>      
                   

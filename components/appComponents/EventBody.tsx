@@ -105,6 +105,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                   categories: item.categories,
                   location: item.location,
                   eventId: item.id,
+                  sponsored: item.sponsored,
                   userEmail: userDetails.username
               
           });
@@ -194,7 +195,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                       {item.eventMainImage.aspectRatio === 'a'  ? 
                       <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                           <View style={styles.imageBackgroundBadge}>
-                            <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
+                            {item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}
                             <View>
                               
                             </View>
@@ -204,7 +205,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                       {item.eventMainImage.aspectRatio === 'b'  ? 
                       <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover' >
                           <View style={styles.imageBackgroundBadge}>
-                            <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
+                          {item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}
                             <View></View>
                           </View>
                           <ImageBackground style={styles.eventImageRatioBHome1} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
@@ -214,7 +215,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                       <ImageBackground style={styles.eventImage2} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                         
                           <View style={styles.imageBackgroundBadge}>
-                              <SimpleLineIcons name="badge" size={16} color="#FF4D00" />
+                          {item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}
                               <View></View>
                             </View>
                           <ImageBackground style={styles.eventImageRatioCHome1} source={{uri: mainImageUrl}} borderRadius={5} ></ImageBackground>
@@ -264,7 +265,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                       {!loadingImage ? 
                       <ImageBackground style={styles.eventImage} source={{uri: mainImageUrl}} borderRadius={10} resizeMode='cover'>
                           <View style={styles.imageBackgroundHeader}>
-                              <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                              <View>{item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}</View>
                               {loadingLikeUnlikeEvent || loadingLikedEvents ?
                               <View><ActivityIndicator /></View>
                                :
@@ -314,7 +315,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                       <ImageBackground style={styles.eventImage} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                         
                           <View style={styles.imageBackgroundHeader}>
-                            <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                            <View>{item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}</View>
                             {loadingLikeUnlikeEvent || loadingLikedEvents ? 
                             <View><ActivityIndicator /></View>:
                                 <View>
@@ -363,7 +364,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                     <ImageBackground style={styles.eventImage} source={{uri: mainImageUrl}} borderRadius={10} blurRadius={10} resizeMode='cover'>
                       
                         <View style={styles.imageBackgroundHeader}>
-                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                          <View>{item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}</View>
                           {loadingLikeUnlikeEvent || loadingLikedEvents ? 
                           <View><ActivityIndicator/></View>
                           :

@@ -80,7 +80,7 @@ handleRemoveImage: (item: string) => void}) {
                 <View style={styles.closeSection}>
                     <View></View>
                     <ThemedView>
-                        <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                     </ThemedView>
                     
                 </View>
@@ -90,7 +90,7 @@ handleRemoveImage: (item: string) => void}) {
                     <View style={styles.closeSection}>
                         <View></View>
                         <ThemedView>
-                            <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                         </ThemedView>
                         
                     </View>  
@@ -101,7 +101,7 @@ handleRemoveImage: (item: string) => void}) {
                     <View style={styles.closeSection}>
                         <View></View>
                         <ThemedView>
-                            <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image2')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                         </ThemedView>
                         
                     </View>
@@ -118,7 +118,7 @@ handleRemoveImage: (item: string) => void}) {
                 <View style={styles.closeSection}>
                     <View></View>
                     <ThemedView>
-                        <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                     </ThemedView>
                     
                 </View>
@@ -128,7 +128,7 @@ handleRemoveImage: (item: string) => void}) {
                     <View style={styles.closeSection}>
                         <View></View>
                         <ThemedView>
-                            <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                         </ThemedView>
                         
                     </View> 
@@ -139,7 +139,7 @@ handleRemoveImage: (item: string) => void}) {
                     <View style={styles.closeSection}>
                         <View></View>
                         <ThemedView>
-                            <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image3')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                         </ThemedView>
                         
                     </View>
@@ -158,7 +158,7 @@ handleRemoveImage: (item: string) => void}) {
                 <View style={styles.closeSection}>
                     <View></View>
                     <ThemedView>
-                        <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                        <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                     </ThemedView>
                     
                 </View>
@@ -168,7 +168,7 @@ handleRemoveImage: (item: string) => void}) {
                     <View style={styles.closeSection}>
                         <View></View>
                         <ThemedView>
-                            <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                         </ThemedView>
                         
                     </View>  
@@ -179,7 +179,7 @@ handleRemoveImage: (item: string) => void}) {
                     <View style={styles.closeSection}>
                         <View></View>
                         <ThemedView>
-                            <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                            <TouchableOpacity onPress={()=> handleRemoveImage('Image4')}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
                         </ThemedView>
                         
                     </View>

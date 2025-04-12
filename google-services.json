@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1034188057734",
+    "project_id": "tchebaa-503f5",
+    "storage_bucket": "tchebaa-503f5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034188057734:android:1cb8013ea68b6c83b53507",
+        "android_client_info": {
+          "package_name": "com.tchebaaapp.tchebaamobileapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwTYlk2PuaPjv-rsrhu8e1toN1zPYR_5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

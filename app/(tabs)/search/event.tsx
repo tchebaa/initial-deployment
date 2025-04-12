@@ -14,6 +14,8 @@ import EventHeader from '@/components/appComponents/EventHeader';
 import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import { generateClient } from 'aws-amplify/data';
+import {useLocation} from '../../../context/LocationContext'
+import {useUser} from '../../../context/UserContext'
 
 const client = generateClient<Schema>();
 
@@ -33,6 +35,8 @@ export default function EventScreen() {
     const [event, setEvent] = useState()
     const [loadingEvent, setLoadingEvent] = useState(true)
     const [loadingEventError, setLoadingEventError] = useState<string>('')
+    const {userDetails} = useUser()
+    const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
 
     const handleGetEvent = async () => {
@@ -58,6 +62,29 @@ export default function EventScreen() {
         
 
     }
+
+    const handleUserEventViewed = async () => {
+
+        try {
+
+            const { data, errors } = await client.models.EventViewed.create({
+                email: userDetails?.username,
+                eventId: id,
+                locationAddress: userAddress,
+                location:{
+                    type: "Point",
+                    coordinates: [Number(userLocation?.longitude), Number(userLocation?.latitude)]
+                }
+
+            })
+
+        } catch (e) {
+
+        }
+
+        
+    }
+
 
     useEffect(()=> {
         handleGetEvent()

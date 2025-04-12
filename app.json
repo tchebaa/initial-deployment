@@ -21,7 +21,8 @@
       "newArchEnabled": false,
       "experimental": {
         "enableFabricRenderer": false
-      }
+      },
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

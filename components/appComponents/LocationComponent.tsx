@@ -86,7 +86,7 @@ export default function LocationComponent() {
                     }}
                     enablePoweredByContainer={false}
                     query={{
-                        key: 'AIzaSyCGzT9TA6GF716zU_JaSqprPUEaBoA9wgk',
+                        key: 'AIzaSyDH5zRPyn7MLRhn8W3zlZINMQA2PTTbIFc',
                         language: 'en'
                     }}/>
                 </ThemedView>

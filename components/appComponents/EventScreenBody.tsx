@@ -52,7 +52,13 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
   const router = useRouter()
 
   const [loadingImage, setLoadingImage] = useState<boolean>(true)
+  const [loadingImage2, setLoadingImage2] = useState<boolean>(true)
+  const [loadingImage3, setLoadingImage3] = useState<boolean>(true)
+  const [loadingImage4, setLoadingImage4] = useState<boolean>(true)
   const [mainImageUrl, setMainImageUrl] = useState<string>('')
+  const [eventImage2Url, setEventImage2Url] = useState<string>('')
+  const [eventImage3Url, setEventImage3Url] = useState<string>('')
+  const [eventImage4Url, setEventImage4Url] = useState<string>('')
   const [showModalMap, setShowModalMap] = useState<boolean>(false)
   const [mapReady, setMapReady] = useState(false);
   const [showMarker, setShowMarker] = useState<boolean>(false)
@@ -76,6 +82,9 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
   
   const [bookingModal, setBookingModal] = useState<boolean>(false)
   const [checkOutModal, setCheckOutModal] = useState<boolean>(false)
+  const [extraImagesModal, setExtraImagesModal] = useState<boolean>(false)
+
+
   const [adultNumber, setAdultNumber] = useState<number>(0)
   const [adolescentNumber, setAdolescentNumber] = useState<number>(0)
   const [childNumber, setChildNumber] = useState<number>(0)
@@ -122,8 +131,126 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
 
   }
 
+  const handleGetImage2Url = async () => {
+
+    if(item.eventImage2.url.length > 1) {
+
+
+      try {
+
+        setLoadingImage2(true)
+  
+        const linkToStorageFile = await getUrl({
+          path: item.eventImage2.url,
+          options: {
+            useAccelerateEndpoint: true
+          }
+      })
+  
+      setEventImage2Url(linkToStorageFile.url.toString())
+  
+      setLoadingImage2(false)
+  
+      } catch(e) {
+  
+        setLoadingImage2(false)
+  
+      }
+
+
+    } else {
+      setLoadingImage2(false)
+    }
+
+  }
+
+
+  const handleGetImage3Url = async () => {
+
+    if(item.eventImage3.url.length > 1) {
+
+
+      try {
+
+        setLoadingImage3(true)
+  
+        const linkToStorageFile = await getUrl({
+          path: item.eventImage3.url,
+          options: {
+            useAccelerateEndpoint: true
+          }
+      })
+  
+      setEventImage3Url(linkToStorageFile.url.toString())
+  
+      setLoadingImage3(false)
+  
+      } catch(e) {
+  
+        setLoadingImage3(false)
+  
+      }
+
+
+    } else {
+      setLoadingImage3(false)
+    }
+
+  }
+
+
+
+  const handleGetImage4Url = async () => {
+
+
+    if(item.eventImage4.url.length > 1) {
+
+
+      try {
+
+        
+
+        setLoadingImage4(true)
+
+   
+  
+        const linkToStorageFile = await getUrl({
+          path: item.eventImage4.url,
+          options: {
+            useAccelerateEndpoint: true
+          }
+      })
+
+
+      
+  
+      setEventImage4Url(linkToStorageFile.url.toString())
+  
+      setLoadingImage4(false)
+  
+      } catch(e) {
+
+       
+  
+        setLoadingImage4(false)
+
+       
+        
+  
+      }
+
+
+    } else {
+      setLoadingImage4(false)
+    }
+
+  }
+
   useEffect(()=> {
     handleGetImageUrl()
+    handleGetImage2Url()
+    handleGetImage3Url()
+    handleGetImage4Url()
   },[])
 
   
@@ -229,7 +356,8 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                 adolescentNumber: adolescentNumber,
                 childNumber: childNumber,
                 totalTicketNumber: adultNumber + adolescentNumber + childNumber,
-                eventTotalPrice: eventTotalPrice
+                eventTotalPrice: eventTotalPrice,
+                organizerEmail: item.email,
             
         });
 
@@ -382,6 +510,106 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
             </MapView>
           </View>
           : null}
+          {extraImagesModal ? 
+          <ThemedView style={styles.extraImagesModal}>
+            <View style={styles.extraImagesCloseSection}>
+                <View></View>
+                <TouchableOpacity onPress={()=> setExtraImagesModal(false)}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>
+            </View>
+            {!loadingImage2 ? 
+                  <View>
+                      {item.eventImage2.aspectRatio === 'a'  ? 
+                      <View>
+                        { item.eventImage2.url.length > 1 || eventImage2Url.length > 1 ? 
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage2.url : eventImage2Url}} resizeMode='cover'>
+                            
+                        </ImageBackground>: null} 
+                      </View>
+                      : null}
+                      
+                      {item.eventImage2.aspectRatio === 'b'  ? 
+                      <View>
+                        {  item.eventImage2.url.length > 1 || eventImage2Url.length > 1 ?  
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage2.url : eventImage2Url}}  blurRadius={10} resizeMode='cover'>
+                          
+                              <ImageBackground style={styles.eventImageRatioB} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage2.url : eventImage2Url}} borderRadius={10} ></ImageBackground>
+                          </ImageBackground>: null }
+                      </View> 
+                      : null}
+                      {item.eventImage2.aspectRatio === 'c'  ? 
+                      <View>
+                        { item.eventImage2.url.length > 1 || eventImage2Url.length > 1 ?  
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage2.url : eventImage2Url}}  blurRadius={10} resizeMode='cover'>
+                            <ImageBackground style={styles.eventImageRatioC} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage2.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
+                        </ImageBackground>: null}
+                      </View> : null}
+                    </View>: 
+                    <View style={styles.eventImageLoading}>
+                      <ActivityIndicator/>
+                    </View>}
+
+
+                    {!loadingImage3 ? 
+                  <View>
+                      {item.eventImage3.aspectRatio === 'a'  ? 
+                      <View>
+                        { item.eventImage3.url.length > 1 || eventImage3Url.length > 1 ? 
+
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage3.url : eventImage3Url}} resizeMode='cover'>
+                            
+                        </ImageBackground>: null}
+                      </View> : null}
+                      {item.eventImage3.aspectRatio === 'b'  ? 
+                      <View>
+                        {item.eventImage3.url.length > 1 || eventImage3Url.length > 1 ? 
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage3.url : eventImage3Url}}  blurRadius={10} resizeMode='cover'>
+                        
+                            <ImageBackground style={styles.eventImageRatioB} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage3.url : eventImage3Url}} borderRadius={10} ></ImageBackground>
+                        </ImageBackground>: null}
+                      </View> : null}
+                      {item.eventImage3.aspectRatio === 'c'  ? 
+                      <View>
+                        { item.eventImage3.url.length > 1 || eventImage3Url.length > 1 ? 
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage3.url : eventImage3Url}}  blurRadius={10} resizeMode='cover'>
+                            <ImageBackground style={styles.eventImageRatioC} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage3.url : eventImage3Url}} borderRadius={10} ></ImageBackground>
+                        </ImageBackground> : null}
+                      </View> : null}
+                    </View>: 
+                    <View style={styles.eventImageLoading}>
+                      <ActivityIndicator/>
+                    </View>}
+
+                    {!loadingImage4 ? 
+                  <View>
+                      {item.eventImage4.aspectRatio === 'a'  ? 
+                      <View>
+                        {item.eventImage4.url.length > 1 || eventImage4Url.length > 1 ? 
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage4.url : eventImage4Url}} resizeMode='cover'>
+                            
+                        </ImageBackground>: null}
+                      </View> : null}
+                      {item.eventImage4.aspectRatio === 'b'  ? 
+                      <View>
+                        {item.eventImage4.url.length > 1 || eventImage4Url.length > 1 ? 
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage4.url : eventImage4Url}}  blurRadius={10} resizeMode='cover'>
+                        
+                            <ImageBackground style={styles.eventImageRatioB} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage4.url : eventImage4Url}} borderRadius={10} ></ImageBackground>
+                        </ImageBackground>: null}
+                      </View> : null}
+                      {item.eventImage4.aspectRatio === 'c'  ? 
+                      <View>
+                        {item.eventImage4.url.length > 1 || eventImage4Url.length > 1 ? 
+                        <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage4.url : eventImage4Url}}  blurRadius={10} resizeMode='cover'>
+                            <ImageBackground style={styles.eventImageRatioC} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventImage4.url : eventImage4Url}} borderRadius={10} ></ImageBackground>
+                        </ImageBackground>: null}
+                      </View> : null}
+                    </View>: 
+                    <View style={styles.eventImageLoading}>
+                      <ActivityIndicator/>
+                    </View>}
+
+          </ThemedView>
+          : null}
           {bookingModal ? 
           <View>
           {screenType === 'home' || screenType === 'like' || screenType === 'search' || 'post' || "manage" ?
@@ -390,31 +618,33 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                 <ThemedView style={styles.checkoutModal}>
                     <View style={styles.closeBookingSection}>
                       <View></View>
-                      <TouchableOpacity onPress={()=> setCheckOutModal(false)}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                      <TouchableOpacity onPress={()=> setCheckOutModal(false)}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>
                     </View>
+                    <ThemedView style={styles.checkoutSection}>
+                        <ThemedView style={styles.totalPriceSection}>
+                          <ThemedText>{t('price.total')}</ThemedText>
+                          <ThemedText>{eventTotalPrice}</ThemedText>
+                        </ThemedView>
+                        <ThemedView>
+                          {loadingBooking ? 
+                          <ThemedView>
+                            <ActivityIndicator/>
+                            <ThemedText>{t('booking')}</ThemedText>
+                          </ThemedView>:
+                          <TouchableOpacity style={styles.checkoutButton} onPress={()=> handleBookEvent()}>
+                            <ThemedText>{t('checkout')}</ThemedText>
+                          </TouchableOpacity>}
+                          {bookingError ? <ThemedView><ThemedText>{bookingError}</ThemedText></ThemedView>: null}
+                        </ThemedView>
+                    </ThemedView>
                     
-                    <ThemedView>
-                      <ThemedText>{t('total')}</ThemedText>
-                      <ThemedText>{eventTotalPrice}</ThemedText>
-                    </ThemedView>
-                    <ThemedView>
-                      {loadingBooking ? 
-                      <ThemedView>
-                        <ActivityIndicator/>
-                        <ThemedText>{t('booking')}</ThemedText>
-                      </ThemedView>:
-                      <TouchableOpacity style={styles.checkoutButton} onPress={()=> handleBookEvent()}>
-                        <ThemedText>{t('checkout')}</ThemedText>
-                      </TouchableOpacity>}
-                      {bookingError ? <ThemedView><ThemedText>{bookingError}</ThemedText></ThemedView>: null}
-                    </ThemedView>
                   
                 </ThemedView>: null}
                 {ticketPriceArray.length > 0 ? 
                 <View>
                   <View style={styles.closeBookingSection}>
                         
-                    <TouchableOpacity onPress={()=> setBookingModal(false)}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>
+                    <TouchableOpacity onPress={()=> setBookingModal(false)}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>
                   </View>
                 <ScrollView horizontal contentContainerStyle={{paddingRight: 500}}>
                 <View style={styles.ticketPriceArrayContainer}>
@@ -432,7 +662,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                   <Text style={styles.ageGroupDetails}>+18</Text>
                                 </View>
                                 <View style={styles.addMinusSection}>
-                                  {adultNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adult')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
+                                  {adultNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adult')}><Feather name="minus-square" size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>}
                                   <ThemedView style={styles.peopleNumberSection}>
                                     <ThemedText >{adultNumber}</ThemedText>
                                   </ThemedView>
@@ -446,7 +676,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                   <Text style={styles.ageGroupDetails}>13 - 17</Text>
                                 </View>
                                 <View style={styles.addMinusSection}>
-                                  {adolescentNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adolescent')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
+                                  {adolescentNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('adolescent')}><Feather name="minus-square" size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>}
                                   <ThemedView style={styles.peopleNumberSection}>
                                     <ThemedText >{adolescentNumber}</ThemedText>
                                   </ThemedView>
@@ -459,7 +689,7 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                   <Text style={styles.ageGroupDetails}>0 - 12</Text>
                                 </View>
                                 <View style={styles.addMinusSection}>
-                                  {childNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('child')}><Feather name="minus-square" size={24} color="black" /></TouchableOpacity>}
+                                  {childNumber === 0 ? <TouchableOpacity><Feather name="minus-square" size={24} color="gray" /></TouchableOpacity>: <TouchableOpacity onPress={()=> handleMinusTicket('child')}><Feather name="minus-square" size={24} color={ colorScheme === 'dark' ? "white" : "black"} /></TouchableOpacity>}
                                   <ThemedView style={styles.peopleNumberSection}>
                                     <ThemedText >{childNumber}</ThemedText>
                                   </ThemedView>
@@ -497,8 +727,8 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                                 </ThemedView>}
                               </View>
                               <View style={styles.ageGroupFinalPrice}>
-                                <ThemedText type='defaultSemiBold'>{t('total')}</ThemedText>
-                                <ThemedText>{(adultNumber * item.adultPrice) + (adolescentNumber * item.adolescentPrice) + (childNumber * item.childPrice )}</ThemedText>
+                                <ThemedText type='defaultSemiBold'>{t('total.tickets')}</ThemedText>
+                                <ThemedText>{(adultNumber) + (adolescentNumber) + (childNumber )}</ThemedText>
                               </View>
                               <ThemedView style={styles.finalBookingButtonSection}>
                                 {adultNumber > 0 || adolescentNumber > 0 || childNumber > 0 ? 
@@ -530,8 +760,13 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                       {item.eventMainImage.aspectRatio === 'a'  ? 
                       <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}} resizeMode='cover'>
                           <View style={styles.imageBackgroundHeader}>
-                              <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                              
+                              <View>{item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}</View>
+                                <View>{item.eventImage2.url.length > 1 || item.eventImage3.url.length > 1 || item.eventImage3.url.length > 1 ? 
+                                <TouchableOpacity onPress={()=> setExtraImagesModal(true)}>
+                                  <MaterialIcons name="photo-library" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
+                                </TouchableOpacity>
+                                  : null}
+                              </View>
                               
                           </View>
                       </ImageBackground> : null}
@@ -539,7 +774,13 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                       <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
                       
                           <View style={styles.imageBackgroundHeader}>
-                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
+                            <View>{item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}</View>
+                            <View>{item.eventImage2.url.length > 1 || item.eventImage3.url.length > 1 || item.eventImage3.url.length > 1 ? 
+                              <TouchableOpacity onPress={()=> setExtraImagesModal(true)}>
+                                <MaterialIcons name="photo-library" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
+                              </TouchableOpacity>
+                                : null}
+                              </View>
                           </View>
                           <ImageBackground style={styles.eventImageRatioB} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
                       </ImageBackground> : null}
@@ -548,8 +789,13 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                       <ImageBackground style={styles.eventImage} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}}  blurRadius={10} resizeMode='cover'>
                       
                           <View style={styles.imageBackgroundHeader}>
-                          <View><SimpleLineIcons name="badge" size={16} color="#FF4D00" /></View>
-                              
+                          <View>{item.sponsored ? <SimpleLineIcons name="badge" size={16} color="#FF4D00" />: null}</View>
+                              <View>{item.eventImage2.url.length > 1 || item.eventImage3.url.length > 1 || item.eventImage3.url.length > 1 ? 
+                              <TouchableOpacity onPress={()=> setExtraImagesModal(true)}>
+                                <MaterialIcons name="photo-library" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
+                              </TouchableOpacity>
+                                : null}
+                              </View>
                           </View>
                           <ImageBackground style={styles.eventImageRatioC} source={{uri: screenType === "post" || screenType === 'manage' ? item.eventMainImage.url : mainImageUrl}} borderRadius={10} ></ImageBackground>
                       </ImageBackground> : null}
@@ -665,16 +911,15 @@ const styles = StyleSheet.create({
    
   },
   eventImage: {
-    width: '100%',
+    width: windowWidth,
     height: 200,
   
-    borderRadius: 10,
+    
     flexDirection: 'column',
     justifyContent: 'space-between',
-    borderWidth: 0.5,
-   
-    borderColor: 'gray',
-    alignItems: 'center'
+    
+    alignItems: 'center',
+    marginBottom: 5
     
     
   },
@@ -682,8 +927,6 @@ const styles = StyleSheet.create({
 
     width: '100%',
     height: 200,
-  
-    borderRadius: 10,
     flexDirection: 'column',
     justifyContent: 'center',
     borderWidth: 0.5,
@@ -697,7 +940,8 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
     width: '100%',
-    padding: 10
+    padding: 10,
+    justifyContent: 'space-between'
     
    
   },
@@ -777,9 +1021,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '90%',
-    borderWidth: 1,
-    borderColor: 'white',
+    width: '100%',
     padding: 5
   },
   dateSelectionComponent: {
@@ -954,13 +1196,15 @@ bookingTextActive: {
 
 },
 checkoutModal: {
-  width: windowWidth * 0.9,
+  width: windowWidth,
   borderWidth: 0.5,
-  margin: 10,
+  
   borderColor: 'gray',
   position: 'absolute',
   zIndex: 40,
-  padding: 10
+  padding: 10,
+  height: windowHeight,
+  alignItems: 'center',
 },
 checkoutButton: {
   borderWidth: 0.5,
@@ -969,6 +1213,35 @@ checkoutButton: {
   borderRadius: 10,
   marginVertical: 10,
   borderColor: '#1184e8'
+},
+extraImagesModal: {
+  zIndex: 40,
+  position: 'fixed',
+  width: windowWidth,
+  top: 0,
+  left: 0,
+  height: windowHeight,
+  alignItems: 'center',
+  flexDirection: 'column',
+
+  
+},
+extraImagesCloseSection: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '90%',
+  padding: 10
+},
+totalPriceSection: {
+  flexDirection: 'row',
+  justifyContent: 'space-between'
+},
+checkoutSection: {
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  height: '80%',
+  width: '95%'
 }
 
 })

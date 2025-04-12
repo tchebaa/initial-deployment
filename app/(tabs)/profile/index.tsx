@@ -6,12 +6,13 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import {FontAwesome, MaterialCommunityIcons, AntDesign, Ionicons} from '@expo/vector-icons';
+import {FontAwesome, MaterialCommunityIcons, AntDesign, Ionicons, MaterialIcons} from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import {signOut} from '@aws-amplify/auth'
 import {useUser} from '../../../context/UserContext'
 import {useLanguage} from '../../../context/LanguageContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {useAdmin} from '../../../context/TchebaaAdminContext'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -22,6 +23,7 @@ const windowHeight = Dimensions.get('window').height
 export default function ProfileScreen() {
 
     const {userDetails, setUserDetails} = useUser()
+    const {admins} = useAdmin()
     const {t} = useLanguage()
 
     const colorScheme = useColorScheme();
@@ -79,7 +81,7 @@ export default function ProfileScreen() {
                         <FontAwesome name='calendar-plus-o' size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
                     </Pressable>
                 </Link>
-                <Link href={'/(tabs)/profile/manageEvents'} asChild>
+                <Link href={{pathname: '/(tabs)/profile/manageEvents', params: {screenName: 'main'}}} asChild>
                     <Pressable style={styles.button}>
                         <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('manage.events')}</ThemedText>
                         <MaterialCommunityIcons name="calendar-cursor" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
@@ -97,6 +99,13 @@ export default function ProfileScreen() {
                         <AntDesign name="setting" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
                     </Pressable>
                 </Link>
+                {admins?.some((admin)=> admin.email === userDetails?.username) ? 
+                <Link href={'/(tabs)/profile/admin'} asChild>
+                    <Pressable style={styles.button}>
+                        <ThemedText style={styles.buttonText} type='defaultSemiBold'>{t('administrator')}</ThemedText>
+                        <MaterialIcons name="admin-panel-settings" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />
+                    </Pressable>
+                </Link>: null}
                 <ThemedView style={styles.signOutBody}>
                     <TouchableOpacity style={styles.loginButton} onPress={()=> setOpenSignOutModal(true)}>
                         <ThemedText style={styles.loginText}>{t('sign.out')}</ThemedText>

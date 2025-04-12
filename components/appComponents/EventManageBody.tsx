@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {Dispatch, useEffect, useState, SetStateAction} from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Dimensions, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Animated, ImageBackground  } from 'react-native';
 import { FontAwesome5, AntDesign, Entypo, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons'; 
 import HomeDateTimeCostSection from './HomeDateTimeCostSection';
@@ -12,6 +12,8 @@ import {type Schema} from "../../tchebaa-backend/amplify/data/resource"
 import { generateClient } from 'aws-amplify/data';
 import { Link } from 'expo-router';
 import {useLanguage} from '../../context/LanguageContext'
+import {useAdmin} from '../../context/TchebaaAdminContext'
+
 
 const client = generateClient<Schema>();
 
@@ -24,10 +26,12 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function EventManageBody({item, screenType}: {screenType: string}) {
+export default function EventManageBody({item, screenType, deletedItem, setDeletedItem, screenName}: {screenType: string, deletedItem: string, setDeletedItem: Dispatch<SetStateAction<string>>, screenName: string}) {
 
 
     const {t} = useLanguage()
+    const {admins} = useAdmin()
+    const {userDetails} = useUser()
     const [loadingImage, setLoadingImage] = useState<boolean>(true)
     const [loadingImageError, setLoadingImageError] = useState<string>('')
     const [mainImageUrl, setMainImageUrl] = useState<string>('')
@@ -35,8 +39,10 @@ export default function EventManageBody({item, screenType}: {screenType: string}
     const [eventName, setEventName] = useState<string>('')
     const [eventId, setEventId] = useState<string>('')
     const [eventAddress, setEventAddress] = useState<string>('')
+    const [loadingDelete, setLoadingDelete] = useState(false)
     
 
+    const admin = admins?.find((admin)=> admin.email === userDetails?.username)
     
 
 
@@ -89,6 +95,32 @@ export default function EventManageBody({item, screenType}: {screenType: string}
 
     }
 
+    const handleDeleteEvent = async () => {
+
+      setLoadingDelete(true)
+
+      try {
+
+        
+
+        const { data, errors } = await client.models.Event.delete({
+          id: eventId
+        })
+
+        setDeleteModal(false)
+
+        setDeletedItem(eventId)
+
+        setLoadingDelete(false)
+
+      } catch(e) {
+
+        setLoadingDelete(false)
+
+      }
+      
+    }
+
 
 
     return (
@@ -100,14 +132,15 @@ export default function EventManageBody({item, screenType}: {screenType: string}
                     <ThemedText>{eventAddress}</ThemedText>
                     <ThemedText>{eventId}</ThemedText>
                     
+                    {loadingDelete ? <ThemedText>{t('deleting')}</ThemedText> :
                     <ThemedView style={styles.signOutOptionBody}>
                         <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setDeleteModal(false)}>
                             <ThemedText type='defaultSemiBold'>{t('no')}</ThemedText>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.acceptSignOutButton}>
+                        <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleDeleteEvent()}>
                             <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>{t('yes')}</ThemedText>
                         </TouchableOpacity>
-                    </ThemedView>
+                    </ThemedView>}
                 </ThemedView>: null}
                 <TouchableOpacity  style={styles.eventBody}>
                     {item.eventMainImage.aspectRatio === 'a'  ? 
@@ -140,12 +173,47 @@ export default function EventManageBody({item, screenType}: {screenType: string}
                     <View style={styles.eventDetailsSearchBody}>
                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                          <TouchableOpacity style={styles.bookingsButton}><ThemedText>{t('view.bookings')}</ThemedText></TouchableOpacity>
                           <ThemedView style={styles.buttonsContainer}>
+                            
+                          <ThemedView>
+                              
+                              <Link href={{pathname: '/(tabs)/profile/eventBookings' , params: {screenName: screenType, id: item.id}}} asChild>
+                                  <TouchableOpacity style={styles.editButton}><ThemedText>{t('view.bookings')}</ThemedText></TouchableOpacity>
+                              </Link>
+                            </ThemedView>
+                           
+                            
+                            <ThemedView>
+                              
+                              {screenName === 'main' ? null :
+                               <Link href={{pathname: '/(tabs)/profile/eventAnalytics' , params: {screenName: screenType, id: item.id}}} asChild>
+                                  <TouchableOpacity style={styles.editButton}><ThemedText>{t('view.analytics')}</ThemedText></TouchableOpacity>
+                              </Link>}
+                            </ThemedView>
+                            
+                            
+                          </ThemedView>
+                          
+                          
+                          <ThemedView style={styles.buttonsContainer}>
+                            {screenName === 'main' ? 
                             <TouchableOpacity style={styles.bookingsButton} onPress={()=> handleOpenDeleteModal(item.eventName, item.id, item.eventAddress)}><ThemedText>{t('delete')}</ThemedText></TouchableOpacity>
+                            :
+                            <ThemedView>
+                              {admin?.deleteEventPermissions ? <TouchableOpacity style={styles.bookingsButton} onPress={()=> handleOpenDeleteModal(item.eventName, item.id, item.eventAddress)}><ThemedText>{t('delete')}</ThemedText></TouchableOpacity>
+                              :
+                              null}
+                            </ThemedView>}
+                            {screenName === 'main' ? 
                             <Link href={{pathname: '/(tabs)/profile/postEvent' , params: {screenName: screenType, id: item.id}}} asChild>
                                 <TouchableOpacity style={styles.editButton}><ThemedText>{t('edit')}</ThemedText></TouchableOpacity>
-                            </Link>
+                            </Link>:
+                            <ThemedView>
+                              {admin?.editEventPermissions ? 
+                              <Link href={{pathname: '/(tabs)/profile/postEvent' , params: {screenName: screenType, id: item.id}}} asChild>
+                                  <TouchableOpacity style={styles.editButton}><ThemedText>{t('edit')}</ThemedText></TouchableOpacity>
+                              </Link>: null}
+                            </ThemedView>}
                           </ThemedView>
                       </View>
                 

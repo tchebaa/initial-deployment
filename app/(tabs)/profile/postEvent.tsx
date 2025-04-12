@@ -46,7 +46,9 @@ export default function postEvent() {
 
     const [loadingGetEvent, setLoadingGetEvent] = useState<boolean>(false)
     const [loadingEventError, setLoadingEventError] = useState<string>('')
-
+    const [email, setEmail] = useState<string>(screenName === 'post' ? userDetails?.username : '')
+    const [emailError, setEmailError] = useState<boolean>(false)
+    const [sponsored, setSponsord] = useState<boolean>(false)
 
     const [pageSection, setPageSection] = useState<number>(0)
 
@@ -226,6 +228,8 @@ export default function postEvent() {
               });
 
               setPersonType(data?.personType)
+              setEmail(data?.email)
+              setSponsord(data?.sponsored)
               setEventName(data?.eventName)
               setEventDescription(data?.eventDescription)
               setCompanyEmail(data?.email)
@@ -262,6 +266,8 @@ export default function postEvent() {
                     }
                 })
 
+                console.log('image2', data?.eventImage2?.url?.length)
+
                 setImage2(linkToStorageFile.url.toString())
 
 
@@ -276,6 +282,8 @@ export default function postEvent() {
                       useAccelerateEndpoint: true
                     }
                 })
+
+                
 
                 setImage3(linkToStorageFile.url.toString())
 
@@ -293,6 +301,8 @@ export default function postEvent() {
                       useAccelerateEndpoint: true
                     }
                 })
+
+               
 
                 setImage4(linkToStorageFile.url.toString())
 
@@ -328,28 +338,40 @@ export default function postEvent() {
     const handleNextDisplay = () => {
 
         if(pageSection === 0) {
-            if(personType) {
-                if(personName.length > 1) {
-                    setPersonNameError(false)
-                    setPageSection(pageSection + 1)
-                } else {
-                    setPersonNameError(true)
-                }
-            } else {
-                if(companyName.length > 1) {
-                    setCompanyNameError(false)
 
-                    if(companyEmail.length > 1) {
-                        setCompanyEmailError(false)
+            if(email.length > 0) {
+
+
+                setEmailError(false)
+
+                if(personType) {
+                    if(personName.length > 1) {
+                        setPersonNameError(false)
                         setPageSection(pageSection + 1)
                     } else {
-                        setCompanyEmailError(true)
+                        setPersonNameError(true)
                     }
-
                 } else {
-                    setCompanyNameError(true)
+                    if(companyName.length > 1) {
+                        setCompanyNameError(false)
+    
+                        if(companyEmail.length > 1) {
+                            setCompanyEmailError(false)
+                            setPageSection(pageSection + 1)
+                        } else {
+                            setCompanyEmailError(true)
+                        }
+    
+                    } else {
+                        setCompanyNameError(true)
+                    }
                 }
+
+            } else {
+                setEmailError(true)
             }
+
+            
         }
         
 
@@ -420,7 +442,8 @@ export default function postEvent() {
 
                 eventName: eventName,
                 eventDescription: eventDescription,
-                email: userDetails?.username,
+                email: email,
+                sponsored: sponsored,
                 personType: personType,
                 personName: personName,
                 eventMainImage: {
@@ -468,7 +491,7 @@ export default function postEvent() {
                     id: id,
                     eventName: eventName,
                     eventDescription: eventDescription,
-                    email: userDetails?.username,
+                    email: email,
                     personType: personType,
                     personName: personName,
                     eventMainImage: {
@@ -590,7 +613,7 @@ export default function postEvent() {
                     
 
                     await client.models.Event.update({
-                        id: uploadedDocument?.data.id,
+                        id: id,
                         eventMainImage: {
                             aspectRatio: image4AspectRatio,
                             url: result.path
@@ -604,7 +627,18 @@ export default function postEvent() {
                 setUploadingDetail(t('update.successful.closing'))
                 setTimeout(()=> {
                     setUploadLoading(false)
-                    router.replace('/(tabs)/profile/manageEvents')
+
+                    if(screenName === 'post') {
+
+                        router.replace({pathname: '/(tabs)/profile/manageEvents', params: {screenName: 'main'}})
+
+                    } else {
+
+                        router.replace({pathname: '/(tabs)/profile/manageEvents', params: {screenName: 'admin'}})
+
+                    }
+
+                    
                 }, 3000)
 
 
@@ -613,6 +647,7 @@ export default function postEvent() {
             setUploadPercent(0)
             setUploadingDetail(t('upload.error'))
             setUploadError(error.message)
+            console.log(error.message)
 
             setTimeout(()=> {
                 setUploadLoading(false)
@@ -650,7 +685,7 @@ export default function postEvent() {
             const uploadedDocument = await client.models.Event.create({
                 eventName: eventName,
                 eventDescription: eventDescription,
-                email: userDetails?.username,
+                email: email,
                 personType: personType,
                 personName: personName,
                 eventMainImage: {
@@ -786,10 +821,22 @@ export default function postEvent() {
               }
 
               setUploadPercent(100)
+
               setUploadingDetail(t('upload.successful'))
+              
               setTimeout(()=> {
+
                 setUploadLoading(false)
-                router.replace("/(tabs)/profile/manageEvents")
+
+                if(screenName === 'post') {
+
+                    router.replace({pathname: '/(tabs)/profile/manageEvents', params: {screenName: 'main'}})
+
+                } else {
+
+                    router.replace({pathname: '/(tabs)/profile/manageEvents', params: {screenName: 'admin'}})
+
+                }
               }, 3000)
             
           } catch (error) {
@@ -932,7 +979,8 @@ export default function postEvent() {
             return (
                 <PostEventPerson personType={personType} setPersonType={setPersonType} companyName={companyName} setCompanyName={setCompanyName}
                 companyEmail={companyEmail} setCompanyEmail={setCompanyEmail} companyNameError={companyNameError} companyEmailError={companyEmailError}
-                personName={personName} setPersonName={setPersonName} personNameError={personNameError} />
+                personName={personName} setPersonName={setPersonName} personNameError={personNameError} email={email} setEmail={setEmail} emailError={emailError} 
+                screenName={screenName}/>
             )
         }
         if(pageSection === 1) {

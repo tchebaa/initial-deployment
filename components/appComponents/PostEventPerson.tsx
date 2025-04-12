@@ -19,10 +19,10 @@ const windowHeight = Dimensions.get('window').height;
 
 
 export default function PostEventPerson({personType, setPersonType, companyName, setCompanyName, companyEmail, setCompanyEmail, companyNameError, 
-  companyEmailError, personName, setPersonName, personNameError}: 
+  companyEmailError, personName, setPersonName, personNameError, email, setEmail, screenName, emailError}: 
     {personType: boolean, setPersonType: Dispatch<SetStateAction<boolean>>, companyName: string, setCompanyName: Dispatch<SetStateAction<string>>, companyEmail: string,
         setCompanyEmail: Dispatch<SetStateAction<string>>, companyNameError: boolean, companyEmailError: boolean, personName: string, setPersonName:Dispatch<SetStateAction<string>>,
-        personNameError: boolean
+        personNameError: boolean, email: string, setEmail: Dispatch<SetStateAction<string>>, screenName: string, emailError: boolean
     }) {
 
 
@@ -31,11 +31,18 @@ export default function PostEventPerson({personType, setPersonType, companyName,
 
     return (
         <ThemedView style={styles.container}>
-
+          {screenName === 'admin' ? 
+          <ThemedView>
+            <ThemedText>{t('event.organizer')}</ThemedText>
+            <TextInput placeholder={t('email')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'},  styles.inputContainer]} value={email} onChangeText={(e)=> setEmail(e)}/>
+            { emailError ? <ThemedText style={styles.errorText}>{t('email.required')}</ThemedText>: null}
+          </ThemedView>
+          : null
+          }
               {personType ? 
-              <ThemedText>{t('i.am.an')}</ThemedText> 
+              <ThemedText style={{marginTop: 10}}>{t('i.am.an')}</ThemedText> 
               :
-              <ThemedText>{t('i.am.a')}</ThemedText>
+              <ThemedText style={{marginTop: 10}}>{t('i.am.a')}</ThemedText>
               }
               <ThemedView style={styles.buttonComponent}>
                 <Pressable style={styles.radioButton} onPress={()=> setPersonType(!personType)}>
