@@ -104,7 +104,7 @@ export default function EventDateTimeCostSection({eventTimelines, option}) {
                     </View>}
                 </View>:
                 <View>
-                    <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}]}>Ended</ThemedText>
+                    <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}]}>{t('ended')}</ThemedText>
                 </View>}
                 {firstEventDate ? 
                 <View style={styles.priceBody}>
@@ -189,8 +189,10 @@ const styles = StyleSheet.create({
         
         backgroundColor: 'gray',
         
-        width: 40,
-        borderRadius: 5
+        
+        borderRadius: 5,
+        alignSelf: 'flex-start',
+        paddingHorizontal: 5
     },
     freeText: {
         fontWeight: '500',

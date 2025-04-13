@@ -12,18 +12,22 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {useUser} from '../../context/UserContext'
 import { Link, useRouter } from 'expo-router';
-import {useLanguage} from '../../context/LanguageContext'
+import {useLanguage} from '../../context/LanguageContext';
+import moment from 'moment';
+import 'moment/locale/fr';
 
 
 export default function TabLayout() {
 
 
-  const {t} = useLanguage()
+  const {t, currentLanguageCode} = useLanguage()
   const colorScheme = useColorScheme();
 
   const router = useRouter()
 
   const {userDetails, setUserDetails} = useUser()
+
+ moment.locale(currentLanguageCode)
 
   useEffect(()=> {
 

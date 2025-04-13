@@ -22,6 +22,8 @@ export default function ProfileLayout() {
         <Stack.Screen name="eventAnalytics" options={{headerShown: false}}/>
         <Stack.Screen name="eventBookings" options={{headerShown: false}}/>
         <Stack.Screen name="users" options={{headerShown: false}}/>
+        <Stack.Screen name="oneUser" options={{headerShown: false}}/>
+        <Stack.Screen name="userEventAnalytics" options={{headerShown: false}}/>
       </Stack>
     
   );

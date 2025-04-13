@@ -14,6 +14,7 @@ import EventHeader from '@/components/appComponents/EventHeader';
 import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import {useLanguage} from '../../../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 
@@ -26,6 +27,7 @@ const windowHeight = Dimensions.get('window').height
 export default function Settings() {
 
     const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
+    const colorScheme = useColorScheme();
   const [pageType, setPageType] = useState<string>('settings')
   const [langaugeSectionOption, setLanguageSectionOption] = useState<boolean>(false)
 
@@ -38,10 +40,15 @@ export default function Settings() {
             <ProfileHeader pageType={pageType}/>
             <ThemedView style={styles.languageBody}>
                 <ThemedView style={styles.langaugeSection}>
-                    <ThemedText type='boldSmallTitle'>{t('language')}</ThemedText>
+                    <ThemedView style={styles.languageCodeComponent}>
+                        <ThemedText type='boldSmallTitle'>{t('language')}</ThemedText>
+                        <ThemedText>{` - `}</ThemedText>
+                        <ThemedText style={styles.languageCodeText} type='boldSmallTitle'>{currentLanguageCode}</ThemedText>
+                    </ThemedView>
+                    
                     <TouchableOpacity onPress={()=> {setLanguageSectionOption(!langaugeSectionOption)}}> 
-                        {!langaugeSectionOption ? <MaterialIcons name='keyboard-arrow-down' size={20}/> 
-                        : <MaterialIcons name='keyboard-arrow-up' size={20}/>}
+                        {!langaugeSectionOption ? <MaterialIcons name='keyboard-arrow-down' size={20} color={ colorScheme === 'dark' ? "white" : "black"}/> 
+                        : <MaterialIcons name='keyboard-arrow-up' size={20} color={ colorScheme === 'dark' ? "white" : "black"}/>}
                     </TouchableOpacity>
                 </ThemedView>
                 {langaugeSectionOption ? 
@@ -102,6 +109,13 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         borderColor: 'gray'
 
+    },
+    languageCodeComponent: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    languageCodeText: {
+        color:'#1184e8'
     }
 
   

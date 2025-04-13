@@ -234,5 +234,8 @@
     "online.impressions": "Impressions en ligne",
     "users": "Utilisateurs",
     "user": "Utilisateur",
-    "sponsor": "Parrainer"
+    "sponsor": "Parrainer",
+    "event.post.limit": "Limite de publication d'un événement",
+    "events.viewed": "Événements consultés",
+    
 }

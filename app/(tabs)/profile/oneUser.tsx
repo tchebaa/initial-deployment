@@ -35,15 +35,20 @@ const windowHeight = Dimensions.get('window').height
 export default function oneUser() {
 
     const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
-    const [pageType, setPageType] = useState<string>(t('users'))
+    const [pageType, setPageType] = useState<string>(t('user'))
     const {admins} = useAdmin()
     const {userDetails} = useUser()
+    const {screenName, id, email} = useLocalSearchParams()
     
     const colorScheme = useColorScheme();
 
     const [user, setUser] = useState([])
     const [loadingUser, setLoadingUser] = useState<boolean>(true)
-    const [loadingUserError, setLoadingUserError] = useState(false)
+    const [loadingUserError, setLoadingUserError] = useState<boolean>(false)
+    const [updateLimitModal, setUpdateLimitModal] = useState<boolean>(false)
+    const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false)
+    const [loadingUpdateError, setLoadingUpdateError] = useState<boolean>(false)
+    const [postLimit, setPostLimit] = useState<number>(0)
 
 
     const admin = admins?.find((admin)=> admin.email === userDetails?.username)
@@ -52,174 +57,11 @@ export default function oneUser() {
     const [endDate, setEndDate] = useState<string>('')
     const [dateFilterCode, setDateFilterCode] = useState<string>('all')
 
-
-    const dayRanges = [
-        {
-            name: t('all'),
-            code: 'all'
-        },
-        {
-            name: t('today'),
-            code: 'today'
-        },
-        {
-            name: t('this.year'),
-            code: 'thisyear'
-        },
-        {
-            name: t('yesterday'),
-            code: 'yesterday'
-        },
-        {
-            name: t('this.week'),
-            code: 'thisweek'
-        },
-        {
-            name: t('last.week'),
-            code: 'lastweek'
-        },
-        {
-            name: t('this.month'),
-            code: 'thismonth'
-        },
-        {
-            name: t('last.month'),
-            code: 'lastmonth'
-        },
-        
-    ]
-
-    const handleDateChange = (code: string) => {
-                
-            //setDayType(code)
-        
-            if(code === 'all') {
-    
-                setDateFilterCode('all')
-    
-                setStartDate(moment(new Date).format().toString())
-                setEndDate('')
-            }
-        
-            if(code === 'today'){
-    
-                setDateFilterCode('today')
-    
-                setStartDate(moment(new Date()).startOf('day').format().toString())
-                setEndDate(moment(new Date()).endOf('day').format().toString())
-        
-               // console.log(moment(new Date()).startOf('day').format())
-        
-               // console.log(moment(new Date).endOf('day').format())
-                
-        
-            }
-
-            if(code === 'thisyear'){
-    
-                setDateFilterCode('thisyear')
-    
-                setStartDate(moment(new Date()).startOf('year').format().toString())
-                setEndDate(moment(new Date()).endOf('year').format().toString())
-        
-               // console.log(moment(new Date()).startOf('day').format())
-        
-               // console.log(moment(new Date).endOf('day').format())
-                
-        
-            }
-
-            if(code === 'yesterday'){
-    
-                setDateFilterCode('yesterday')
-    
-                setStartDate(moment(new Date()).subtract(1, 'days').startOf('day').format().toString())
-                setEndDate(moment(new Date()).startOf('day').format().toString())
-        
-               // console.log(moment(new Date()).startOf('day').format())
-        
-               // console.log(moment(new Date).endOf('day').format())
-                
-        
-            }
-        
-            if(code === 'tomorrow'){
-    
-                setDateFilterCode('tomorrow')
-    
-                setStartDate(moment(new Date()).endOf('day').format().toString())
-                setEndDate(moment(new Date()).add(1, 'days').endOf('day').format().toString())
-                
-                
-            }
-            if(code === 'thisweek'){
-        
-                setDateFilterCode('thisweek')
-    
-                setStartDate(moment(new Date()).startOf('isoWeek').format().toString())
-                setEndDate(moment(new Date()).endOf('isoWeek').format().toString())
-                
-                
-            }
-
-            if(code === 'lastweek'){
-        
-                setDateFilterCode('lastweek')
-    
-                setStartDate(moment(new Date()).subtract(1, 'weeks').startOf('isoWeek').format().toString())
-                setEndDate(moment(new Date()).startOf('isoWeek').format().toString())
-                
-                
-            }
-
-            if(code === 'thisweekend'){
-    
-                setDateFilterCode('thisweekend')
-    
-                setStartDate(moment(new Date()).endOf('isoWeek').subtract(2, 'days').format().toString())
-                setEndDate(moment(new Date()).endOf('isoWeek').format().toString())
-                
-            }
-        
-            if(code === 'nextweek'){
-    
-                setDateFilterCode('nextweek')
-    
-    
-                setStartDate(moment(new Date()).add(1, 'week').startOf('isoWeek').format().toString())
-                setEndDate(moment(new Date()).add(1, 'week').endOf('isoWeek').format().toString())
-        
-                
-            }
-            if(code === 'thismonth'){
-    
-                setDateFilterCode('thismonth')
-    
-                setStartDate(moment(new Date()).startOf('month').format())
-                setEndDate(moment(new Date()).endOf('month').format())
-            }
-            if(code === 'lastmonth'){
-    
-                setDateFilterCode('lastmonth')
-    
-                setStartDate(moment(new Date()).subtract(1, "months").startOf('month').format())
-                setEndDate(moment(new Date()).startOf('month').format())
-            }
-        
-            if(code === 'nextmonth'){
-    
-                setDateFilterCode('nextmonth')
-    
-                setStartDate(moment(new Date()).add(1, 'month').startOf('month').format())
-                setEndDate(moment(new Date()).add(1, 'month').endOf('month').format())
-                
-            }
-        }
-    
+   
     
 
   
-    const handleGetOnlineUsers = async () => {
+    const handleGetUser = async () => {
 
         setLoadingUser(true)
 
@@ -227,41 +69,14 @@ export default function oneUser() {
 
             setLoadingUserError(false)
 
-            if(dateFilterCode === 'all') {
-
-                const { data, errors } = await client.models.User.list({
-                    
-                })
-
-                setUser(data)
-
-                setLoadingUser(false)
-
-            } else {
-
-                const { data, errors } = await client.models.User.list({
-                    filter: {
-                        and:[
-                            {
-                                createdAt: { gt: startDate}
-                            },
-                            {
-                                createdAt: { lt: endDate}
-                            }
-                            
-                        ]
-                    }
-                })
-
-                setUser(data)
-
-                setLoadingUser(false)
-
-            }
-
-           
+            const { data, errors } = await client.models.User.get({
+                id: id,
+              });
 
 
+               setUser(data)
+
+            setLoadingUser(false)
 
 
         } catch(e) {
@@ -273,11 +88,43 @@ export default function oneUser() {
     }
 
 
+    const handleUpdateUser = async () => {
+
+        setLoadingUpdate(true)
+
+
+        try{
+
+            setLoadingUpdateError(false)
+
+            const { data, errors } = await client.models.User.update({
+                id: id,
+                postEventLimit: Number(postLimit)
+              });
+
+
+            
+
+            setLoadingUpdate(false)
+            handleGetUser()
+            setUpdateLimitModal(false)
+
+
+        } catch(e) {
+
+            setLoadingUpdateError(true)
+            setLoadingUpdate(false)
+
+        }
+
+    }
+
+
     useEffect(()=> {
 
-        handleGetOnlineUsers()
+       handleGetUser()
 
-    },[dateFilterCode])
+    },[])
 
 
   
@@ -286,31 +133,55 @@ export default function oneUser() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType}/>
-            
-            <ThemedView style={styles.onlineUsersHeader}>
-                <ThemedText type='subtitle'>{t('user')}</ThemedText>
-            </ThemedView>
-              <ThemedView style={{ height: 50}}>
-                <ScrollView horizontal>
-                        <ThemedView style={styles.filterComponent}>
-                            {dayRanges.map((item, i)=> {
-                                return(
-                                    <ThemedView  key={i}>
-                                        <TouchableOpacity style={styles.filterDateButton} onPress={()=> handleDateChange(item.code)}>
-                                            {dateFilterCode === item.code ? <ThemedText style={styles.selectedDateCodeText}>{item.name}</ThemedText>: <ThemedText>{item.name}</ThemedText> }
-                                        </TouchableOpacity>
-                                    </ThemedView>
-                                    
-                                )
-                            })}
-                        </ThemedView>
-                    </ScrollView>
-                </ThemedView>  
+            <ThemedView style={styles.userIconBody}>
+                <Ionicons name="person-circle-outline" size={40} color={ colorScheme === 'dark' ? "white" : "black"} />
                 
-            
+            </ThemedView>
+            {updateLimitModal ? 
+            <ThemedView style={styles.updateLimitModal}>
+                {loadingUpdate ? 
+                <ThemedView style={styles.updateLoadingComponent}>
+                    <ThemedText>{t('updating')}</ThemedText>
+                </ThemedView>: null}
+                <ThemedView style={styles.closeModalSection}>
+                    <ThemedView></ThemedView>
+                    <TouchableOpacity onPress={()=> setUpdateLimitModal(false)}><AntDesign name='close' size={24} color={ colorScheme === 'dark' ? "white" : "black"}  /></TouchableOpacity>
+                </ThemedView>
+               
+                <TextInput value={JSON.stringify(postLimit)} keyboardType='numeric' onChangeText={(e)=> setPostLimit(Number(e))} placeholder={JSON.stringify(postLimit)} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.limitInput]} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'}/>
+                <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.updateButton]} onPress={()=> handleUpdateUser()}>
+                    <ThemedText style={styles.updateText}>{t('update')}</ThemedText>
+                </TouchableOpacity>
+            </ThemedView>: null}
+            <ThemedText style={styles.emailText}>{email}</ThemedText>
             {!loadingUser ? 
             <ThemedView>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 0}} >
+                    <ThemedView style={styles.postLimitComponent}>
+                        <ThemedText type='defaultSemiBold'>{t('event.post.limit')}:</ThemedText>
+                        <ThemedView>
+                            <ThemedText type='defaultSemiBold' style={styles.eventLimitNumber}>{user.postEventLimit}</ThemedText>
+                        </ThemedView>
+                        <TouchableOpacity onPress={()=> setUpdateLimitModal(true)}>
+                            <Feather name='edit' size={20} color={'#1184e8'} />
+                        </TouchableOpacity>
+                    </ThemedView>
+                    <ThemedView >
+                        <Link href={{pathname: '/(tabs)/profile/analytics', params: {screenName:"user", email: email}}} asChild>
+                            <TouchableOpacity style={styles.buttonsBody}>
+                                <ThemedText>{t('online.impressions')}</ThemedText>
+                            </TouchableOpacity>
+                        </Link>
+                        
+                    </ThemedView>
+                    <ThemedView >
+                        <Link href={{pathname: '/(tabs)/profile/analytics', params: {screenName:"user", email: email}}} asChild>
+                            <TouchableOpacity style={styles.buttonsBody}>
+                                <ThemedText>{t('events.viewed')}</ThemedText>
+                            </TouchableOpacity>
+                        </Link>
+                        
+                    </ThemedView>
                 <ThemedView>
                    
                 </ThemedView>
@@ -392,7 +263,81 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginTop: 5
        
-    }
+    },
+    userIconBody: {
+        marginTop: 40
+    },
+    emailText: {
+        marginTop: 10
+    },
+    postLimitComponent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10
+    },
+    eventLimitNumber: {
+        marginHorizontal: 5
+    },
+    updateLimitModal: {
+        width: windowWidth * 0.95,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: 'gray',
+        padding: 10,
+        position: 'absolute',
+        top: 50,
+        zIndex: 20
+      },
+      closeModalSection: {
+        width: '95%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row'
+      },
+      limitInput: {
+        borderWidth: 0.5,
+        borderColor: 'gray',
+        paddingHorizontal: 5,
+        width: '50%'
+      },
+      updateButton: {
+        borderWidth: 1,
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5,
+        borderRadius:5,
+        borderColor: '#1184e8',
+        fontFamily: "PoppinsSemibold"
+      },
+      updateText: {
+        color: "#1184e8",
+        fontFamily: "PoppinsSemibold",
+        fontSize: 16
+      },
+      updateLoadingComponent: {
+        position: "absolute",
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5,
+        borderRadius:5,
+        borderColor: '#1184e8',
+        borderWidth: 1,
+        zIndex: 20,
+        width: '100%',
+        height: '100%'
+      },
+      buttonsBody: {
+        borderWidth: 1,
+        borderColor: 'gray',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5,
+        padding: 5,
+        marginTop: 10
+      }
   
   
   

@@ -234,6 +234,9 @@
     "online.impressions": "Online Impressions",
     "users": "Users",
     "user": "User",
-    "sponsor": "Sponsor"
+    "sponsor": "Sponsor",
+    "event.post.limit": "Event Post Limit",
+    "events.viewed": "Events Viewed",
+    
 
 }

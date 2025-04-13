@@ -1,12 +1,12 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, ActivityIndicator } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import {AntDesign, Ionicons} from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import EventTicketBody from '@/components/appComponents/EventTicketBody';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
@@ -82,9 +82,18 @@ export default function TicketsScreen() {
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
-            <ThemedView style={styles.headerTextBody}>
-                <ThemedText type='subtitle'>{t('im.going')}</ThemedText>
+            <ThemedView style={styles.headerBody}>
+                <ThemedView style={styles.headerTextBody}>
+                    <ThemedText type='subtitle'>{t('im.going')}</ThemedText>
+                </ThemedView>
+                <ThemedView>
+                    <TouchableOpacity onPress={()=> handleGetBookedEvents()}>
+                        <Ionicons size={24} name="refresh" color={'#1184e8'} />
+                    </TouchableOpacity>
+                </ThemedView>
+                
             </ThemedView>
+            
             {loadingEvents ? 
             <ThemedView>
                 <ActivityIndicator />
@@ -129,6 +138,12 @@ const styles = StyleSheet.create({
         width: '95%',
         marginTop: 10,
         marginBottom: 5
+    },
+    headerBody: {
+        flexDirection: "row",
+        alignItems: 'center',
+        justifyContent: "space-between",
+        width: "95%"
     }
   
   

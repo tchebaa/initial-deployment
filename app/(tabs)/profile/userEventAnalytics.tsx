@@ -32,19 +32,20 @@ const windowHeight = Dimensions.get('window').height
 
 
 
-export default function Users() {
+export default function userEventAnalytics() {
 
     const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
-    const [pageType, setPageType] = useState<string>(t('users'))
+    const [pageType, setPageType] = useState<string>(t('analytics'))
     const {admins} = useAdmin()
     const {userDetails} = useUser()
+
+    const {email, screenName} = useLocalSearchParams()
     
     const colorScheme = useColorScheme();
 
-    const [users, setUsers] = useState([])
-    const [loadingUsers, setLoadingUsers] = useState<boolean>(true)
-    const [loadingUsersError, setLoadingUsersError] = useState(false)
-    const [searchTerm, setSearchTerm] = useState('')
+    const [eventsViewed, setEventsViewed] = useState([])
+    const [loadingEventsViewed, setLoadingEventsViewed] = useState<boolean>(true)
+    const [loadingEventsViewedError, setLoadingEventsViewedError] = useState(false)
 
 
     const admin = admins?.find((admin)=> admin.email === userDetails?.username)
@@ -220,43 +221,96 @@ export default function Users() {
     
 
   
-    const handleGetUsers = async () => {
+    const handleGetOnlineUsers = async () => {
 
-        setLoadingUsers(true)
+        setLoadingEventsViewed(true)
 
         try{
 
-            setLoadingUsersError(false)
+            setLoadingEventsViewedError(false)
 
             if(dateFilterCode === 'all') {
 
-                const { data, errors } = await client.models.User.list({
+                if(screenName === 'user') {
+
+                    const { data, errors } = await client.models.EventViewed.list({
+                        filter: {
+                            email: {
+                                beginsWith: email
+                            }
+                        } 
+                    })
+    
+                    setEventsViewed(data)
+    
+                    setLoadingEventsViewed(false)
+
+                } else {
+
+                    const { data, errors } = await client.models.EventViewed.list({
                     
-                })
+                    })
+    
+                    setEventsViewed(data)
+    
+                    setLoadingEventsViewed(false)
 
-                setUsers(data)
+                }
 
-                setLoadingUsers(false)
+                
 
             } else {
 
-                const { data, errors } = await client.models.User.list({
-                    filter: {
-                        and:[
-                            {
-                                createdAt: { gt: startDate}
-                            },
-                            {
-                                createdAt: { lt: endDate}
-                            }
-                            
-                        ]
-                    }
-                })
+                if(screenName === 'user') {
 
-                setUsers(data)
+                    const { data, errors } = await client.models.EventViewed.list({
+                        filter: {
+                            and:[
+                                {
+                                    createdAt: { gt: startDate}
+                                },
+                                {
+                                    createdAt: { lt: endDate}
+                                },
+                                {
+                                    email: {
+                                        beginsWith: email
+                                    }
+                                }
+                                
+                            ]
+                        }
+                    })
 
-                setLoadingUsers(false)
+                    setEventsViewed(data)
+
+                    setLoadingEventsViewed(false)
+
+                } else {
+
+                    const { data, errors } = await client.models.EventViewed.list({
+                        filter: {
+                            and:[
+                                {
+                                    createdAt: { gt: startDate}
+                                },
+                                {
+                                    createdAt: { lt: endDate}
+                                },
+                                
+                            ]
+                        }
+                    })
+
+                    setEventsViewed(data)
+
+                    setLoadingEventsViewed(false)
+
+                }
+
+                
+
+                
 
             }
 
@@ -267,46 +321,16 @@ export default function Users() {
 
         } catch(e) {
 
-            setLoadingUsersError(true)
+            setLoadingEventsViewedError(true)
 
         }
 
     }
-
-    const handleSearchUsers = async () => {
-    
-        try {
-
-            setLoadingUsers(true)
-
-            const { data, errors } = await client.models.User.list({
-                    filter: {
-                        email: {
-                            beginsWith: searchTerm
-                        }
-                    }
-            })
-
-            setUsers(data)
-            setLoadingUsers(false)
-            
-  
-
-        } catch(e) {
-
-            setLoadingUsersError(true)
-           
-
-        }
-
-        
-    }
-
 
 
     useEffect(()=> {
 
-        handleGetUsers()
+        handleGetOnlineUsers()
 
     },[dateFilterCode])
 
@@ -318,8 +342,8 @@ export default function Users() {
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType}/>
             
-            <ThemedView style={styles.usersHeader}>
-                <ThemedText type='subtitle'>{t('users')}</ThemedText>
+            <ThemedView style={styles.onlineUsersHeader}>
+                <ThemedText type='subtitle'>{t('online.impressions')}</ThemedText>
             </ThemedView>
               <ThemedView style={{ height: 50}}>
                 <ScrollView horizontal>
@@ -336,37 +360,29 @@ export default function Users() {
                             })}
                         </ThemedView>
                     </ScrollView>
-                </ThemedView> 
-                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.searchInputComponent]}>
-                    <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.searchInput]} placeholder={t('search')} placeholderTextColor={colorScheme === 'light' ? 'gray': 'white'} value={searchTerm} onChangeText={(e)=> setSearchTerm(e)}/>
-                    <TouchableOpacity style={styles.searchButton} onPress={()=> handleSearchUsers()}>
-                        <AntDesign size={24} name="search1" color={'#1184e8'} />
-                    </TouchableOpacity>
-                </ThemedView> 
+                </ThemedView>  
                 
             
-            {!loadingUsers ? 
+            {!loadingEventsViewed? 
             <ThemedView>
                 <ThemedView style={styles.totalBody}>
                     <ThemedView></ThemedView>
                     <ThemedView style={styles.totalComponent}>
                         <ThemedText>{t('total')}:</ThemedText>
-                        <ThemedText style={styles.totalNumber}>{users.length}</ThemedText>
+                        <ThemedText style={styles.totalNumber}>{eventsViewed.length}</ThemedText>
                     </ThemedView>
                 </ThemedView>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 0}} >
                 <ThemedView>
-                    {users.length > 0 ? 
+                    {eventsViewed.length > 0 ? 
                     <ThemedView>
-                        {users.map((item, i)=> {
+                        {eventsViewed.map((item, i)=> {
                             return(
-                                <ThemedView key={i} style={styles.userComponent}>
-                                    <Link href={{ pathname: '/(tabs)/profile/oneUser', params: {id: item.id, email: item.email}}} asChild>
-                                        <TouchableOpacity>
-                                            <ThemedText>{item.email}</ThemedText>
-                                            <ThemedText>{moment(item.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</ThemedText>
-                                        </TouchableOpacity>
-                                    </Link>
+                                <ThemedView key={i} style={styles.onlineUserComponent}>
+                                    <TouchableOpacity>
+                                        <ThemedText>{item.email}</ThemedText>
+                                        <ThemedText>{moment(item.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</ThemedText>
+                                    </TouchableOpacity>
                                     
                                 </ThemedView>
                             )
@@ -427,7 +443,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: 10
     },
-    usersHeader: {
+    onlineUsersHeader: {
         marginTop: 10,
         width: '100%'
     },
@@ -435,8 +451,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: '100%',
-        marginTop: 5
+        width: '100%'
     },
     totalComponent: {
         flexDirection: 'row',
@@ -445,7 +460,7 @@ const styles = StyleSheet.create({
     totalNumber: {
         marginLeft: 5
     },
-    userComponent: {
+    onlineUserComponent: {
         
         borderTopWidth: 0.5,
         
@@ -453,30 +468,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginTop: 5
        
-    },
-    searchInputComponent: {
-        width: '95%',
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderBottomWidth: 0.5,
-        marginTop: 10,
-    },
-    searchInput: {
-      
-        
-        paddingHorizontal: 10,
-        width: '80%',
-        paddingVertical: 5
-        
-    },
-    searchButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '10%',
-        
-        height: 40
-    },
+    }
   
   
   

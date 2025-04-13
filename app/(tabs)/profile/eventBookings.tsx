@@ -81,7 +81,7 @@ export default function EventBookings() {
 
     useEffect(()=> {
 
-     // handleGetEvents()
+     handleGetEvents()
 
     },[])
 

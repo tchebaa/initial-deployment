@@ -863,11 +863,11 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                             {eventIndex === i ? 
                               <TouchableOpacity style={styles.selectedDate} onPress={()=> console.log(ticketPriceArray)}>
                                 <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
-                                <ThemedText style={styles.ongoingText}>ongoing</ThemedText>
+                                <ThemedText style={styles.ongoingText}>{t('ongoing')}</ThemedText>
                               </TouchableOpacity>:
                               <TouchableOpacity style={styles.unselectedDate} onPress={() => handleSelectDate(i, item.eventDate,item.eventEndDate, item.eventDays, item.eventHours, item.eventMinutes, item.ticketPriceArray)}>
                                 <ThemedText>{moment(item.eventDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
-                                <ThemedText style={styles.ongoingText}>ongoing</ThemedText>
+                                <ThemedText style={styles.ongoingText}>{t('ongoing')}</ThemedText>
                               </TouchableOpacity>}
                           </ThemedView>:
                           <ThemedView>

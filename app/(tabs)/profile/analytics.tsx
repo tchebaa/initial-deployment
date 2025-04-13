@@ -38,6 +38,8 @@ export default function Analytics() {
     const [pageType, setPageType] = useState<string>(t('analytics'))
     const {admins} = useAdmin()
     const {userDetails} = useUser()
+
+    const {email, screenName} = useLocalSearchParams()
     
     const colorScheme = useColorScheme();
 
@@ -229,33 +231,86 @@ export default function Analytics() {
 
             if(dateFilterCode === 'all') {
 
-                const { data, errors } = await client.models.OnlineUser.list({
+                if(screenName === 'user') {
+
+                    const { data, errors } = await client.models.OnlineUser.list({
+                        filter: {
+                            email: {
+                                beginsWith: email
+                            }
+                        } 
+                    })
+    
+                    setOnlineUsers(data)
+    
+                    setLoadingOnlineUsers(false)
+
+                } else {
+
+                    const { data, errors } = await client.models.OnlineUser.list({
                     
-                })
+                    })
+    
+                    setOnlineUsers(data)
+    
+                    setLoadingOnlineUsers(false)
 
-                setOnlineUsers(data)
+                }
 
-                setLoadingOnlineUsers(false)
+                
 
             } else {
 
-                const { data, errors } = await client.models.OnlineUser.list({
-                    filter: {
-                        and:[
-                            {
-                                createdAt: { gt: startDate}
-                            },
-                            {
-                                createdAt: { lt: endDate}
-                            }
-                            
-                        ]
-                    }
-                })
+                if(screenName === 'user') {
 
-                setOnlineUsers(data)
+                    const { data, errors } = await client.models.OnlineUser.list({
+                        filter: {
+                            and:[
+                                {
+                                    createdAt: { gt: startDate}
+                                },
+                                {
+                                    createdAt: { lt: endDate}
+                                },
+                                {
+                                    email: {
+                                        beginsWith: email
+                                    }
+                                }
+                                
+                            ]
+                        }
+                    })
 
-                setLoadingOnlineUsers(false)
+                    setOnlineUsers(data)
+
+                    setLoadingOnlineUsers(false)
+
+                } else {
+
+                    const { data, errors } = await client.models.OnlineUser.list({
+                        filter: {
+                            and:[
+                                {
+                                    createdAt: { gt: startDate}
+                                },
+                                {
+                                    createdAt: { lt: endDate}
+                                },
+                                
+                            ]
+                        }
+                    })
+
+                    setOnlineUsers(data)
+
+                    setLoadingOnlineUsers(false)
+
+                }
+
+                
+
+                
 
             }
 
