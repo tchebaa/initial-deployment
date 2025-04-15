@@ -17,7 +17,7 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function ChatsBody({item}:{item: {userName: string, organizerName: string, participants: string[], updatedAt: string, id: string}}) {
+export default function ChatsBody({item}:{item: {lastMessage: string, participants: string[], updatedAt: string, id: string}}) {
 
     
 
@@ -25,12 +25,12 @@ export default function ChatsBody({item}:{item: {userName: string, organizerName
     return (
         <ThemedView style={styles.container}>
         
-            <Link href={{pathname: '/(tabs)/profile/chats', params: {conversationId: item.id}}} asChild>
+            <Link href={{pathname: '/(tabs)/profile/chats', params: {conversationId: item.id, screenName: "customer"}}} asChild>
                 <TouchableOpacity style={styles.chatButton}>
                     <AntDesign name='message1' size={24}/>
                     <ThemedView style={styles.chatDetailsBody}>
-                        <ThemedText type='defaultSemiBold'>{item.organizerName}</ThemedText>
-                        <ThemedText style={styles.chatText} numberOfLines={1}>Hello</ThemedText>
+                        <ThemedText type='defaultSemiBold'></ThemedText>
+                        <ThemedText style={styles.chatText} numberOfLines={1}>{item.lastMessage}</ThemedText>
                     </ThemedView>
                     
                 </TouchableOpacity>

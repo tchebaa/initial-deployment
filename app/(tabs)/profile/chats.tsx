@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -16,6 +16,9 @@ import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import moment from 'moment';
 import { generateClient } from 'aws-amplify/data';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
+import {useUser} from '../../../context/UserContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
+
 
 const client = generateClient<Schema>();
 
@@ -26,89 +29,22 @@ const windowHeight = Dimensions.get('window').height
 
 
 
-
-const messagesChats = [
-  {
-  sender: 'stephen.fondo95@gmail.com',
-  senderName: "Stephen Fondo",
-  createdAt: '2024-12-25T05:00:00.000Z',
-  id: '88292030',
-  message: 'Hello whats the price for the event'
-  },
-  {
-  
-  sender: 'rani@gmail.com',
-  senderName: "Mwangirani Fondo",
-  createdAt: '2024-12-25T05:00:00.000Z',
-  id: '96779034',
-  message: 'The event will be 1000 kenyan shillings The event will be 1000 kenyan shillings.'
-  },
-  {
-  sender: 'stephen.fondo95@gmail.com',
-  senderName: "Stephen Fondo",
-  createdAt: '2024-12-25T05:00:00.000Z',
-  id: '36292030',
-  message: 'Is there a discount?'
-  },
-  {
-  sender: 'stephen.fondo95@gmail.com',
-  senderName: "Stephen Fondo",
-  createdAt: '2024-12-25T05:00:00.000Z',
-  id: '54292020',
-  message: 'For five people?'
-  },
-  {
-  
-  sender: 'rani@gmail.com',
-  senderName: "Mwangirani Fondo",
-  createdAt: '2024-12-25T05:00:00.000Z',
-  id: '86772537',
-  message: 'Sorry but the price is fixed.'
-  },
-  {
-  sender: 'stephen.fondo95@gmail.com',
-  senderName: "Stephen Fondo",
-  createdAt: '2024-12-25T05:00:00.000Z',
-  id: '56292042',
-  message: 'Okay then, how about 10 people.'
-  },
-  {
-  
-  sender: 'rani@gmail.com',
-  senderName: "Mwangirani Fondo",
-  createdAt: '2024-12-25T05:00:00.000Z',
-  id: '58292070',
-  message: 'Sorry but the price is fixed.'
-  },
-  {
-  sender: 'rani@gmail.com',
-  senderName: "Mwangirani Fondo",
-  createdAt: '2025-01-02T05:00:00.000Z',
-  id: '85712034',
-  message: 'Sorry but the price is fixed.'
-  },
-  {
-  sender: 'stephen.fondo95@gmail.com',
-  senderName: "Stephen Fondo",
-  createdAt: '2025-01-07T05:00:00.000Z',
-  id: '56222038',
-  message: 'Sorry but the price is fixed.'
-  },
-  
-]
-
-
 export default function Message() {
 
+
+  const {userDetails} = useUser()
+  const colorScheme = useColorScheme();
+
   const [pageType, setPageType] = useState<string>('chats')
-  const [chats, setChats] = useState<{message:string, id: string, senderName: string, sender: string, createdAt: string} []>(messagesChats)
+  const [chats, setChats] = useState([])
+  const [loadingChats, setLoadingChats] = useState(true)
   const [userEmail, setUserEmail] = useState<string>('rani@gmail.com')
   const [text, setText] = useState<string>('')
 
   const chatListRef = useRef<FlatList>(null)
   const scrollRef = useRef<ScrollView>(null)
 
-  const { conversationId } = useLocalSearchParams();
+  const { conversationId, screenName } = useLocalSearchParams();
 
 
   useEffect(()=> {
@@ -121,15 +57,84 @@ export default function Message() {
   },[scrollRef, chats])
 
 
+
+
   useEffect(()=> {
 
+    //handleGetChats()
 
   },[])
 
+  useEffect(()=> {
+
+    const sub = client.models.Message.observeQuery({
+        filter:{
+            conversationId:{
+                beginsWith: conversationId
+            }
+        }
+    }).subscribe({
+        next: ({ items, isSynced }) => {
+
+            const sortedChats = items.sort(function(a,b){
+                    return new Date(a.createdAt) - new Date(b.createdAt)
+                  })
+
+            console.log(items, "observe")
+            setChats([...sortedChats])
+            setLoadingChats(false)
+          
+        },
+      });
+    
+      return () => sub.unsubscribe();
+
+  }, [])
+
+  
+
+  
 
 /** 
+ * 
+ *  const handleGetChats = async () => {
+
+    console.log(conversationId)
+
+    try{
+
+        const { data, errors } = await client.models.Message.list({
+
+            filter: {
+                conversationId:{
+                    beginsWith: conversationId
+                }
+            }
+            
+          });
+
+          //console.log(data)
+
+        
+
+          setChats(data)
+          setLoadingChats(false)
+
+          
+
+    } catch (e) {
+
+        setLoadingChats(false)
+
+    }
+
+  }
 
   const renderChats = ({item}:{item: {senderName: string, sender: string, message: string, createdAt: string, id: string}}) => {
+
+
+  userDetails?.username
+
                 return(
                     <ThemedView>
                         {userEmail === item.sender ? 
@@ -150,13 +155,26 @@ export default function Message() {
             }
 
 */
-const handleSendText = () => {
+const handleSendText = async () => {
 
     if(text.length > 1) {
 
-        const chatItem = {message: text, senderName: 'Rani', id: '123456', sender: 'rani@gmail.com', createdAt: new Date()}
+        if(screenName === 'user'){
 
-        setChats([...chats, chatItem])
+            const { data, errors } = await client.models.Message.create({
+                conversationId: conversationId,
+                sender: userDetails?.username,
+                content: text,
+                status: 'read'
+                
+              });
+
+              setText('')
+
+        }
+
+        
+
     }
 
 }
@@ -179,21 +197,22 @@ const handleSendText = () => {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType} />
-            <ThemedView>
-            <ScrollView ref={scrollRef} contentContainerStyle={{paddingBottom: 100}} showsVerticalScrollIndicator={false}>
+            {loadingChats ? <ActivityIndicator/> 
+            : <ThemedView style={styles.chatBody}>
+            <ScrollView ref={scrollRef} contentContainerStyle={{paddingBottom: 120}} showsVerticalScrollIndicator={false}>
                 {chats.map((item, i)=> {
                     return(
                         <ThemedView key={i}>
-                        {userEmail === item.sender ? 
+                        {userDetails?.username === item.sender ? 
                         <ThemedView style={styles.sentMessagesBody}>
                             <ThemedView style={styles.sentMessageComponent}>
-                                <ThemedText style={styles.sentMessageText}>{item.message}</ThemedText>
+                                <ThemedText style={styles.sentMessageText}>{item.content}</ThemedText>
                             </ThemedView>
                             <ThemedText style={styles.dateText}>{moment(item.createdAt).fromNow()}</ThemedText>
                         </ThemedView>:
                         <ThemedView style={styles.recievedMessageBody}>
-                            <ThemedView style={styles.recievedMessageComponent}>
-                                <ThemedText>{item.message}</ThemedText>
+                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.recievedMessageComponent]}>
+                                <ThemedText>{item.content}</ThemedText>
                             </ThemedView>
                             <ThemedText style={styles.dateText}>{moment(item.createdAt).fromNow()}</ThemedText>
                         </ThemedView>}
@@ -201,12 +220,12 @@ const handleSendText = () => {
                     )
                 })}
             </ScrollView>
-            </ThemedView>
+            </ThemedView>}
             <ThemedView>
                 
             </ThemedView>
             <ThemedView style={styles.chatInputBody}>
-                <TextInput style={styles.chatInput} value={text} onChangeText={(e)=> setText(e)}/>
+                <TextInput style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.chatInput]} value={text} onChangeText={(e)=> setText(e)}/>
                 <TouchableOpacity onPress={()=> handleSendText()}>
                     <Ionicons name='send-outline' size={24} color={'#1184e8'}/>
                 </TouchableOpacity>
@@ -237,12 +256,13 @@ const styles = StyleSheet.create({
     chatInputBody: {
         position: 'absolute',
         bottom: 0,
-        borderTopWidth: 1,
+        borderTopWidth: 0.5,
         padding: 9,
-        width: windowWidth * 0.95,
+        width: windowWidth,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderColor: 'gray'
     },
     chatInput: {
         padding: 5,
@@ -255,12 +275,14 @@ const styles = StyleSheet.create({
     sentMessagesBody: {
         alignSelf: 'flex-end',
         maxWidth: windowWidth * 0.95,
-        marginTop: 20
+        marginTop: 20,
+        
     },
     recievedMessageBody: {
         alignSelf: 'flex-start',
         maxWidth: windowWidth * 0.95,
-        marginTop: 20
+        marginTop: 20,
+        marginLeft: 5
     },
     sentMessageComponent: {
         padding: 10,
@@ -273,17 +295,25 @@ const styles = StyleSheet.create({
     },
     recievedMessageComponent: {
         padding: 10,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        borderBottomRightRadius: 20 
+        borderBottomRightRadius: 20, 
+        borderColor: 'gray',
     },
     sentMessageText: {
         color: 'white'
     },
     dateText:{
         marginTop: 5
-    }
+    },
+    chatBody: {
+        width: windowWidth,
+        
+        height: '100%',
+        
+   
+    },
     
     
   

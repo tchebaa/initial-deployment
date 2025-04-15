@@ -22,34 +22,34 @@ const windowHeight = Dimensions.get('window').height
 
 
 const messageUsers = [
-  {userName: 'Stephen Fondo',
-  organizerName: 'Arsenal PLC',
+  {
+  lastMessage: 'Arsenal PLC',
   participants: ['rani@gmail.com', 'stephen.fondo95@gmail.com'],
   updatedAt: '2024-12-25T05:00:00.000Z',
   id: '56292030',
   },
-  {userName: 'Stephen Rani',
-  organizerName: 'Man city PLC',
+  {
+  lastMessage: 'Man city PLC',
   participants: ['rani@gmail.com', 'stephen.fondo95@gmail.com'],
   updatedAt: '2024-12-25T05:00:00.000Z',
   id: '86772034',
   
   },
-  {userName: 'Mwangirani Fondo',
-  organizerName: 'Talii Travel PLC',
+  {
+  lastMessage: 'Talii Travel PLC',
   participants: ['rani@gmail.com', 'stephen.rani95@gmail.com'],
   updatedAt: '2024-12-25T05:00:00.000Z',
   id: '56292031',
   },
-  {userName: 'Stephen Fondo',
-  organizerName: 'Arsenal PLC',
+  {
+  lastMessage: 'Arsenal PLC',
   participants: ['rani@gmail.com', 'stephen.rani95@gmail.com'],
   updatedAt: '2024-12-25T05:00:00.000Z',
   id: '56292060',
 
   },
-  {userName: 'Stephen Rani',
-  organizerName: 'Man city PLC',
+  {
+  lastMessage: 'Man city PLC',
   participants: ['rani@gmail.com', 'stephen.fondo95@gmail.com'],
   updatedAt: '2024-12-25T05:00:00.000Z',
   id: '86772074',
@@ -64,10 +64,10 @@ export default function Message() {
 
   const {t} = useLanguage()
   const [pageType, setPageType] = useState<string>(t('messages'))
-  const [chats, setChats] = useState<{participants: string [], id: string, senderName: string, recieverName: string, updatedAt: string} []>([])
+  const [chats, setChats] = useState<{participants: string [], id: string, lastMessage: string, updatedAt: string} []>([])
 
 
-  const renderChats = ({item}:{item: {userName: string, organizerName: string, participants: string[], updatedAt: string, id: string}}) => {
+  const renderChats = ({item}:{item: {lastMessage: string, participants: string[], updatedAt: string, id: string}}) => {
               return(
                   <ChatsBody item={item} />
               )

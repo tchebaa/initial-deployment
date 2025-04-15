@@ -49,6 +49,12 @@ export default function oneUser() {
     const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false)
     const [loadingUpdateError, setLoadingUpdateError] = useState<boolean>(false)
     const [postLimit, setPostLimit] = useState<number>(0)
+    const [conversation, setConversation] = useState([])
+    const [loadingConversation, setLoadingConversation] = useState<boolean>(true)
+    const [loadingConversationError, setLoadingConversationError] = useState<boolean>(true)
+    const [createChatModal, setCreateModal] = useState<boolean>(false)
+    const [loadingCreateChat, setLoadingCreateChat] = useState<boolean>(false)
+    const [createChatError, setCreateChatError] = useState<boolean>(false)
 
 
     const admin = admins?.find((admin)=> admin.email === userDetails?.username)
@@ -120,11 +126,88 @@ export default function oneUser() {
     }
 
 
+    const handleGetConversation = async () => {
+
+        setLoadingConversation(true)
+    
+
+        try{
+
+            setLoadingConversationError(false)
+
+            const { data, errors } = await client.models.Conversation.list({
+                filter: {
+                    and:[
+                        {
+                            participants: {
+                                contains: email
+                            }
+                        },
+                        {
+                            participants: {
+                                contains: 'tchebaa'
+                            }
+                        }
+                        
+                    ]
+                }
+            })
+
+            setConversation(data)
+            setLoadingConversation(false)
+            
+
+        } catch (e) {
+
+            setLoadingConversation(false)
+            setLoadingConversationError(true)
+
+        }
+
+    }
+
+
+    const handleCreateChat = async () => {
+
+        setCreateChatError(false)
+        setLoadingCreateChat(true)
+
+
+        try {
+
+            const { data, errors } = await client.models.Conversation.create({
+                participants: [email, "tchebaa"],
+                lastMessage: ''
+            })
+
+            handleGetConversation()
+
+
+        } catch (e) {
+
+            setCreateChatError(true)
+            setLoadingCreateChat(false)
+
+        }
+
+    }
+
+
     useEffect(()=> {
 
        handleGetUser()
 
     },[])
+
+
+    useEffect(()=> {
+
+        handleGetConversation()
+
+    },[])
+
+
+
 
 
   
@@ -182,6 +265,26 @@ export default function oneUser() {
                         </Link>
                         
                     </ThemedView>
+                    
+                   {!loadingConversation ?
+                    <ThemedView >
+                        
+                        {conversation.length > 0 ? 
+                        <Link href={{pathname: '/(tabs)/profile/chats', params: {screenName:"user", email: email, conversationId: conversation[0].id}}} asChild>
+                            <TouchableOpacity style={styles.buttonsBody}>
+                                <ThemedText>{t('chat')}</ThemedText>
+                            </TouchableOpacity>
+                        </Link>:
+                        <ThemedView>
+                            {loadingCreateChat ? 
+                            <ActivityIndicator />
+                            :
+                            <TouchableOpacity style={styles.buttonsBody} onPress={()=> handleCreateChat()}>
+                                <ThemedText>{t('create.chat')}</ThemedText>
+                            </TouchableOpacity>}
+                        </ThemedView>}
+                        
+                    </ThemedView>: null}
                 <ThemedView>
                    
                 </ThemedView>
