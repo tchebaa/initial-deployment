@@ -250,7 +250,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                 
                                 <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName }</ThemedText>
                                 <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
+                                <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName} />
                                 
                           </View>
                   
@@ -300,7 +300,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                   <View style={styles.detailsBodyText}>
                                       <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                       <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
+                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>
                                   </View>
                                   
                               
@@ -350,7 +350,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                   <View style={styles.detailsBodyText}>
                                       <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                       <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
+                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>
                                   </View>
                                   
                               
@@ -397,7 +397,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                 <View style={styles.detailsBodyText}>
                                     <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                     <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
+                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName} />
                                 </View>
                                 
                             </View>
@@ -409,7 +409,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                     <View style={styles.eventDetailsSearchBody}>
                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                          <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} />
+                          <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>
                       </View>: null}
                 
                 </TouchableOpacity>

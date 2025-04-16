@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/ThemedView';
 import {AntDesign} from '@expo/vector-icons';
 import EventBody from '@/components/appComponents/EventBody';
 import { Link } from 'expo-router';
+import BookedTicketBody from '@/components/appComponents/BookedTicketBody';
 import { useLocalSearchParams } from 'expo-router';
 import EventHeader from '@/components/appComponents/EventHeader';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
@@ -25,7 +26,7 @@ const windowHeight = Dimensions.get('window').height
 
 
 
-export default function EventScreen() {
+export default function EventTicketScreen() {
 
     const { screenType, id } = useLocalSearchParams();
 
@@ -35,7 +36,7 @@ export default function EventScreen() {
     const [loadingEventTicketError, setLoadingEventTicketError] = useState<string>('')
 
 
-    const handleGetEvent = async () => {
+    const handleGetEventTicket = async () => {
 
         try {
             setLoadingEventTicketError('')
@@ -60,11 +61,31 @@ export default function EventScreen() {
     }
 
 
+    useEffect(()=> {
+
+        handleGetEventTicket()
+
+    },[])
+
+
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <EventHeader item={eventTicket} screenType={screenType}/>
-            
+            <ThemedView>
+                {loadingEventTicket ? <ActivityIndicator />: 
+                <ThemedView>
+                    {loadingEventTicketError ? 
+                    <ThemedView></ThemedView>:
+                    <ThemedView>
+                        <ThemedView style={styles.eventDetailsComponent}>
+                            <ThemedText type='subtitle'>{eventTicket.eventName}</ThemedText>
+                            <ThemedText>{eventTicket.eventAddress}</ThemedText>
+                        </ThemedView>
+                        <BookedTicketBody item={eventTicket}/>
+                    </ThemedView>}
+                </ThemedView>}
+            </ThemedView>
         </ThemedView>
     </SafeAreaView>
   );
@@ -98,7 +119,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent:'space-between'
-    }
+    },
+    eventDetailsComponent: {
+        width: windowWidth * 0.95,
+        marginTop: 10
+      },
   
   
   

@@ -1,6 +1,6 @@
 
 import {createContext, useContext, useState, useEffect, type Dispatch, type SetStateAction, type ReactNode} from 'react';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 
 
@@ -11,6 +11,7 @@ interface IEventContextValue {
     userLocation?:{latitude: number, longitude: number} | null
     userAddress?: string
     loadingAddress: boolean
+    loadingLocation: boolean
     setLoadingAddress: (data: boolean) => void
     setUserLocation:(data:{latitude: number, longitude: number}) => void
     setUserAddress:(data:string) => void,
@@ -21,6 +22,7 @@ interface IEventContextValue {
 const initialList: IEventContextValue = {
     userAddress: '',
     userLocation: null,
+    loadingLocation: true,
     loadingAddress: false,
     setLoadingAddress(data) {},
     setUserLocation: (data) => {},
@@ -45,18 +47,65 @@ export function LocationProvider({children}: ChildrenProps) {
 
   const [userAddress, setUserAddress] = useState<string>('')
   const [userLocation, setUserLocation] = useState<{latitude: number , longitude: number} | null >(null)
+  const [loadingLocation, setLoadingLocation] = useState<boolean>(true)
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false)
 
-  
+  const handleChangeLocation = async () => {
 
-  useEffect(()=> {
-    if(userLocation) {
+    try{
 
-        getUserAddress()
-        
+      const locationString = JSON.stringify(userLocation)
+
+      await AsyncStorage.setItem('locationString', locationString);
+
+    } catch(e) {
 
     }
-  },[userLocation])
+
+  }
+
+  const handleGetLocation = async () => {
+
+    setLoadingLocation(true)
+
+    try {
+
+      const value = await AsyncStorage.getItem('locationString');
+
+      if (value !== null) {
+
+        const parsedValue = JSON.parse(value)
+
+        setUserLocation(parsedValue)
+        setLoadingLocation(false)
+        // value previously stored
+      } else {
+        setLoadingLocation(false)
+      }
+
+    } catch(e) {
+
+      setLoadingLocation(false)
+
+    }
+  }
+
+  useEffect(()=> {
+
+    handleGetLocation()
+
+  },[])
+
+  useEffect(()=> {
+    if(userLocation && !loadingLocation) {
+        getUserAddress()
+        handleChangeLocation()
+
+        //await AsyncStorage.setItem('location', item);     
+
+    }
+  },[userLocation, loadingLocation])
+ 
 
 
   async function getLocationPermission() {
@@ -149,7 +198,7 @@ export function LocationProvider({children}: ChildrenProps) {
 
 
   return(
-    <LocationContext.Provider value={{userAddress, setUserAddress, userLocation, setUserLocation, loadingAddress, setLoadingAddress}} >{children}</LocationContext.Provider>
+    <LocationContext.Provider value={{userAddress, setUserAddress, userLocation, setUserLocation, loadingAddress, setLoadingAddress, loadingLocation}} >{children}</LocationContext.Provider>
   )
 
 }

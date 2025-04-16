@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -15,56 +15,77 @@ import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import ChatsBody from '@/components/appComponents/ChatsBody';
 import {useLanguage} from '../../../context/LanguageContext'
+import {useUser} from '../../../context/UserContext'
+import { generateClient } from 'aws-amplify/data';
+import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
+import { useColorScheme } from '@/hooks/useColorScheme';
+
+
+const client = generateClient<Schema>();
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
-const messageUsers = [
-  {
-  lastMessage: 'Arsenal PLC',
-  participants: ['rani@gmail.com', 'stephen.fondo95@gmail.com'],
-  updatedAt: '2024-12-25T05:00:00.000Z',
-  id: '56292030',
-  },
-  {
-  lastMessage: 'Man city PLC',
-  participants: ['rani@gmail.com', 'stephen.fondo95@gmail.com'],
-  updatedAt: '2024-12-25T05:00:00.000Z',
-  id: '86772034',
-  
-  },
-  {
-  lastMessage: 'Talii Travel PLC',
-  participants: ['rani@gmail.com', 'stephen.rani95@gmail.com'],
-  updatedAt: '2024-12-25T05:00:00.000Z',
-  id: '56292031',
-  },
-  {
-  lastMessage: 'Arsenal PLC',
-  participants: ['rani@gmail.com', 'stephen.rani95@gmail.com'],
-  updatedAt: '2024-12-25T05:00:00.000Z',
-  id: '56292060',
-
-  },
-  {
-  lastMessage: 'Man city PLC',
-  participants: ['rani@gmail.com', 'stephen.fondo95@gmail.com'],
-  updatedAt: '2024-12-25T05:00:00.000Z',
-  id: '86772074',
-  },
-]
-
-/** 
 
 
-*/
 export default function Message() {
 
   const {t} = useLanguage()
+  const {userDetails} = useUser()
+  const colorScheme = useColorScheme();
   const [pageType, setPageType] = useState<string>(t('messages'))
-  const [chats, setChats] = useState<{participants: string [], id: string, lastMessage: string, updatedAt: string} []>([])
+  const [conversations, setConversations] = useState<{participants: string [], id: string, lastMessage: string, updatedAt: string} []>([])
+  const [loadingConversations, setLoadingConversations] = useState<boolean>(true)
+  const [loadingConversationsError, setLoadingConversationsError] = useState<boolean>(true)
+
+
+  const handleGetConversations = async () => {
+
+    setLoadingConversations(true)
+
+
+    try{
+
+        setLoadingConversationsError(false)
+
+        /**participants: {
+                    contains: userDetails?.username
+                }      */
+
+        const { data, errors } = await client.models.Conversation.list({
+           filter: {
+            participants: {
+              contains: userDetails?.username    
+            }
+           }          
+        })
+
+        const sortedData = data.sort(function(a,b){
+          return new Date(b.createdAt) - new Date(a.createdAt)
+        })
+
+        console.log(data)
+
+        setConversations(sortedData)
+        setLoadingConversations(false)
+        
+
+    } catch (e) {
+
+        setLoadingConversations(false)
+        setLoadingConversationsError(true)
+
+    }
+
+}
+
+  useEffect(()=> {
+
+    handleGetConversations()
+
+  },[])
 
 
   const renderChats = ({item}:{item: {lastMessage: string, participants: string[], updatedAt: string, id: string}}) => {
@@ -79,11 +100,22 @@ export default function Message() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType} />
-            <FlatList 
-              data={messageUsers}
-              renderItem={renderChats}
-              keyExtractor={(item)=> item.id} 
-              showsVerticalScrollIndicator={false}/>
+            {loadingConversations ? <ActivityIndicator /> :
+              <ThemedView>
+                {conversations.length > 0 ? 
+                <FlatList 
+                data={conversations}
+                renderItem={renderChats}
+                keyExtractor={(item)=> item.id} 
+                showsVerticalScrollIndicator={false}/>
+                : <ThemedText>{t('no.conversations')}</ThemedText>}
+              </ThemedView>
+              }
+              {loadingConversationsError ?
+              <TouchableOpacity style={styles.errorButton} onPress={()=> handleGetConversations()}>
+                    <ThemedText>{`${t('error.getting.conversations')}...${t('press.to.retry')}`}
+                    </ThemedText>
+                </TouchableOpacity>: null}
         </ThemedView>
         
     </SafeAreaView>
@@ -106,6 +138,9 @@ const styles = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
         
+    },
+    errorButton: {
+      marginVertical: 5
     },
     
   

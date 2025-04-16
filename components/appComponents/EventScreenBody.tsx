@@ -359,6 +359,8 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
                 totalTicketNumber: adultNumber + adolescentNumber + childNumber,
                 eventTotalPrice: eventTotalPrice,
                 organizerEmail: item.email,
+                ticketsStatus: 'booked',
+                refunded: false
             
         });
 

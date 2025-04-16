@@ -5,8 +5,9 @@ import HomeDateTimeCostSection from './HomeDateTimeCostSection';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import moment from 'moment';
 import { Link } from 'expo-router';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 
@@ -19,18 +20,23 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function ChatsBody({item}:{item: {lastMessage: string, participants: string[], updatedAt: string, id: string}}) {
 
-    
+  const colorScheme = useColorScheme();
 
 
     return (
         <ThemedView style={styles.container}>
         
-            <Link href={{pathname: '/(tabs)/profile/chats', params: {conversationId: item.id, screenName: "customer"}}} asChild>
+            <Link href={{pathname: '/(tabs)/profile/chats', params: {conversationId: item.id, screenName: "user"}}} asChild>
                 <TouchableOpacity style={styles.chatButton}>
-                    <AntDesign name='message1' size={24}/>
+                    <AntDesign name='message1' size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
                     <ThemedView style={styles.chatDetailsBody}>
-                        <ThemedText type='defaultSemiBold'></ThemedText>
+                        <ThemedText type='defaultSemiBold'>Stephen Fondo</ThemedText>
                         <ThemedText style={styles.chatText} numberOfLines={1}>{item.lastMessage}</ThemedText>
+                        <ThemedView style={styles.dateComponent}>
+                          <ThemedView></ThemedView>
+                          <ThemedText >{moment(item.updatedAt).fromNow()}</ThemedText>
+                        </ThemedView>
+                       
                     </ThemedView>
                     
                 </TouchableOpacity>
@@ -49,7 +55,7 @@ container: {
 },
   chatButton: {
     width: windowWidth * 0.95,
-    height: 65,
+    height: 80,
     borderBottomWidth: 0.5,
     borderColor: 'gray',
     padding: 5,
@@ -60,10 +66,18 @@ container: {
   },
   chatDetailsBody: {
     marginLeft: 20,
+    
 
   },
   chatText: {
     color: 'gray'
+  },
+  dateComponent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "space-between",
+    width: '95%'
   }
+  
    
 })

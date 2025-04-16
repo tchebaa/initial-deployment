@@ -54,7 +54,7 @@ export default function Message() {
         scrollRef.current.scrollToEnd({animated: true})
     }
 
-  },[scrollRef, chats])
+  },[chats, loadingChats])
 
 
 
@@ -80,8 +80,10 @@ export default function Message() {
                     return new Date(a.createdAt) - new Date(b.createdAt)
                   })
 
-            console.log(items, "observe")
+            
             setChats([...sortedChats])
+
+            
             setLoadingChats(false)
           
         },
@@ -171,6 +173,53 @@ const handleSendText = async () => {
 
               setText('')
 
+              const updateLastMessage = await client.models.Conversation.update({
+               id: conversationId,
+               lastMessage: text 
+                
+              });
+
+
+        }
+
+        if(screenName === 'customer') {
+
+            const { data, errors } = await client.models.Message.create({
+                conversationId: conversationId,
+                sender: userDetails?.username,
+                content: text,
+                status: 'read'
+                
+              });
+
+              setText('')
+
+              const updateLastMessage = await client.models.Conversation.update({
+               id: conversationId,
+               lastMessage: text 
+                
+              });
+
+        }
+
+        if(screenName === 'tchebaa') {
+
+            const { data, errors } = await client.models.Message.create({
+                conversationId: conversationId,
+                sender: 'tchebaa',
+                content: text,
+                status: 'read'
+                
+              });
+
+              setText('')
+
+              const updateLastMessage = await client.models.Conversation.update({
+               id: conversationId,
+               lastMessage: text 
+                
+              });
+
         }
 
         
@@ -203,20 +252,20 @@ const handleSendText = async () => {
                 {chats.map((item, i)=> {
                     return(
                         <ThemedView key={i}>
-                        {userDetails?.username === item.sender ? 
-                        <ThemedView style={styles.sentMessagesBody}>
-                            <ThemedView style={styles.sentMessageComponent}>
-                                <ThemedText style={styles.sentMessageText}>{item.content}</ThemedText>
-                            </ThemedView>
-                            <ThemedText style={styles.dateText}>{moment(item.createdAt).fromNow()}</ThemedText>
-                        </ThemedView>:
-                        <ThemedView style={styles.recievedMessageBody}>
-                            <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.recievedMessageComponent]}>
-                                <ThemedText>{item.content}</ThemedText>
-                            </ThemedView>
-                            <ThemedText style={styles.dateText}>{moment(item.createdAt).fromNow()}</ThemedText>
-                        </ThemedView>}
-                    </ThemedView>
+                            {userDetails?.username === item.sender ? 
+                            <ThemedView style={styles.sentMessagesBody}>
+                                <ThemedView style={styles.sentMessageComponent}>
+                                    <ThemedText style={styles.sentMessageText}>{item.content}</ThemedText>
+                                </ThemedView>
+                                <ThemedText style={styles.dateText}>{moment(item.createdAt).fromNow()}</ThemedText>
+                            </ThemedView>:
+                            <ThemedView style={styles.recievedMessageBody}>
+                                <ThemedView style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.recievedMessageComponent]}>
+                                    <ThemedText>{item.content}</ThemedText>
+                                </ThemedView>
+                                <ThemedText style={styles.dateText}>{moment(item.createdAt).fromNow()}</ThemedText>
+                            </ThemedView>}
+                        </ThemedView>
                     )
                 })}
             </ScrollView>

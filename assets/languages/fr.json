@@ -238,6 +238,11 @@
     "event.post.limit": "Limite de publication d'un événement",
     "events.viewed": "Événements consultés",
     "create.chat": "Créer une discussion",
-    "chat": "Chat"
+    "chat": "Chat",
+    "ends": "Se termine",
+    "event.end.date": "Date de fin de l'événement",
+    "no.conversations": "Aucune conversation",
+    "error.getting.conversations": "Erreur lors de l'obtention des conversations",
+    "notification": "Notification"
     
 }

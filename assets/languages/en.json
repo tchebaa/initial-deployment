@@ -238,7 +238,12 @@
     "event.post.limit": "Event Post Limit",
     "events.viewed": "Events Viewed",
     "create.chat": "Create Chat",
-    "chat": "Chat"
+    "chat": "Chat",
+    "ends": "Ends",
+    "event.end.date": "Event end date",
+    "no.conversations": "No conversations",
+    "error.getting.conversations": "Error getting conversations",
+    "notification": "Notification"
     
 
 }

@@ -65,7 +65,7 @@ export default function EventTicketBody({item, screenType}: {screenType: string 
     return (
         <ThemedView>
             
-              <Link href={{pathname: '/(tabs)/tickets/event', params: {screenType: 'tickets', id: item.id}}} asChild>
+              <Link href={{pathname: '/(tabs)/tickets/eventTicket', params: {screenType: 'tickets', id: item.id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody2}>
                       {item.eventMainImage.aspectRatio === 'a'  ? 
                       <ThemedView>

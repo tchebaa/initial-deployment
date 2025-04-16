@@ -59,7 +59,7 @@ export default function oneUser() {
 
     const admin = admins?.find((admin)=> admin.email === userDetails?.username)
 
-    const [startDate, setStartDate] = useState<string>(moment(new Date).format().toString())
+    const [startDate, setStartDate] = useState<string>(moment(new Date()).format().toString())
     const [endDate, setEndDate] = useState<string>('')
     const [dateFilterCode, setDateFilterCode] = useState<string>('all')
 
@@ -270,7 +270,7 @@ export default function oneUser() {
                     <ThemedView >
                         
                         {conversation.length > 0 ? 
-                        <Link href={{pathname: '/(tabs)/profile/chats', params: {screenName:"user", email: email, conversationId: conversation[0].id}}} asChild>
+                        <Link href={{pathname: '/(tabs)/profile/chats', params: {screenName:"tchebaa", email: email, conversationId: conversation[0].id}}} asChild>
                             <TouchableOpacity style={styles.buttonsBody}>
                                 <ThemedText>{t('chat')}</ThemedText>
                             </TouchableOpacity>

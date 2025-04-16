@@ -14,7 +14,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
-export default function EventDateTimeCostSection({eventTimelines, option}) {
+export default function EventDateTimeCostSection({eventTimelines, option, eventName}:{ eventName: string}) {
 
     const colorScheme = useColorScheme();
     const {t, currentLanguageCode} = useLanguage()
@@ -26,6 +26,8 @@ export default function EventDateTimeCostSection({eventTimelines, option}) {
 
 
         setLoadSortingDates(true)
+
+        console.log(eventTimelines, eventName)
 
         const sortedTimelines = eventTimelines.sort(function(a, b){
 
@@ -91,9 +93,9 @@ export default function EventDateTimeCostSection({eventTimelines, option}) {
                             <ThemedText style={styles.ongoingText} >{t('ongoing')}</ThemedText>
                             
                         </View>
-                        {option === 'homeNear' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]} >{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
+                        {option === 'homeNear' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]} >{`${t('ends')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
 
-                        {option === 'sponsored' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]}>{`${t('ends.in')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
+                        {option === 'sponsored' ? <ThemedText style={[colorScheme === 'dark' ? {color: 'white'} : {color: 'gray'}, styles.optionText]}>{`${t('ends')} ${moment(firstEventDate.eventEndDate).fromNow()}`}</ThemedText>: null}
 
                     </View>:
                     <View>

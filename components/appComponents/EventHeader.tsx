@@ -11,6 +11,7 @@ import { generateClient } from 'aws-amplify/data';
 import {useUser} from '../../context/UserContext';
 import { Link, router } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {useLanguage} from '../../context/LanguageContext'
 
 
 const client = generateClient<Schema>();
@@ -27,8 +28,7 @@ export default function EventHeader({item, screenType}: {screenType: string | st
 
 
 
-    
-
+    const {t, currentLanguageCode} = useLanguage()
     const {likedEvents, handleGetLikedEvents, loadingLikedEvents} = useLikes()
     const {userDetails} = useUser()
     const [loadingImageError, setLoadingImageError] = useState<string>('')
@@ -141,7 +141,7 @@ export default function EventHeader({item, screenType}: {screenType: string | st
               <TouchableOpacity onPress={()=> router.back()}>
                 <AntDesign name='arrowleft' size={24} color={ colorScheme === 'dark' ? "white" : "black"}/>
               </TouchableOpacity>
-              {screenType === 'tickets' ? <View></View> : 
+              {screenType === 'tickets' ? <ThemedView><ThemedText>{t('tickets')}</ThemedText></ThemedView> : 
               <View>
                 {loadingLikeUnlikeEvent || loadingLikedEvents ? 
                 <ThemedView><ActivityIndicator/></ThemedView>

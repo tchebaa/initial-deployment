@@ -142,7 +142,7 @@ export default function EventManageBody({item, screenType, deletedItem, setDelet
                         </TouchableOpacity>
                     </ThemedView>}
                 </ThemedView>: null}
-                <TouchableOpacity  style={styles.eventBody}>
+                <ThemedView style={styles.eventBody}>
                     {item.eventMainImage.aspectRatio === 'a'  ? 
                     <View>
                       {!loadingImage ? 
@@ -171,13 +171,14 @@ export default function EventManageBody({item, screenType, deletedItem, setDelet
                     </View> : null}
                     
                     <View style={styles.eventDetailsSearchBody}>
+                      
                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
                           <ThemedView style={styles.buttonsContainer}>
                             
                           <ThemedView>
                               
-                              <Link href={{pathname: '/(tabs)/profile/eventBookings' , params: {screenName: screenType, id: item.id}}} asChild>
+                              <Link href={{pathname: '/(tabs)/profile/eventBookings' , params: {screenName: screenType, eventId: item.id, eventName: item.eventName, eventAddress: item.eventAddress}}} asChild>
                                   <TouchableOpacity style={styles.editButton}><ThemedText>{t('view.bookings')}</ThemedText></TouchableOpacity>
                               </Link>
                             </ThemedView>
@@ -217,7 +218,7 @@ export default function EventManageBody({item, screenType, deletedItem, setDelet
                           </ThemedView>
                       </View>
                 
-                </TouchableOpacity>
+                </ThemedView>
                 
                
             
@@ -460,7 +461,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10
+    borderRadius: 5
   },
   deleteButton: {
 
@@ -470,7 +471,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10
+    borderRadius: 5
 
   },
   bookingsButton: {
@@ -480,7 +481,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 5,
     marginVertical: 10
 
   },

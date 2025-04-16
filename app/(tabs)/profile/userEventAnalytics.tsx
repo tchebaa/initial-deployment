@@ -50,7 +50,7 @@ export default function userEventAnalytics() {
 
     const admin = admins?.find((admin)=> admin.email === userDetails?.username)
 
-    const [startDate, setStartDate] = useState<string>(moment(new Date).format().toString())
+    const [startDate, setStartDate] = useState<string>(moment(new Date()).format().toString())
     const [endDate, setEndDate] = useState<string>('')
     const [dateFilterCode, setDateFilterCode] = useState<string>('all')
 
@@ -99,7 +99,7 @@ export default function userEventAnalytics() {
     
                 setDateFilterCode('all')
     
-                setStartDate(moment(new Date).format().toString())
+                setStartDate(moment(new Date()).format().toString())
                 setEndDate('')
             }
         

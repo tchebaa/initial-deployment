@@ -73,7 +73,7 @@ export default function SearchScreen() {
     const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
     const [events, setEvents] = useState([])
     const [searchTerm, setSearchTerm] = useState<string>('')
-    const [startDate, setStartDate] = useState<string>(moment(new Date).format().toString())
+    const [startDate, setStartDate] = useState<string>(moment(new Date()).format().toString())
     const [endDate, setEndDate] = useState<string>('')
     const [errorLoadingEvents, setErrorLoadingEvents] = useState<string>('')
 
@@ -90,7 +90,7 @@ export default function SearchScreen() {
 
             setDateFilter('all')
 
-            setStartDate(moment(new Date).format().toString())
+            setStartDate(moment(new Date()).format().toString())
             setEndDate('')
         }
     

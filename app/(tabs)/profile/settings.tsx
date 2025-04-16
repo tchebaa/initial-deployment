@@ -14,6 +14,7 @@ import EventHeader from '@/components/appComponents/EventHeader';
 import EventScreenBody from '@/components/appComponents/EventScreenBody';
 import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import {useLanguage} from '../../../context/LanguageContext'
+import {useUser} from '../../../context/UserContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 
@@ -27,6 +28,7 @@ const windowHeight = Dimensions.get('window').height
 export default function Settings() {
 
     const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
+    const {userDetails, onlineUserDetails} = useUser()
     const colorScheme = useColorScheme();
   const [pageType, setPageType] = useState<string>('settings')
   const [langaugeSectionOption, setLanguageSectionOption] = useState<boolean>(false)
@@ -61,6 +63,12 @@ export default function Settings() {
                     <TouchableOpacity style={styles.activeLanguage} onPress={()=> handleChangeLanguage('fr')}><ThemedText>{t('french')}</ThemedText></TouchableOpacity>
                     :<TouchableOpacity style={styles.inactiveLanguage}  onPress={()=> handleChangeLanguage('fr')}><ThemedText>{t('french')}</ThemedText></TouchableOpacity>}
                 </ThemedView>: null}
+            </ThemedView>
+            <ThemedView style={styles.notificationBody}>
+                <ThemedText type='boldSmallTitle'>{t('notification')}</ThemedText>
+                <ThemedView>
+                    <TouchableOpacity><MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/></TouchableOpacity>
+                </ThemedView>
             </ThemedView>
         </ThemedView>
         
@@ -116,6 +124,13 @@ const styles = StyleSheet.create({
     },
     languageCodeText: {
         color:'#1184e8'
+    },
+    notificationBody: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: "95%",
+        padding: 5
     }
 
   

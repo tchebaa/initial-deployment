@@ -13,6 +13,10 @@ import {useUser} from '../context/UserContext'
 import {useLanguage} from '../context/LanguageContext'
 import {signUp, getCurrentUser, confirmSignUp, resendSignUpCode, signIn} from '@aws-amplify/auth'
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {type Schema} from '../tchebaa-backend/amplify/data/resource'
+import { generateClient } from 'aws-amplify/data';
+
+const client = generateClient<Schema>();
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -102,7 +106,7 @@ export default function SignUp() {
             const user = await signIn({
               username: email,
               password: password,
-            }).then((e)=> { setConfirmError(''); setConfirmModal(false); console.log(e); router.push('/locationScreen')})
+            }).then((e)=> { setConfirmError(''); setConfirmModal(false); console.log(e); router.push('/locationScreen'); })
   
           
           }
@@ -152,7 +156,13 @@ export default function SignUp() {
                 password: password,
               }).then((e)=> {setSignUpError(''); setLoadingSignUp(false) ;console.log(e); setConfirmModal(true)})
       
-              
+              const { data, errors } = await client.models.User.create({
+                email: email,
+                postEventLimit: 3,
+                pushNotificationToken: "",
+                name: "",
+                pushNotificationEnabled: true
+              });
       
             } catch(e) {
 

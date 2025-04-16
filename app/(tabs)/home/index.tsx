@@ -89,13 +89,13 @@ export default function HomeScreen() {
     const {t, currentLanguageCode} = useLanguage()
 
 
-    const {userDetails} = useUser()
+    const {userDetails, pushNotificationToken, setPushNotificationToken, onlineUserDetails, setOnlineUserDetails} = useUser()
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
 
     const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
     const [errorLoadingEvents, setErrorLoadingEvents] = useState<string>('')
     const [events, setEvents] = useState([])
-    const [startDate, setStartDate] = useState<string>(moment(new Date).format().toString())
+    const [startDate, setStartDate] = useState<string>(moment(new Date()).format().toString())
 
 
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -127,6 +127,8 @@ export default function HomeScreen() {
             longitude: userLocation?.longitude
                 
             });
+
+            
   
             setEvents(data)
             setLoadingEvents(false)
@@ -267,7 +269,8 @@ const styles = StyleSheet.create({
     filterModal: {
         position: 'absolute',
         zIndex: 20
-    }
+    },
+    
   
   
   

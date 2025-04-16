@@ -98,7 +98,7 @@ export default function Users() {
     
                 setDateFilterCode('all')
     
-                setStartDate(moment(new Date).format().toString())
+                setStartDate(moment(new Date()).format().toString())
                 setEndDate('')
             }
         
@@ -354,7 +354,7 @@ export default function Users() {
                         <ThemedText style={styles.totalNumber}>{users.length}</ThemedText>
                     </ThemedView>
                 </ThemedView>
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 0}} >
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 100}} >
                 <ThemedView>
                     {users.length > 0 ? 
                     <ThemedView>

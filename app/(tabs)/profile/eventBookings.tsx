@@ -19,6 +19,8 @@ import {useUser} from '../../../context/UserContext';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 import EventManageBody from '@/components/appComponents/EventManageBody';
 import {useLanguage} from '../../../context/LanguageContext'
+import moment from 'moment';
+import BookedTicketBody from '@/components/appComponents/BookedTicketBody';
 
 
 const client = generateClient<Schema>();
@@ -36,23 +38,195 @@ export default function EventBookings() {
     const {userDetails} = useUser()
     const {t} = useLanguage()
 
-    const {eventId} = useLocalSearchParams()
+    const {eventId, eventName, eventAddress} = useLocalSearchParams()
     const [pageType, setPageType] = useState<string>(t('bookings'))
-    const [bookings, setBookings] = useState()
+    const [bookings, setBookings] = useState([])
     const [loadingBookings, setLoadingBookings] = useState<boolean>(true)
     const [loadingError, setLoadingError] = useState<string>('')
     const [deletedItem, setDeletedItem] = useState<string>('')
+
+    const [startDate, setStartDate] = useState<string>(moment(new Date).format().toString())
+    const [endDate, setEndDate] = useState<string>('')
+    const [dateFilterCode, setDateFilterCode] = useState<string>('all')
+
+
+
+     const dayRanges = [
+            {
+                name: t('all'),
+                code: 'all'
+            },
+            {
+                name: t('today'),
+                code: 'today'
+            },
+            {
+                name: t('this.year'),
+                code: 'thisyear'
+            },
+            {
+                name: t('yesterday'),
+                code: 'yesterday'
+            },
+            {
+                name: t('this.week'),
+                code: 'thisweek'
+            },
+            {
+                name: t('last.week'),
+                code: 'lastweek'
+            },
+            {
+                name: t('this.month'),
+                code: 'thismonth'
+            },
+            {
+                name: t('last.month'),
+                code: 'lastmonth'
+            },
+            
+        ]
+    
+        const handleDateChange = (code: string) => {
+                    
+                //setDayType(code)
+            
+                if(code === 'all') {
+        
+                    setDateFilterCode('all')
+        
+                    setStartDate(moment(new Date).format().toString())
+                    setEndDate('')
+                }
+            
+                if(code === 'today'){
+        
+                    setDateFilterCode('today')
+        
+                    setStartDate(moment(new Date()).startOf('day').format().toString())
+                    setEndDate(moment(new Date()).endOf('day').format().toString())
+            
+                   // console.log(moment(new Date()).startOf('day').format())
+            
+                   // console.log(moment(new Date).endOf('day').format())
+                    
+            
+                }
+    
+                if(code === 'thisyear'){
+        
+                    setDateFilterCode('thisyear')
+        
+                    setStartDate(moment(new Date()).startOf('year').format().toString())
+                    setEndDate(moment(new Date()).endOf('year').format().toString())
+            
+                   // console.log(moment(new Date()).startOf('day').format())
+            
+                   // console.log(moment(new Date).endOf('day').format())
+                    
+            
+                }
+    
+                if(code === 'yesterday'){
+        
+                    setDateFilterCode('yesterday')
+        
+                    setStartDate(moment(new Date()).subtract(1, 'days').startOf('day').format().toString())
+                    setEndDate(moment(new Date()).startOf('day').format().toString())
+            
+                   // console.log(moment(new Date()).startOf('day').format())
+            
+                   // console.log(moment(new Date).endOf('day').format())
+                    
+            
+                }
+            
+                if(code === 'tomorrow'){
+        
+                    setDateFilterCode('tomorrow')
+        
+                    setStartDate(moment(new Date()).endOf('day').format().toString())
+                    setEndDate(moment(new Date()).add(1, 'days').endOf('day').format().toString())
+                    
+                    
+                }
+                if(code === 'thisweek'){
+            
+                    setDateFilterCode('thisweek')
+        
+                    setStartDate(moment(new Date()).startOf('isoWeek').format().toString())
+                    setEndDate(moment(new Date()).endOf('isoWeek').format().toString())
+                    
+                    
+                }
+    
+                if(code === 'lastweek'){
+            
+                    setDateFilterCode('lastweek')
+        
+                    setStartDate(moment(new Date()).subtract(1, 'weeks').startOf('isoWeek').format().toString())
+                    setEndDate(moment(new Date()).startOf('isoWeek').format().toString())
+                    
+                    
+                }
+    
+                if(code === 'thisweekend'){
+        
+                    setDateFilterCode('thisweekend')
+        
+                    setStartDate(moment(new Date()).endOf('isoWeek').subtract(2, 'days').format().toString())
+                    setEndDate(moment(new Date()).endOf('isoWeek').format().toString())
+                    
+                }
+            
+                if(code === 'nextweek'){
+        
+                    setDateFilterCode('nextweek')
+        
+        
+                    setStartDate(moment(new Date()).add(1, 'week').startOf('isoWeek').format().toString())
+                    setEndDate(moment(new Date()).add(1, 'week').endOf('isoWeek').format().toString())
+            
+                    
+                }
+                if(code === 'thismonth'){
+        
+                    setDateFilterCode('thismonth')
+        
+                    setStartDate(moment(new Date()).startOf('month').format())
+                    setEndDate(moment(new Date()).endOf('month').format())
+                }
+                if(code === 'lastmonth'){
+        
+                    setDateFilterCode('lastmonth')
+        
+                    setStartDate(moment(new Date()).subtract(1, "months").startOf('month').format())
+                    setEndDate(moment(new Date()).startOf('month').format())
+                }
+            
+                if(code === 'nextmonth'){
+        
+                    setDateFilterCode('nextmonth')
+        
+                    setStartDate(moment(new Date()).add(1, 'month').startOf('month').format())
+                    setEndDate(moment(new Date()).add(1, 'month').endOf('month').format())
+                    
+                }
+            }
     
 
 
-    const handleGetEvents = async () => {
+    const handleGetBookings = async () => {
 
         try {
 
             setLoadingError('')
             setLoadingBookings(true)
 
-            const { data, errors } = await client.models.EventTicket.list({
+
+            if(dateFilterCode === 'all') {
+
+              const { data, errors } = await client.models.EventTicket.list({
 
                 filter: {
                   eventId: {
@@ -63,8 +237,41 @@ export default function EventBookings() {
 
 
               setBookings(data)
-              
               setLoadingBookings(false)
+
+
+            } else {
+
+              const { data, errors } = await client.models.EventTicket.list({
+
+                filter:{
+                  and: [
+                  {
+                    eventId: {
+                      beginsWith: eventId
+                    },
+                  },
+                  {
+                      createdAt: { gt: startDate}
+                  },
+                  {
+                      createdAt: { lt: endDate}
+                  }  
+
+                  ]
+                }
+                
+
+                
+              });
+
+
+              setBookings(data)
+              setLoadingBookings(false)
+
+            }
+
+            
 
 
         } catch (e) {
@@ -81,9 +288,9 @@ export default function EventBookings() {
 
     useEffect(()=> {
 
-     handleGetEvents()
-
-    },[])
+     handleGetBookings()
+     
+    },[dateFilterCode])
 
 
     const renderEvents = ({item}) => {
@@ -98,22 +305,52 @@ export default function EventBookings() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType} />
+            <ThemedView style={styles.eventDetailsComponent}>
+              <ThemedText type='subtitle'>{eventName}</ThemedText>
+              <ThemedText>{eventAddress}</ThemedText>
+            </ThemedView>
+            <ThemedView style={{ height: 50}}>
+                <ScrollView horizontal>
+                        <ThemedView style={styles.filterComponent}>
+                            {dayRanges.map((item, i)=> {
+                                return(
+                                    <ThemedView  key={i}>
+                                        <TouchableOpacity style={styles.filterDateButton} onPress={()=> handleDateChange(item.code)}>
+                                            {dateFilterCode === item.code ? <ThemedText style={styles.selectedDateCodeText}>{item.name}</ThemedText>: <ThemedText>{item.name}</ThemedText> }
+                                        </TouchableOpacity>
+                                    </ThemedView>
+                                    
+                                )
+                            })}
+                        </ThemedView>
+                    </ScrollView>
+                </ThemedView> 
+                <ThemedView style={styles.totalBody}>
+                      <ThemedView></ThemedView>
+                      <ThemedView style={styles.totalComponent}>
+                          <ThemedText>{t('total')}:</ThemedText>
+                          <ThemedText style={styles.totalNumber}>{bookings.length}</ThemedText>
+                      </ThemedView>
+                  </ThemedView>
             <ThemedView>
             {loadingBookings ? 
             <ThemedView>
               <ActivityIndicator/>
             </ThemedView>:
-            <ThemedView>
-              {bookings.length > 0 ?
-              <FlatList 
-                  contentContainerStyle={{paddingBottom: 150}}
-                  data={bookings}
-                  renderItem={renderEvents}
-                  keyExtractor={(item)=> item.id} 
-                  showsVerticalScrollIndicator={false}/>
-                  :
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 250}}>
+              <ThemedView>
+                  {bookings.length > 0 ?
+                  <ThemedView>
+                    {bookings.map((item, i)=> {
+                      return(
+                        <BookedTicketBody key={i} item={item} />
+                      )
+                    })}
+                  </ThemedView>
+                    :
                   <ThemedView><ThemedText>{t('no.booked.events')}</ThemedText></ThemedView>}
-            </ThemedView>
+              </ThemedView>
+            </ScrollView>
             }
           </ThemedView>
           
@@ -141,9 +378,49 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         
     },
-    
-  
-  
-  
-  
+    filterComponent: {
+      flexDirection: 'row',
+      
+  },
+  selectedDateCodeText: {
+    color: "#1184e8"
+  },
+  filterDateButton: {
+      borderWidth: 0.5,
+      color: 'gray',
+      borderRadius: 10,
+      paddingHorizontal: 10,
+      marginTop: 10
+  },
+  eventDetailsComponent: {
+    width: windowWidth * 0.95,
+    marginTop: 10
+  },
+  totalBody: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '95%',
+    marginTop: 5
+  },
+  totalComponent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+  },
+  totalNumber: {
+      marginLeft: 5
+  },
+  ticketDetailsBody: {
+    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: windowWidth * 0.95,
+    marginTop: 5
+  },
+  ticketBody: {
+    borderTopWidth: 0.5,
+    paddingVertical: 5,
+    borderColor: "gray",
+    marginTop: 5
+  }
 });

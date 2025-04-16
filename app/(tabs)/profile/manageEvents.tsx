@@ -462,7 +462,7 @@ export default function ManageEvents() {
               
               {events.length > 0 ?
               <FlatList 
-                  contentContainerStyle={{paddingBottom: 350}}
+                  contentContainerStyle={{paddingBottom: 100}}
                   data={events}
                   renderItem={renderEvents}
                   keyExtractor={(item)=> item.id} 

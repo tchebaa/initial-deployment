@@ -16,7 +16,7 @@ import {generateClient} from 'aws-amplify/data'
 import { type Schema} from '../tchebaa-backend/amplify/data/resource'
 import {useLanguage} from '../context/LanguageContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
@@ -34,15 +34,22 @@ export default function LocationScreen() {
 
     const router = useRouter()
 
-    const {userAddress, userLocation, setUserAddress, setUserLocation, loadingAddress, setLoadingAddress} = useLocation()
+    const {userAddress, userLocation, setUserAddress, setUserLocation, loadingAddress, setLoadingAddress, loadingLocation} = useLocation()
 
     async function getCurrentLocation() {
       
       setLoadingAddress(true)
 
-      let location = await Location.getCurrentPositionAsync({});
+      try{
+
+        let location = await Location.getCurrentPositionAsync({});
       
-      setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
+        setUserLocation({latitude: location.coords.latitude, longitude: location.coords.longitude});
+
+      } catch(e) {
+
+      }
+      
     }
 
     async function getLocationPermission() {
@@ -66,7 +73,6 @@ export default function LocationScreen() {
 
     }
 
-   
 
     useEffect(()=> {
 
@@ -74,6 +80,14 @@ export default function LocationScreen() {
       getLocationPermission()
       
     },[])
+
+    useEffect(()=> {
+      if(userLocation) {
+
+        router.push("/(tabs)/home")
+
+      }
+    },[userLocation])
 
 
     
@@ -83,6 +97,10 @@ export default function LocationScreen() {
     <SafeAreaView style={styles.container}>
         {locationPermission ? 
         <ThemedView style={styles.body}>
+            {loadingLocation ? 
+            <ThemedView style={styles.loadingLocationModal}>
+                <ActivityIndicator/>
+            </ThemedView>: null}
             <ThemedView style={styles.titleContainer}>
                 <ThemedText type="title" >{t('events.in')}</ThemedText>
                
@@ -169,8 +187,11 @@ export default function LocationScreen() {
             
             {userAddress && !loadingAddress ? 
             <ThemedView style={styles.continueButton}>
-              <Link href={"/(tabs)/home"}>
-                <ThemedText >{t('continue')}</ThemedText>
+              <Link href={"/(tabs)/home"} asChild>
+                <TouchableOpacity>
+                  <ThemedText >{t('continue')}</ThemedText>
+                </TouchableOpacity>
+                
               </Link>
             </ThemedView>: null} 
           
@@ -258,6 +279,16 @@ const styles = StyleSheet.create({
   },
   addressBody: {
     width: windowWidth * 0.9
+  },
+  loadingLocationModal: {
+    position: "absolute",
+    top: 100,
+    padding: 5,
+    width: windowWidth ,
+    height: windowHeight,
+    alignItems: "center",
+    justifyContent:"center",
+    zIndex: 30
   }
   
   
