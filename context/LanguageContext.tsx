@@ -70,8 +70,9 @@ export function LanguageProvider({children}: ChildrenProps) {
 
           setLoadingLanguage(true)
 
-          setCurrentLanguageCode(languageCode)
-          i18next.changeLanguage(languageCode)
+          const safeLanguageCode = languageCode ?? "en";
+          setCurrentLanguageCode(safeLanguageCode);
+          i18next.changeLanguage(safeLanguageCode);
           
           setLoadingLanguage(false)
         }

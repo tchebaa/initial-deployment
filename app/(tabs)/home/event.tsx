@@ -88,12 +88,11 @@ export default function EventScreen() {
                     
                 })
 
-                console.log('true')
-                console.log(eventViewed)
+                
 
             } catch (e) {
 
-                console.log('false')
+                
 
             }
 

@@ -243,7 +243,9 @@
     "event.end.date": "Event end date",
     "no.conversations": "No conversations",
     "error.getting.conversations": "Error getting conversations",
-    "notification": "Notification"
+    "notification": "Notification",
+    "delete.account":"Delete account",
+    "are.you.sure.you.want.to.delete.your.account": "Are you sure you want to delete your account"
     
 
 }

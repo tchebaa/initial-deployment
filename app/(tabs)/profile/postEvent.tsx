@@ -42,11 +42,13 @@ export default function postEvent() {
     const {userDetails} = useUser()
     const router = useRouter()
 
+    const normalizedScreenName = Array.isArray(screenName) ? screenName[0] : screenName ?? '';
+
     const [newScreenName, setNewScreenName] = useState<string | string []>(screenName)
 
     const [loadingGetEvent, setLoadingGetEvent] = useState<boolean>(false)
     const [loadingEventError, setLoadingEventError] = useState<string>('')
-    const [email, setEmail] = useState<string>(screenName === 'post' ? userDetails?.username : '')
+    const [email, setEmail] = useState<string>(screenName === 'post' ? userDetails?.username ?? '' : '')
     const [emailError, setEmailError] = useState<boolean>(false)
     const [sponsored, setSponsord] = useState<boolean>(false)
 
@@ -223,41 +225,53 @@ export default function postEvent() {
 
             setLoadingGetEvent(true)
 
+
             const { data, errors } = await client.models.Event.get({
                 id: id,
               });
 
-              setPersonType(data?.personType)
-              setEmail(data?.email)
-              setSponsord(data?.sponsored)
-              setEventName(data?.eventName)
-              setEventDescription(data?.eventDescription)
-              setCompanyEmail(data?.email)
-              setPersonName(data?.personName)
-              setMainImageAspectRatio(data?.eventMainImage?.aspectRatio)
-              setImage2AspectRatio(data?.eventImage2?.aspectRatio)
-              setImage3AspectRatio(data?.eventImage3?.aspectRatio)
-              setImage4AspectRatio(data?.eventImage4?.aspectRatio)
-              setAgeRestriction(data?.ageRestriction)
-              setSelectedCategories(data?.categories)
-              setAddress(data?.eventAddress)
-              setCoordinates({latitude: Number(data?.location?.coordinates[1]), longitude: Number(data?.location?.coordinates[0])})
-              setMainImagePath(data?.eventMainImage?.url)
-              setImage2Path(data?.eventImage2?.url)
-              setImage3Path(data?.eventImage3?.url)
-              setImage4Path(data?.eventImage4?.url)
-
-              const linkToStorageFile = await getUrl({
-                path: data?.eventMainImage?.url,
-                options: {
-                  useAccelerateEndpoint: true
+              setPersonType(data?.personType ?? false)
+              setEmail(data?.email ?? '')
+              setSponsord(data?.sponsored ?? false)
+              setEventName(data?.eventName ?? '')
+              setEventDescription(data?.eventDescription ?? '')
+              setCompanyEmail(data?.companyEmail ?? '')
+              setPersonName(data?.personName ?? '')
+              setMainImageAspectRatio(data?.eventMainImage?.aspectRatio ?? '')
+              setImage2AspectRatio(data?.eventImage2?.aspectRatio ?? '')
+              setImage3AspectRatio(data?.eventImage3?.aspectRatio ?? '')
+              setImage4AspectRatio(data?.eventImage4?.aspectRatio ?? '')
+              setAgeRestriction(data?.ageRestriction?.filter((item): item is string => item !== null) ?? [])
+              setSelectedCategories(data?.categories?.filter((item): item is string => item !== null) ?? [])
+              setAddress(data?.eventAddress ?? '')
+              if (data?.location?.coordinates) {
+                setCoordinates({
+                    latitude: Number(data.location.coordinates[1]),
+                    longitude: Number(data.location.coordinates[0]),
+                });
                 }
-            })
+              setMainImagePath(data?.eventMainImage?.url ?? '')
+              setImage2Path(data?.eventImage2?.url ?? '')
+              setImage3Path(data?.eventImage3?.url ?? '')
+              setImage4Path(data?.eventImage4?.url ?? '')
+
+              if (data?.eventMainImage?.url) {
+
+                const linkToStorageFile = await getUrl({
+                    path: data.eventMainImage.url,
+                    options: {
+                    useAccelerateEndpoint: true,
+                    },
+                });
+
+
+                setMainImage(linkToStorageFile.url.toString())
+
+                }
         
-            setMainImage(linkToStorageFile.url.toString())
 
             
-            if(data?.eventImage2?.url?.length > 1) {
+            if(data?.eventImage2?.url) {
 
                 const linkToStorageFile = await getUrl({
                     path: data?.eventImage2?.url,
@@ -274,7 +288,7 @@ export default function postEvent() {
             }
 
 
-            if(data?.eventImage3?.url?.length > 1) {
+            if(data?.eventImage3?.url) {
 
                 const linkToStorageFile = await getUrl({
                     path: data?.eventImage3?.url,
@@ -293,7 +307,7 @@ export default function postEvent() {
 
 
 
-            if(data?.eventImage4?.url?.length > 1) {
+            if(data?.eventImage4?.url) {
 
                 const linkToStorageFile = await getUrl({
                     path: data?.eventImage4?.url,
@@ -309,9 +323,8 @@ export default function postEvent() {
 
             }
 
-            const newDateTimePriceList = data?.dateTimePriceList.map((newItem)=> {
-                return JSON.stringify(newItem)
-            })
+            const newDateTimePriceList = data?.dateTimePriceList?.map((newItem) => JSON.stringify(newItem)) ?? [];
+
               
             setDateTimePrice(newDateTimePriceList)  
               
@@ -321,7 +334,13 @@ export default function postEvent() {
 
         } catch (e) {
 
-            setLoadingEventError(e?.message)
+          const error = e as Error;
+
+            if(error) {
+
+                setLoadingEventError(error?.message)
+
+            }
 
         }
         
@@ -643,6 +662,8 @@ export default function postEvent() {
 
 
         } catch (e) {
+
+            const error = e as Error;
             
             setUploadPercent(0)
             setUploadingDetail(t('upload.error'))
@@ -714,7 +735,8 @@ export default function postEvent() {
                 location:{
                     type: "Point",
                     coordinates: [Number(coordinates?.longitude), Number(coordinates?.latitude)]
-                }
+                },
+                
             })
 
 
@@ -740,7 +762,9 @@ export default function postEvent() {
 
                   */
 
-                  await client.models.Event.update({
+                  if(uploadedDocument?.data) {
+
+                    await client.models.Event.update({
 
                     id: uploadedDocument?.data.id,
                     eventMainImage: {
@@ -749,11 +773,12 @@ export default function postEvent() {
                     }
                   });
 
-                 
-
-    
 
                   setUploadPercent(50)
+
+
+                  }
+
 
               }
 
@@ -766,9 +791,9 @@ export default function postEvent() {
                   }).result;
         
                  
-                  
+                  if(uploadedDocument?.data) {
 
-                  await client.models.Event.update({
+                    await client.models.Event.update({
                     id: uploadedDocument?.data.id,
                     eventImage2: {
                         aspectRatio: image2AspectRatio,
@@ -777,6 +802,10 @@ export default function postEvent() {
                   });
 
                   setUploadPercent(60)
+                    
+                  }
+
+
               }
 
               if(image3 && image3Bolb) {
@@ -787,9 +816,9 @@ export default function postEvent() {
                     data: image3Bolb,
                   }).result;
         
-                  
+                  if(uploadedDocument?.data) {
 
-                  await client.models.Event.update({
+                    await client.models.Event.update({
                     id: uploadedDocument?.data.id,
                     eventImage3: {
                         aspectRatio: image3AspectRatio,
@@ -798,6 +827,10 @@ export default function postEvent() {
                   });
 
                   setUploadPercent(70)
+                    
+                  }
+
+                  
               }
 
               if(image4 && image4Bolb) {
@@ -807,9 +840,10 @@ export default function postEvent() {
                     data: image4Bolb,
                   }).result;
         
-                  
+                  if(uploadedDocument?.data) {
 
-                  await client.models.Event.update({
+
+                    await client.models.Event.update({
                     id: uploadedDocument?.data.id,
                     eventMainImage: {
                         aspectRatio: image4AspectRatio,
@@ -818,6 +852,10 @@ export default function postEvent() {
                   });
 
                   setUploadPercent(80)
+                    
+                  }
+
+                  
               }
 
               setUploadPercent(100)
@@ -839,7 +877,9 @@ export default function postEvent() {
                 }
               }, 3000)
             
-          } catch (error) {
+          } catch (e) {
+
+            const error = e as Error;
             
             setUploadPercent(0)
             setUploadingDetail(t('upload.error'))
@@ -964,6 +1004,7 @@ export default function postEvent() {
 
 
     const handleRemoveImage = (item: string) => {
+        
         if(item === 'mainImage') {
             setMainImage('')
         }
@@ -980,7 +1021,7 @@ export default function postEvent() {
                 <PostEventPerson personType={personType} setPersonType={setPersonType} companyName={companyName} setCompanyName={setCompanyName}
                 companyEmail={companyEmail} setCompanyEmail={setCompanyEmail} companyNameError={companyNameError} companyEmailError={companyEmailError}
                 personName={personName} setPersonName={setPersonName} personNameError={personNameError} email={email} setEmail={setEmail} emailError={emailError} 
-                screenName={screenName}/>
+                screenName={normalizedScreenName}/>
             )
         }
         if(pageSection === 1) {

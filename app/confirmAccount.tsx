@@ -54,14 +54,14 @@ export default function confirmAccount() {
 
         setUserDetails({username: signInDetails?.loginId, userId: userId})
 
-      console.log(userId, signInDetails?.loginId)
+    
 
       if(userId) {
         router.push('/locationScreen')
       }
 
       } catch (e) {
-        console.log(e)
+        
       }
       
 
@@ -148,7 +148,7 @@ export default function confirmAccount() {
           
                 } catch(e) {
           
-                  console.log(e?.message)
+                  
                   setConfirmError(e?.message)
                   setConfirmModal(false)
           

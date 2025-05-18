@@ -27,7 +27,6 @@ export default function EventDateTimeCostSection({eventTimelines, option, eventN
 
         setLoadSortingDates(true)
 
-        console.log(eventTimelines, eventName)
 
         const sortedTimelines = eventTimelines.sort(function(a, b){
 

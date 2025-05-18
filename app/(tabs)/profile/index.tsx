@@ -8,11 +8,17 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import {FontAwesome, MaterialCommunityIcons, AntDesign, Ionicons, MaterialIcons} from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
-import {signOut} from '@aws-amplify/auth'
+import {signOut, deleteUser} from '@aws-amplify/auth'
 import {useUser} from '../../../context/UserContext'
 import {useLanguage} from '../../../context/LanguageContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import {useAdmin} from '../../../context/TchebaaAdminContext'
+import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
+import { uploadData, getUrl } from '@aws-amplify/storage';
+import { generateClient } from 'aws-amplify/data';
+
+
+const client = generateClient<Schema>();
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -22,7 +28,7 @@ const windowHeight = Dimensions.get('window').height
 
 export default function ProfileScreen() {
 
-    const {userDetails, setUserDetails} = useUser()
+    const {userDetails, setUserDetails, onlineUserDetails} = useUser()
     const {admins} = useAdmin()
     const {t} = useLanguage()
 
@@ -30,6 +36,7 @@ export default function ProfileScreen() {
     const router = useRouter()
 
     const [openSignOutModal, setOpenSignOutModal] = useState<boolean>(false)
+    const [openDeleteAccountModal, setDeleteAccountModal] = useState<boolean>(false)
     const [loadingSignOut, setLoadingSignOut] = useState<boolean>(false)
 
     
@@ -53,6 +60,34 @@ export default function ProfileScreen() {
     }
 
 
+    const handleDeleteUserDetails = async () => {
+
+        const { data, errors } = await client.models.OnlineUser.delete({
+
+            id: onlineUserDetails?.id
+
+          });
+        
+
+        
+
+    }
+
+   
+
+    const handleDeleteAccount = async () => {
+
+        handleSignOut()
+        handleDeleteUserDetails()
+
+        await deleteUser()
+        
+
+        
+
+    }
+
+
   return (
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
@@ -62,6 +97,19 @@ export default function ProfileScreen() {
                 {loadingSignOut ? <ActivityIndicator /> : 
                 <ThemedView style={styles.signOutOptionBody}>
                     <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setOpenSignOutModal(false)}>
+                        <ThemedText type='defaultSemiBold'>{t('no')}</ThemedText>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleSignOut()}>
+                        <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>{t('yes')}</ThemedText>
+                    </TouchableOpacity>
+                </ThemedView>}
+            </ThemedView>: null}
+            {openDeleteAccountModal ? 
+            <ThemedView style={styles.signOutModal}>
+                <ThemedText>{t('are.you.sure.you.want.to.delete.your.account')}</ThemedText>
+                {loadingSignOut ? <ActivityIndicator /> : 
+                <ThemedView style={styles.signOutOptionBody}>
+                    <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setDeleteAccountModal(false)}>
                         <ThemedText type='defaultSemiBold'>{t('no')}</ThemedText>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleSignOut()}>
@@ -109,6 +157,11 @@ export default function ProfileScreen() {
                 <ThemedView style={styles.signOutBody}>
                     <TouchableOpacity style={styles.loginButton} onPress={()=> setOpenSignOutModal(true)}>
                         <ThemedText style={styles.loginText}>{t('sign.out')}</ThemedText>
+                    </TouchableOpacity>
+                </ThemedView>
+                <ThemedView style={styles.deleteAccount}>
+                    <TouchableOpacity style={styles.deleteAccountButton} onPress={()=> setDeleteAccountModal(true)}>
+                        <ThemedText style={styles.deleteAccountText}>{t('delete.account')}</ThemedText>
                     </TouchableOpacity>
                 </ThemedView>
                 
@@ -211,7 +264,25 @@ const styles = StyleSheet.create({
       },
       acceptSignOutText: {
         color: 'red'
-      }
+      },
+      deleteAccount: {
+        marginTop: 20
+      },
+      deleteAccountButton: {
+        borderWidth: 1,
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5,
+        borderRadius:5,
+        borderColor: "red",
+        fontFamily: "PoppinsSemibold"
+      },
+      deleteAccountText: {
+        color: "red",
+        fontFamily: "PoppinsSemibold",
+        fontSize: 16
+      },
   
   
 });

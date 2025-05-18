@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 
-import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, StyleSheet, Platform, Dimensions, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { FontAwesome, Ionicons, MaterialCommunityIcons, Foundation, MaterialIcons, FontAwesome5, Entypo, Feather } from '@expo/vector-icons'; 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -16,8 +16,10 @@ import ProfileHeader from '@/components/appComponents/ProfileHeader';
 import {useLanguage} from '../../../context/LanguageContext'
 import {useUser} from '../../../context/UserContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { generateClient } from 'aws-amplify/data';
+import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
 
-
+const client = generateClient<Schema>();
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
@@ -28,10 +30,39 @@ const windowHeight = Dimensions.get('window').height
 export default function Settings() {
 
     const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
-    const {userDetails, onlineUserDetails} = useUser()
+    const {userDetails, onlineUserDetails, loadingOnlineUserDetails, setChangedStatus, changedStatus} = useUser()
     const colorScheme = useColorScheme();
   const [pageType, setPageType] = useState<string>('settings')
   const [langaugeSectionOption, setLanguageSectionOption] = useState<boolean>(false)
+
+  const handleChangedPushNotificationStatus = async (id: string, notificationStatus: boolean) => {
+
+    console.log(id, !notificationStatus)
+
+    try{
+
+      
+        const { data, errors } = await client.models.User.update({
+            id: id,
+            pushNotificationEnabled: !notificationStatus
+          });
+
+          setChangedStatus(!changedStatus)
+          console.log('changed')
+        
+
+    } catch (e) {
+
+        console.log(e)
+
+    }
+
+  }
+
+  useEffect(()=> {
+    console.log(onlineUserDetails)
+  },[onlineUserDetails])
+  
 
 
   
@@ -66,9 +97,17 @@ export default function Settings() {
             </ThemedView>
             <ThemedView style={styles.notificationBody}>
                 <ThemedText type='boldSmallTitle'>{t('notification')}</ThemedText>
+                {!loadingOnlineUserDetails? 
                 <ThemedView>
-                    <TouchableOpacity><MaterialCommunityIcons name='radiobox-marked' size={16} color={'#1184e8'}/></TouchableOpacity>
+                    {onlineUserDetails ?
+                    <TouchableOpacity onPress={()=> handleChangedPushNotificationStatus(onlineUserDetails.id, onlineUserDetails.pushNotificationEnabled)}>
+                        {onlineUserDetails.pushNotificationEnabled  ? 
+                        <MaterialCommunityIcons name='radiobox-marked' size={20} color={'#1184e8'}/>
+                        : <MaterialCommunityIcons name='radiobox-marked' size={20} color={ colorScheme === 'dark' ? "white" : "black"}/>}
+                    </TouchableOpacity>:
+                    <ThemedView></ThemedView>}
                 </ThemedView>
+                :<ActivityIndicator/>}
             </ThemedView>
         </ThemedView>
         

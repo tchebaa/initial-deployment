@@ -10,7 +10,7 @@ import {useLocation} from '../../context/LocationContext'
 import {useLanguage} from '../../context/LanguageContext'
 import { Link, router } from 'expo-router';
 import * as Location from 'expo-location';
-import {GOOGLE_API_KEY} from'@env'
+//import {GOOGLE_API_KEY} from'@env'
 
 
 
@@ -82,7 +82,7 @@ export default function LocationDirection({originDirection, getDirections, setOr
                     }}
                     enablePoweredByContainer={false}
                     query={{
-                        key: GOOGLE_API_KEY,
+                        key: process.env.GOOGLE_API_KEY,
                         language: 'en'
                     }}/>
                 </ThemedView>

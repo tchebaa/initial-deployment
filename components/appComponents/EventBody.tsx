@@ -106,7 +106,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                   location: item.location,
                   eventId: item.id,
                   sponsored: item.sponsored,
-                  userEmail: userDetails.username
+                  userEmail: userDetails!.username
               
           });
 
@@ -231,7 +231,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                     {loadingLikeUnlikeEvent || loadingLikedEvents ? 
                                     <View><ActivityIndicator /></View>:
                                     <View>
-                                        {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                                        {!likedEvents!.some((likedItem) => likedItem.eventId === item.id) ? 
                                        
                                           <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
                                           

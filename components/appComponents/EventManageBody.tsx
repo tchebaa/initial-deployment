@@ -95,6 +95,22 @@ export default function EventManageBody({item, screenType, deletedItem, setDelet
 
     }
 
+
+    const handleUpdateFeature = async () => {
+
+      try{
+
+        await client.models.Event.update({
+         
+        
+      })
+
+      } catch(e) {
+
+      }
+
+    }
+
     const handleDeleteEvent = async () => {
 
       setLoadingDelete(true)
@@ -103,8 +119,9 @@ export default function EventManageBody({item, screenType, deletedItem, setDelet
 
         
 
-        const { data, errors } = await client.models.Event.delete({
-          id: eventId
+        const { data, errors } = await client.models.Event.update({
+          id: eventId,
+         
         })
 
         setDeleteModal(false)

@@ -114,7 +114,7 @@ export default function SignUp() {
   
         } catch(e) {
   
-          console.log(e?.message)
+         
           setConfirmError(e?.message)
   
         }
@@ -166,7 +166,7 @@ export default function SignUp() {
       
             } catch(e) {
 
-              console.log(e)
+          
 
               setSignUpError(e?.message)
               setLoadingSignUp(false)

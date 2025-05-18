@@ -15,8 +15,12 @@ interface IEvent {
     email?:string;
     userEmail?: string;
     eventId?:string;
+    personType?: boolean;
+    companyEmail?: string;
+    companyName?:string;
+    personName?: string;
+    sponsored?: boolean;
     eventMainImage?:{ aspectRatio?: string; url?: string};
-    eventImage1?:{ aspectRatio?: string; url?: string};
     eventImage2?:{ aspectRatio?: string; url?: string};
     eventImage3?:{ aspectRatio?: string; url?: string};
     eventImage4?:{ aspectRatio?: string; url?: string};
@@ -26,9 +30,9 @@ interface IEvent {
       eventHours?:number;
       eventMinutes?:number;
       eventEndDate?:string;
-      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[]
+      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[] | []
 
-    }[];
+    }[] | [];
     ageRestriction?:string[] | [];
     location?: {type?:string;
       coordinates?: number [];
@@ -103,17 +107,102 @@ export function LikeProvider({children}: ChildrenProps) {
         }
       });
 
-      console.log(data)
+       type Nullable<T> = T | null;
 
-      setLikedEventList(data)
+        function sanitizeTicketArray(arr: Nullable<{
+        adultPrice: Nullable<number>;
+        adolescentPrice: Nullable<number>;
+        childPrice: Nullable<number>;
+        ticketTitle: Nullable<string>;
+        ticketNumber: Nullable<number>;
+        }>[] | null | undefined) {
+        return (arr ?? [])
+            .filter((ticket): ticket is {
+            adultPrice: number;
+            adolescentPrice: number;
+            childPrice: number;
+            ticketTitle: string;
+            ticketNumber: number;
+            } =>
+            ticket !== null &&
+            ticket.ticketNumber !== null &&
+            ticket.ticketTitle !== null &&
+            ticket.adultPrice !== null &&
+            ticket.adolescentPrice !== null &&
+            ticket.childPrice !== null
+            );
+        }
+
+      const sanitizedEvents: IEvent[] = data.map(event => ({
+        ...event,
+        userEmail: event.userEmail ?? undefined,
+        eventId: event.eventId ?? "", // required
+        eventName: event.eventName ?? "",
+        eventDescription: event.eventDescription ?? "",
+        email: event.email ?? "",
+        updatedAt: event.updatedAt,
+        id: event.id ?? "",
+        personType: event.personType ?? false,
+        companyEmail: event.companyEmail ?? "",
+        companyName: event.companyName ?? "",
+        personName: event.personName ?? "",
+        sponsored: event.sponsored ?? false,
+        eventMainImage: {
+            ...event.eventMainImage,
+            aspectRatio: event.eventMainImage?.aspectRatio ?? "",
+            url: event.eventMainImage?.url ?? "",
+        },
+        eventImage2: {
+            ...event.eventImage2,
+            aspectRatio: event.eventImage2?.aspectRatio ?? "",
+            url: event.eventImage2?.url ?? "",
+        },
+        eventImage3:  {
+            ...event.eventImage3,
+            aspectRatio: event.eventImage3?.aspectRatio ?? "",
+            url: event.eventImage3?.url ?? "",
+        },
+        eventImage4:  {
+            ...event.eventImage2,
+            aspectRatio: event.eventImage4?.aspectRatio ?? "",
+            url: event.eventImage4?.url ?? "",
+        },
+        dateTimePriceList: (event.dateTimePriceList ?? [])
+            .filter((dt): dt is NonNullable<typeof dt> => dt !== null)
+            .map(dt => ({
+            eventDate: dt.eventDate ?? undefined,
+            eventDays: dt.eventDays ?? undefined,
+            eventHours: dt.eventHours ?? undefined,
+            eventMinutes: dt.eventMinutes ?? undefined,
+            eventEndDate: dt.eventEndDate ?? undefined,
+            ticketPriceArray: sanitizeTicketArray(dt?.ticketPriceArray),
+            })),
+        ageRestriction: (event.ageRestriction ?? []).filter(
+            (age): age is string => age !== null
+        ),
+        location: event.location ?? {},
+        eventAddress:event.eventAddress ?? "",
+        categories: (event.categories ?? []).filter((c): c is string => c !== null),
+            // map other fields similarly...
+        }));
+    
+
+      setLikedEventList(sanitizedEvents)
       
 
       setLoadingLikedEvents(false)
 
-    } catch(e) {
 
-      setLikedEventsError(e?.message)
-      setLoadingLikedEvents(false)
+    } catch(e) {
+      
+      const error = e as Error;
+
+        if(error.message) {
+
+        setLikedEventsError(error.message)
+        setLoadingLikedEvents(false)
+
+        }
 
     }
   }

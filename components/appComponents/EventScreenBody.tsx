@@ -22,7 +22,7 @@ import {useLanguage} from '../../context/LanguageContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import pin from '../../assets/images/location-pin.png'
 import PinImage from '../../assets/images/location-pin.png'
-import {MAPBOX_ACCESS_TOKEN} from "@env"
+//import {MAPBOX_ACCESS_TOKEN} from "@env"
 
 
 
@@ -31,7 +31,7 @@ const client = generateClient<Schema>();
 const DEFAULT_IMAGE = Image.resolveAssetSource(PinImage).uri;
 
 
-const accessToken = MAPBOX_ACCESS_TOKEN
+const accessToken = process.env.MAPBOX_ACCESS_TOKEN
 
 MapBox.setAccessToken(accessToken)
 
@@ -91,11 +91,11 @@ export default function EventScreenBody({item, screenType}: {screenType: string 
   const [childNumber, setChildNumber] = useState<number>(0)
 
   const [ticketPriceArray, setTicketPriceArray] = useState<{adultPrice: number, adolescentPrice: number, childPrice: number, ticketTitle: string, ticketNumber: number} [] >([])
-  const [eventDate, setEventDate] = useState<Date | null| string>()
-  const [eventEndDate, setEventEndDate] = useState<Date | null| string>()
-  const [eventDays, setEventHours] = useState<number | null>()
-  const [eventHours, setEventDays] = useState<number | null>()
-  const [eventMinutes, setEventMinutes] = useState<number | null>()
+  const [eventDate, setEventDate] = useState<Date | null| string>('')
+  const [eventEndDate, setEventEndDate] = useState<Date | null| string>('')
+  const [eventDays, setEventHours] = useState<number | null>(0)
+  const [eventHours, setEventDays] = useState<number | null>(0)
+  const [eventMinutes, setEventMinutes] = useState<number | null>(0)
 
   const [eventTotalPrice, setEventTotalPrice] = useState<number>(0)
 

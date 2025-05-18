@@ -50,7 +50,7 @@ export default function SignInScreen() {
 
       if(userId) {
 
-        console.log(signInDetails, username)
+        
 
         setUserDetails({username: signInDetails?.loginId, userId: userId})
         
@@ -58,7 +58,7 @@ export default function SignInScreen() {
       }
 
       } catch (e) {
-        console.log(e)
+        
       }
       
 
@@ -98,7 +98,7 @@ export default function SignInScreen() {
             
     
           } catch(e) {
-            console.log(e)
+           
     
             setLoginError(e?.message)
             setLoadingLogin(false)

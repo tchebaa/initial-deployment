@@ -110,9 +110,7 @@ export default function Analytics() {
                 setStartDate(moment(new Date()).startOf('day').format().toString())
                 setEndDate(moment(new Date()).endOf('day').format().toString())
         
-               // console.log(moment(new Date()).startOf('day').format())
-        
-               // console.log(moment(new Date).endOf('day').format())
+            
                 
         
             }
@@ -124,9 +122,7 @@ export default function Analytics() {
                 setStartDate(moment(new Date()).startOf('year').format().toString())
                 setEndDate(moment(new Date()).endOf('year').format().toString())
         
-               // console.log(moment(new Date()).startOf('day').format())
-        
-               // console.log(moment(new Date).endOf('day').format())
+              
                 
         
             }
@@ -138,9 +134,6 @@ export default function Analytics() {
                 setStartDate(moment(new Date()).subtract(1, 'days').startOf('day').format().toString())
                 setEndDate(moment(new Date()).startOf('day').format().toString())
         
-               // console.log(moment(new Date()).startOf('day').format())
-        
-               // console.log(moment(new Date).endOf('day').format())
                 
         
             }

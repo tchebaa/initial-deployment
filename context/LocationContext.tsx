@@ -130,9 +130,13 @@ export function LocationProvider({children}: ChildrenProps) {
 
         setLoadingAddress(true)
 
-        const description = await Location.reverseGeocodeAsync({latitude: userLocation?.latitude, longitude: userLocation.longitude}) 
+        if (userLocation?.latitude !== undefined && userLocation?.longitude !== undefined) {
+          const description = await Location.reverseGeocodeAsync({
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+          });
 
-        const newDescription = description[0]
+          const newDescription = description[0]
         
         if(newDescription.hasOwnProperty('street')) {
 
@@ -186,6 +190,13 @@ export function LocationProvider({children}: ChildrenProps) {
         
         setUserAddress(street + district + city + country)
         setLoadingAddress(false)
+        
+          // Use description here
+        }
+
+        //const description = await Location.reverseGeocodeAsync({latitude: userLocation?.latitude, longitude: userLocation.longitude}) 
+
+        
 
     } catch(error) {
         console.log(error)

@@ -69,7 +69,7 @@ async function registerForPushNotificationsAsync() {
             projectId,
           })
         ).data;
-        console.log(pushTokenString);
+        
         return pushTokenString;
       } catch (e: unknown) {
         handleRegistrationError(`${e}`);
@@ -103,10 +103,12 @@ export default function HomeScreen() {
         undefined
     );
 
+
+
     useEffect(()=> {
     
                 registerForPushNotificationsAsync()
-                .then(token => setExpoPushToken(token ?? ''))
+                .then(token => {setExpoPushToken(token ?? ''); setPushNotificationToken(token ?? ''); console.log(token ?? '', 'home')})
                 .catch((error: any) => setExpoPushToken(`${error}`));
     
     
@@ -160,7 +162,6 @@ export default function HomeScreen() {
               }
             })
 
-            console.log(onlineUser)
         
             
         } catch (e) {
@@ -207,7 +208,6 @@ export default function HomeScreen() {
                 : null}
             </ThemedView>
             <ThemedView >
-            <ThemedText>{expoPushToken}</ThemedText>
             {loadingEvents ? <ActivityIndicator/> :
             <ThemedView>
                 {events.length > 0 ? 

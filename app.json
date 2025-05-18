@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "tchebaa",
+    "name": "Tchebaa",
     "slug": "tchebaamobileapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/iconTchebaa.png",
-    "scheme": "myapp",
+    "scheme": "tchebaa",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
