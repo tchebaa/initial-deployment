@@ -27,6 +27,13 @@ const client = generateClient<Schema>();
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
+interface Conversation {
+    id: string;
+    participants: string[];
+    lastMessage: string;
+    createdAt: string;
+    updatedAt: string
+  }
 
 
 
@@ -36,7 +43,7 @@ export default function Message() {
   const {userDetails} = useUser()
   const colorScheme = useColorScheme();
   const [pageType, setPageType] = useState<string>(t('messages'))
-  const [conversations, setConversations] = useState<{participants: string [], id: string, lastMessage: string, updatedAt: string} []>([])
+  const [conversations, setConversations] = useState<Conversation []>([])
   const [loadingConversations, setLoadingConversations] = useState<boolean>(true)
   const [loadingConversationsError, setLoadingConversationsError] = useState<boolean>(true)
 
@@ -63,13 +70,21 @@ export default function Message() {
         })
 
         const sortedData = data.sort(function(a,b){
-          return new Date(b.createdAt) - new Date(a.createdAt)
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         })
 
-        console.log(data)
+         if(data) {
 
-        setConversations(sortedData)
-        setLoadingConversations(false)
+            const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+      
+
+            setConversations(filtered as Conversation [])
+            setLoadingConversations(false)
+          }
+
+       
+
+        
         
 
     } catch (e) {
@@ -87,6 +102,8 @@ export default function Message() {
 
   },[])
 
+  //{conversations?.find((conversation)=> admin.email === userDetails?.username)}
+
 
   const renderChats = ({item}:{item: {lastMessage: string, participants: string[], updatedAt: string, id: string}}) => {
               return(
@@ -100,8 +117,12 @@ export default function Message() {
     <SafeAreaView style={styles.container}>
         <ThemedView style={styles.body}>
             <ProfileHeader pageType={pageType} />
+            
             {loadingConversations ? <ActivityIndicator /> :
               <ThemedView>
+                <ThemedView>
+                
+              </ThemedView>
                 {conversations.length > 0 ? 
                 <FlatList 
                 data={conversations}

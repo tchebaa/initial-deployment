@@ -24,6 +24,65 @@ import pin from '../../assets/images/location-pin.png'
 import PinImage from '../../assets/images/location-pin.png'
 //import {MAPBOX_ACCESS_TOKEN} from "@env"
 
+  type Nullable<T> = T | null;
+
+      interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+  
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+  
+interface Event {
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  }
+
+
+    type SearchParamType = {
+        id: number;
+        description: string;
+        age: number;
+        name: string;
+      };
+
 
 
 const client = generateClient<Schema>();
@@ -33,7 +92,7 @@ const DEFAULT_IMAGE = Image.resolveAssetSource(PinImage).uri;
 
 const accessToken = process.env.MAPBOX_ACCESS_TOKEN
 
-MapBox.setAccessToken(accessToken)
+MapBox.setAccessToken(accessToken!)
 
 
 
@@ -44,7 +103,7 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function EventScreenBody({item, screenType}: {screenType: string | string []}) {
+export default function EventScreenBody({item, screenType}: {screenType: string | string [], item: Event | null}) {
 
   const colorScheme = useColorScheme();
   const {t} = useLanguage()

@@ -28,12 +28,16 @@ const windowHeight = Dimensions.get('window').height
 
 
 
-
+interface EventCategory {
+  icon: React.ReactNode;
+  title: string;
+  name: string;
+}
 
 
 //Events Categories Item
 
-const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {item: { icon: string, title: string, name: string}, selectedCategories: string [], handleAddRemoveCategory: (item: string) => void}) => {
+const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {item: EventCategory, selectedCategories: string [], handleAddRemoveCategory: (item: string) => void}) => {
     
     const colorScheme = useColorScheme();
 
@@ -57,6 +61,101 @@ const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {ite
 export default function SearchScreen() {
 
     
+    interface IEvent {
+    eventName?: string;
+    eventDescription?: string;
+    id?: string;
+    email?:string;
+    userEmail?: string;
+    eventId?:string;
+    personType?: boolean;
+    companyEmail?: string;
+    companyName?:string;
+    personName?: string;
+    sponsored?: boolean;
+    eventMainImage?:{ aspectRatio?: string; url?: string};
+    eventImage2?:{ aspectRatio?: string; url?: string};
+    eventImage3?:{ aspectRatio?: string; url?: string};
+    eventImage4?:{ aspectRatio?: string; url?: string};
+    dateTimePriceList?: { 
+      eventDate?: string;
+      eventDays?:number;
+      eventHours?:number;
+      eventMinutes?:number;
+      eventEndDate?:string;
+      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[] | []
+
+    }[] | [];
+    ageRestriction?:string[] | [];
+    location?: {type?:string;
+      coordinates?: number [];
+
+    };
+    eventAddress?:string;
+    categories?: string[];
+   
+  }
+  
+
+    interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+  
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+  interface BaseEvent {
+
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  
+}
+
+interface Event extends BaseEvent {
+  // Event-specific fields
+}
+
+interface LikedEvent extends BaseEvent {
+  eventId: string; // LikedEvent-specific field
+}
+  
 
 
     const {t} = useLanguage()
@@ -71,7 +170,7 @@ export default function SearchScreen() {
     const [dateFilterCode, setDateFilter] = useState<string>('all')
 
     const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
-    const [events, setEvents] = useState([])
+    const [events, setEvents] = useState<Event [] | LikedEvent []>([])
     const [searchTerm, setSearchTerm] = useState<string>('')
     const [startDate, setStartDate] = useState<string>(moment(new Date()).format().toString())
     const [endDate, setEndDate] = useState<string>('')
@@ -185,13 +284,13 @@ export default function SearchScreen() {
     }
 
 
-    const renderEventsCategories = ({item}: CategoryProps) => {
+    const renderEventsCategories = ({item}: {item: EventCategory}) => {
         return(
             <EventCategory item={item} selectedCategories={selectedCategories} handleAddRemoveCategory={handleAddRemoveCategory}  />
         )
     }
 
-    const renderEvents = ({item}) => {
+    const renderEvents = ({item}: {item: Event | LikedEvent | IEvent}) => {
         return(
             <EventBody item={item} screenType="search" />
         )
@@ -216,14 +315,26 @@ export default function SearchScreen() {
                     
                 });
 
-                setEvents(data)
+                if(data) {
+
+                const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                setEvents(filtered as Event[]);
+
                 setLoadingEvents(false)
-                
+            }
+
       
     
             } catch(e) {
 
-                setLoadingEvents(e?.message)
+               const error = e as Error;
+
+            if(error.message) {
+
+            setErrorLoadingEvents(error.message)
+            setLoadingEvents(false)
+
+            }
                
     
             }
@@ -284,7 +395,7 @@ export default function SearchScreen() {
 
         //Events Categories List
 
-        const eventsCategories = [
+        const eventsCategories : EventCategory[] = [
             {icon:<Entypo name="graduation-cap" size={24} color={ colorScheme === 'dark' ? "white" : "black"} />,
             title: t('education'),
             name:'education'},

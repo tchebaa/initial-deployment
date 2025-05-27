@@ -106,7 +106,7 @@ export default function SignUp() {
             const user = await signIn({
               username: email,
               password: password,
-            }).then((e)=> { setConfirmError(''); setConfirmModal(false); console.log(e); router.push('/locationScreen'); })
+            }).then((e)=> { setConfirmError(''); setConfirmModal(false);  router.push('/locationScreen'); })
   
           
           }
@@ -154,7 +154,7 @@ export default function SignUp() {
               const user = await signUp({
                 username: email,
                 password: password,
-              }).then((e)=> {setSignUpError(''); setLoadingSignUp(false) ;console.log(e); setConfirmModal(true)})
+              }).then((e)=> {setSignUpError(''); setLoadingSignUp(false) ; setConfirmModal(true)})
       
               const { data, errors } = await client.models.User.create({
                 email: email,
@@ -193,6 +193,7 @@ export default function SignUp() {
 
     }
 
+    //<GoogleLoginButton />
 
   return (
     <SafeAreaView style={styles.container}>
@@ -262,7 +263,7 @@ export default function SignUp() {
                     <ThemedText style={styles.loginText}>{t('sign.up')}</ThemedText>
                 </TouchableOpacity>}
             </ThemedView>
-            <GoogleLoginButton />
+            
             
             <ThemedView style={styles.signupContainer}>
                 <ThemedText type='default'>{t('already.have.an.account')}</ThemedText>

@@ -85,6 +85,105 @@ async function registerForPushNotificationsAsync() {
 export default function HomeScreen() {
 
 
+     interface IEvent {
+    eventName?: string;
+    eventDescription?: string;
+    id?: string;
+    email?:string;
+    userEmail?: string;
+    eventId?:string;
+    personType?: boolean;
+    companyEmail?: string;
+    companyName?:string;
+    personName?: string;
+    sponsored?: boolean;
+    eventMainImage?:{ aspectRatio?: string; url?: string};
+    eventImage2?:{ aspectRatio?: string; url?: string};
+    eventImage3?:{ aspectRatio?: string; url?: string};
+    eventImage4?:{ aspectRatio?: string; url?: string};
+    dateTimePriceList?: { 
+      eventDate?: string;
+      eventDays?:number;
+      eventHours?:number;
+      eventMinutes?:number;
+      eventEndDate?:string;
+      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[] | []
+
+    }[] | [];
+    ageRestriction?:string[] | [];
+    location?: {type?:string;
+      coordinates?: number [];
+
+    };
+    eventAddress?:string;
+    categories?: string[];
+   
+  }
+
+
+    interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+  
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+  interface BaseEvent {
+
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  
+}
+
+interface Event extends BaseEvent {
+  // Event-specific fields
+}
+
+interface LikedEvent extends BaseEvent {
+  eventId: string; // LikedEvent-specific field
+}
+  
+
+
+
+
     const colorScheme = useColorScheme();
     const {t, currentLanguageCode} = useLanguage()
 
@@ -94,7 +193,7 @@ export default function HomeScreen() {
 
     const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
     const [errorLoadingEvents, setErrorLoadingEvents] = useState<string>('')
-    const [events, setEvents] = useState([])
+    const [events, setEvents] = useState<Event [] | LikedEvent []>([])
     const [startDate, setStartDate] = useState<string>(moment(new Date()).format().toString())
 
 
@@ -108,7 +207,9 @@ export default function HomeScreen() {
     useEffect(()=> {
     
                 registerForPushNotificationsAsync()
-                .then(token => {setExpoPushToken(token ?? ''); setPushNotificationToken(token ?? ''); console.log(token ?? '', 'home')})
+                .then(token => {setExpoPushToken(token ?? '');  if (typeof setPushNotificationToken === 'function') {
+        setPushNotificationToken(token ?? '');
+      } })
                 .catch((error: any) => setExpoPushToken(`${error}`));
     
     
@@ -132,9 +233,13 @@ export default function HomeScreen() {
 
             
   
-            setEvents(data)
+            if(data) {
+
+            const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+            setEvents(filtered as Event[]);
+
             setLoadingEvents(false)
-            
+          }
 
             
             
@@ -142,7 +247,15 @@ export default function HomeScreen() {
 
         } catch(e) {
 
-            setErrorLoadingEvents(e.message)
+         const error = e as Error;
+
+          if(error.message) {
+
+          setErrorLoadingEvents(error.message)
+          setLoadingEvents(false)
+
+          }
+      
             
 
         }
@@ -179,7 +292,7 @@ export default function HomeScreen() {
 
     },[userLocation])
 
-    const renderSponsoredEvents = ({item}) => {
+    const renderSponsoredEvents = ({item}: {item: Event | LikedEvent | IEvent}) => {
             return(
                 <EventBody item={item} screenType="home" />
             )
@@ -217,7 +330,7 @@ export default function HomeScreen() {
                 renderItem={renderSponsoredEvents}
                 keyExtractor={(item)=> item.id} 
                 showsVerticalScrollIndicator={false}/>:
-                <ThemedView>
+                <ThemedView style={styles.body}>
                     <ThemedText style={styles.noEventsBody}>{t('no.events.near.you')}</ThemedText>
                     <TouchableOpacity style={styles.errorButton} onPress={()=> handleGetEvents()}>
                         <ThemedText>{t('press.to.retry')}</ThemedText>

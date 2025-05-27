@@ -199,7 +199,7 @@ export function LocationProvider({children}: ChildrenProps) {
         
 
     } catch(error) {
-        console.log(error)
+      
         setUserAddress('Error getting description')
         setLoadingAddress(false)
     }

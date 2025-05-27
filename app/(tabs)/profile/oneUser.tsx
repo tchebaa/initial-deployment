@@ -30,6 +30,26 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
+interface User {
+    id: string;
+    email: string;
+    postEventLimit: number;
+    createdAt: string;
+    name: string;
+    pushNotificationToken: string;
+    pushNotificationEnabled: boolean;
+  }
+
+
+  interface Conversation {
+    id: string;
+    participants: string [];
+    lastMessage: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+
+
 
 
 export default function oneUser() {
@@ -42,14 +62,14 @@ export default function oneUser() {
     
     const colorScheme = useColorScheme();
 
-    const [user, setUser] = useState([])
+    const [user, setUser] = useState<User | null>(null)
     const [loadingUser, setLoadingUser] = useState<boolean>(true)
     const [loadingUserError, setLoadingUserError] = useState<boolean>(false)
     const [updateLimitModal, setUpdateLimitModal] = useState<boolean>(false)
     const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false)
     const [loadingUpdateError, setLoadingUpdateError] = useState<boolean>(false)
     const [postLimit, setPostLimit] = useState<number>(0)
-    const [conversation, setConversation] = useState([])
+    const [conversation, setConversation] = useState<Conversation []>([])
     const [loadingConversation, setLoadingConversation] = useState<boolean>(true)
     const [loadingConversationError, setLoadingConversationError] = useState<boolean>(true)
     const [createChatModal, setCreateModal] = useState<boolean>(false)
@@ -76,13 +96,18 @@ export default function oneUser() {
             setLoadingUserError(false)
 
             const { data, errors } = await client.models.User.get({
-                id: id,
+                id: Array.isArray(id) ? id[0] : id,
               });
 
 
-               setUser(data)
+               if(data) {
 
-            setLoadingUser(false)
+                 setUser(data as User)
+
+                setLoadingUser(false)
+
+              }
+
 
 
         } catch(e) {
@@ -104,7 +129,7 @@ export default function oneUser() {
             setLoadingUpdateError(false)
 
             const { data, errors } = await client.models.User.update({
-                id: id,
+                id: Array.isArray(id) ? id[0] : id,
                 postEventLimit: Number(postLimit)
               });
 
@@ -140,7 +165,7 @@ export default function oneUser() {
                     and:[
                         {
                             participants: {
-                                contains: email
+                                contains: Array.isArray(email) ? email[0] : email,
                             }
                         },
                         {
@@ -153,8 +178,13 @@ export default function oneUser() {
                 }
             })
 
-            setConversation(data)
-            setLoadingConversation(false)
+            if(data) {
+
+                const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                setConversation(filtered as Conversation[]);
+                setLoadingConversation(false)
+                
+                }
             
 
         } catch (e) {
@@ -173,10 +203,12 @@ export default function oneUser() {
         setLoadingCreateChat(true)
 
 
+        const newEmail = Array.isArray(email) ? email[0] : email
+
         try {
 
             const { data, errors } = await client.models.Conversation.create({
-                participants: [email, "tchebaa"],
+                participants: [newEmail, "tchebaa"],
                 lastMessage: ''
             })
 
@@ -243,7 +275,7 @@ export default function oneUser() {
                     <ThemedView style={styles.postLimitComponent}>
                         <ThemedText type='defaultSemiBold'>{t('event.post.limit')}:</ThemedText>
                         <ThemedView>
-                            <ThemedText type='defaultSemiBold' style={styles.eventLimitNumber}>{user.postEventLimit}</ThemedText>
+                            <ThemedText type='defaultSemiBold' style={styles.eventLimitNumber}>{user!.postEventLimit}</ThemedText>
                         </ThemedView>
                         <TouchableOpacity onPress={()=> setUpdateLimitModal(true)}>
                             <Feather name='edit' size={20} color={'#1184e8'} />

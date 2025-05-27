@@ -52,7 +52,7 @@ export default function LocationDirection({originDirection, getDirections, setOr
                     minLength={2}
                     onPress={(data, details = null)=>{
     
-                        console.log(details)
+                        
                         if(details){
 
                           

@@ -29,6 +29,18 @@ const client = generateClient<Schema>();
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
+interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+interface OnlineUser {
+    id: string;
+    email: string;
+    locationAddress: string;
+    location: Location;
+    createdAt: string;
+  }
 
 
 
@@ -43,7 +55,7 @@ export default function Analytics() {
     
     const colorScheme = useColorScheme();
 
-    const [onlineUsers, setOnlineUsers] = useState([])
+    const [onlineUsers, setOnlineUsers] = useState<OnlineUser []>([])
     const [loadingOnlineUsers, setLoadingOnlineUsers] = useState<boolean>(true)
     const [loadingOnlineUsersError, setLoadingOnlineUsersError] = useState(false)
 
@@ -229,14 +241,18 @@ export default function Analytics() {
                     const { data, errors } = await client.models.OnlineUser.list({
                         filter: {
                             email: {
-                                beginsWith: email
+                                beginsWith:  Array.isArray(email) ? email[0] : email,
                             }
                         } 
                     })
     
-                    setOnlineUsers(data)
-    
+                   if(data) {
+
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setOnlineUsers(filtered as OnlineUser[]);
                     setLoadingOnlineUsers(false)
+
+                    }
 
                 } else {
 
@@ -244,10 +260,13 @@ export default function Analytics() {
                     
                     })
     
-                    setOnlineUsers(data)
-    
+                    if(data) {
+
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setOnlineUsers(filtered as OnlineUser[]);
                     setLoadingOnlineUsers(false)
 
+                    }
                 }
 
                 
@@ -267,7 +286,7 @@ export default function Analytics() {
                                 },
                                 {
                                     email: {
-                                        beginsWith: email
+                                        beginsWith: Array.isArray(email) ? email[0] : email
                                     }
                                 }
                                 
@@ -275,9 +294,13 @@ export default function Analytics() {
                         }
                     })
 
-                    setOnlineUsers(data)
+                     if(data) {
 
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setOnlineUsers(filtered as OnlineUser[]);
                     setLoadingOnlineUsers(false)
+
+                    }
 
                 } else {
 
@@ -295,9 +318,13 @@ export default function Analytics() {
                         }
                     })
 
-                    setOnlineUsers(data)
+                     if(data) {
 
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setOnlineUsers(filtered as OnlineUser[]);
                     setLoadingOnlineUsers(false)
+
+                    }
 
                 }
 

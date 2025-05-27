@@ -22,11 +22,140 @@ const client = generateClient<Schema>();
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+ interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+interface Ticket {
+    id: string;
+    eventName: string;
+    eventAddress: string;
+    eventDate: string;
+    eventEndDate: string;
+    eventTotalPrice: number;
+    totalTicketNumber: number;
+    adultNumber: number;
+    childNumber: number;
+    adolescentNumber: number;
+    userEmail: string;
+    organizerEmail: string;
+    eventId: string;
+    eventDescription: string;
+    ageRestriction: string[];
+    ticketsStatus: string;
+    refunded: boolean;
+    location: Location;
+    createdAt: string;
+  }
+
+    interface EventCategory {
+  icon: React.ReactNode;
+  title: string;
+  name: string;
+}
+
+
+   interface IEvent {
+    eventName?: string;
+    eventDescription?: string;
+    id?: string;
+    email?:string;
+    userEmail?: string;
+    eventId?:string;
+    personType?: boolean;
+    companyEmail?: string;
+    companyName?:string;
+    personName?: string;
+    sponsored?: boolean;
+    eventMainImage?:{ aspectRatio?: string; url?: string};
+    eventImage2?:{ aspectRatio?: string; url?: string};
+    eventImage3?:{ aspectRatio?: string; url?: string};
+    eventImage4?:{ aspectRatio?: string; url?: string};
+    dateTimePriceList?: { 
+      eventDate?: string;
+      eventDays?:number;
+      eventHours?:number;
+      eventMinutes?:number;
+      eventEndDate?:string;
+      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[] | []
+
+    }[] | [];
+    ageRestriction?:string[] | [];
+    location?: {type?:string;
+      coordinates?: number [];
+
+    };
+    eventAddress?:string;
+    categories?: string[];
+   
+  }
+  
+
+    interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+
+  interface BaseEvent {
+
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  
+}
+
+interface Event extends BaseEvent {
+  // Event-specific fields
+}
+
+interface LikedEvent extends BaseEvent {
+  eventId: string; // LikedEvent-specific field
+}
+ 
 
 
 
-
-export default function EventManageBody({item, screenType, deletedItem, setDeletedItem, screenName}: {screenType: string, deletedItem: string, setDeletedItem: Dispatch<SetStateAction<string>>, screenName: string}) {
+export default function EventManageBody({item, screenType, deletedItem, setDeletedItem, screenName}: {screenType: string, deletedItem: string, 
+  setDeletedItem: Dispatch<SetStateAction<string>>, screenName: string | string [], item: Event}) {
 
 
     const {t} = useLanguage()
@@ -101,7 +230,7 @@ export default function EventManageBody({item, screenType, deletedItem, setDelet
       try{
 
         await client.models.Event.update({
-         
+         id: item.id
         
       })
 

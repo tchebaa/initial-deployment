@@ -12,6 +12,7 @@ import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import {signIn, getCurrentUser, confirmSignUp, resendSignUpCode} from '@aws-amplify/auth'
 import {useUser} from '../context/UserContext'
 import { t } from 'i18next';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -21,6 +22,7 @@ const windowHeight = Dimensions.get('window').height
 
 export default function confirmAccount() {
 
+   const colorScheme = useColorScheme();
     const {userDetails, setUserDetails} = useUser()
 
 
@@ -193,7 +195,7 @@ export default function confirmAccount() {
                 <ActivityIndicator />
               </ThemedView>: null}
             <ThemedView style={styles.loginContainer}>
-                <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                <TextInput placeholder={t('email')}  value={email} onChangeText={(e)=> setEmail(e)} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} />
                   {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
 
                   {loginError ? <ThemedText style={styles.errorText}>{loginError}</ThemedText>: null}
@@ -209,8 +211,8 @@ export default function confirmAccount() {
                 
             </ThemedView>
             <ThemedView style={styles.codeInputContainer}>
-                <TextInput placeholder={t('email')} style={styles.inputContainer} value={confirmEmail} onChangeText={(e)=> setConfirmEmail(e)}/>
-                <TextInput placeholder={t('enter.code')} style={styles.inputContainer} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
+                <TextInput placeholder={t('email')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]}  value={confirmEmail} onChangeText={(e)=> setConfirmEmail(e)}/>
+                <TextInput placeholder={t('enter.code')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'} style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]}  value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
                 <TouchableOpacity style={styles.loginButton} onPress={()=> handleConfirm()}>
                     <ThemedText style={styles.loginText}>{t('confirm.account')}</ThemedText>
                 </TouchableOpacity>
@@ -343,5 +345,6 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     margin: 5
-  }
+  },
+  
 });

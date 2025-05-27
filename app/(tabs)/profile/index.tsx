@@ -64,7 +64,7 @@ export default function ProfileScreen() {
 
         const { data, errors } = await client.models.OnlineUser.delete({
 
-            id: onlineUserDetails?.id
+            id: onlineUserDetails?.id ?? ''
 
           });
         
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
                     <TouchableOpacity style={styles.declineSignOutButton} onPress={()=> setDeleteAccountModal(false)}>
                         <ThemedText type='defaultSemiBold'>{t('no')}</ThemedText>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleSignOut()}>
+                    <TouchableOpacity style={styles.acceptSignOutButton} onPress={()=> handleDeleteAccount()}>
                         <ThemedText type='defaultSemiBold' style={styles.acceptSignOutText}>{t('yes')}</ThemedText>
                     </TouchableOpacity>
                 </ThemedView>}

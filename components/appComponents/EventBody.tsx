@@ -22,11 +22,106 @@ const client = generateClient<Schema>();
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+   interface IEvent {
+    eventName?: string;
+    eventDescription?: string;
+    id?: string;
+    email?:string;
+    userEmail?: string;
+    eventId?:string;
+    site?: string;
+    personType?: boolean;
+    companyEmail?: string;
+    companyName?:string;
+    personName?: string;
+    sponsored?: boolean;
+    eventMainImage?:{ aspectRatio?: string; url?: string};
+    eventImage2?:{ aspectRatio?: string; url?: string};
+    eventImage3?:{ aspectRatio?: string; url?: string};
+    eventImage4?:{ aspectRatio?: string; url?: string};
+    dateTimePriceList?: { 
+      eventDate?: string;
+      eventDays?:number;
+      eventHours?:number;
+      eventMinutes?:number;
+      eventEndDate?:string;
+      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[] | []
+
+    }[] | [];
+    ageRestriction?:string[] | [];
+    location?: {type?:string;
+      coordinates?: number [];
+
+    };
+    eventAddress?:string;
+    categories?: string[];
+   
+  }
+
+    interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+  
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+  
+  interface BaseEvent {
+
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  
+}
+
+interface Event extends BaseEvent {
+  // Event-specific fields
+}
+
+interface LikedEvent extends BaseEvent {
+  eventId: string; // LikedEvent-specific field
+}
+  
 
 
 
 
-export default function EventBody({item, screenType}: {screenType: string}) {
+export default function EventBody({item, screenType}: {screenType: string, item: Event | LikedEvent | IEvent}) {
 
     const colorScheme = useColorScheme();
     const {t} = useLanguage()
@@ -50,7 +145,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
         setLoadingImage(true)
 
         const linkToStorageFile = await getUrl({
-          path: item.eventMainImage.url,
+          path: item.eventMainImage!.url,
           options: {
             useAccelerateEndpoint: true
           }
@@ -150,7 +245,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
 
       } else {
 
-        const newItem = likedEvents.find((likedItem) => likedItem.eventId === id)
+        const newItem = likedEvents!.find((likedItem) => likedItem.eventId === id)
 
       
       
@@ -160,7 +255,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
         setLoadingLikeUnlikeEvent(true)
 
         const unLikedEvent = await client.models.LikedEvent.delete({ 
-              id: newItem.id
+              id: newItem?.id!
           });
 
           handleGetLikedEvents()
@@ -250,7 +345,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                 
                                 <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={2}>{item.eventName }</ThemedText>
                                 <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName} />
+                                {item.site ? null : <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName} />}
                                 
                           </View>
                   
@@ -258,7 +353,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                 </Link>
 
                 : 
-                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' , params: {screenType: screenType ==='search' ? 'search' : 'like', id: screenType === 'like' ? item.eventId : item.id}}} asChild>
+                <Link href={{pathname: screenType === 'search' ? '/(tabs)/search/event' : '/(tabs)/likes/event' , params: {screenType: screenType ==='search' ? 'search' : 'like', id: 'eventId' in item ? item.eventId : item.id}}} asChild>
                 <TouchableOpacity  style={styles.eventBody}>
                     {item.eventMainImage.aspectRatio === 'a'  ? 
                     <View>
@@ -276,7 +371,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                   </TouchableOpacity> 
                                   :
                                   <View>
-                                    {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                                    {likedEvents!.some((likedItem) => likedItem.eventId === item.id) ? 
                                     
                                       <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
                                       
@@ -300,7 +395,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                   <View style={styles.detailsBodyText}>
                                       <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                       <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>
+                                      {item.site ? null : <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>}
                                   </View>
                                   
                               
@@ -325,7 +420,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                   </TouchableOpacity>
                                   :
                                   <View>
-                                    {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                                    {likedEvents!.some((likedItem) => likedItem.eventId === item.id) ? 
                                     
                                       <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
                                       
@@ -350,7 +445,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                   <View style={styles.detailsBodyText}>
                                       <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                       <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                      <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>
+                                      {item.site ? null : <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>}
                                   </View>
                                   
                               
@@ -375,7 +470,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                             </TouchableOpacity>
                             :
                             <View>
-                              {!likedEvents.some((likedItem) => likedItem.eventId === item.id) ? 
+                              {likedEvents!.some((likedItem) => likedItem.eventId === item.id) ? 
                               
                                 <TouchableOpacity style={styles.likeButton} onPress={()=> handleLikeEvent()}>
                                     <AntDesign name="hearto" size={16} color="gray" />   
@@ -397,7 +492,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                                 <View style={styles.detailsBodyText}>
                                     <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                                     <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                                    <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName} />
+                                    {item.site ? null : <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName} />}
                                 </View>
                                 
                             </View>
@@ -409,7 +504,7 @@ export default function EventBody({item, screenType}: {screenType: string}) {
                     <View style={styles.eventDetailsSearchBody}>
                           <ThemedText style={styles.eventNameText} type='boldSmallTitle' numberOfLines={1}>{item.eventName}</ThemedText>
                           <ThemedText style={styles.eventAddressText}>{item.eventAddress}</ThemedText>
-                          <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>
+                          {item.site ? null : <HomeDateTimeCostSection eventTimelines={item.dateTimePriceList} option={'homeNear'} eventName={item.eventName}/>}
                       </View>: null}
                 
                 </TouchableOpacity>

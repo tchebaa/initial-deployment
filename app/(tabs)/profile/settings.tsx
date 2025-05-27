@@ -29,15 +29,15 @@ const windowHeight = Dimensions.get('window').height
 
 export default function Settings() {
 
-    const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
-    const {userDetails, onlineUserDetails, loadingOnlineUserDetails, setChangedStatus, changedStatus} = useUser()
-    const colorScheme = useColorScheme();
+const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
+const {userDetails, onlineUserDetails, loadingOnlineUserDetails, setChangedStatus, changedStatus} = useUser()
+const colorScheme = useColorScheme();
   const [pageType, setPageType] = useState<string>('settings')
   const [langaugeSectionOption, setLanguageSectionOption] = useState<boolean>(false)
 
   const handleChangedPushNotificationStatus = async (id: string, notificationStatus: boolean) => {
 
-    console.log(id, !notificationStatus)
+   
 
     try{
 
@@ -48,19 +48,19 @@ export default function Settings() {
           });
 
           setChangedStatus(!changedStatus)
-          console.log('changed')
+          
         
 
     } catch (e) {
 
-        console.log(e)
+       
 
     }
 
   }
 
   useEffect(()=> {
-    console.log(onlineUserDetails)
+    
   },[onlineUserDetails])
   
 

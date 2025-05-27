@@ -68,9 +68,9 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
     if(cameraRef.current) {
       
       cameraRef.current.setCamera({
-        centerCoordinate: [Number(mapCoordinates?.longitude), Number(mapCoordinates?.latitude)]
+        
       })
-      console.log(Number(userLocation?.longitude), Number(userLocation?.latitude), 123)
+      
       cameraRef.current.flyTo([Number(mapCoordinates?.longitude), Number(mapCoordinates?.latitude)])
     }
   },[cameraRef, mapCoordinates])
@@ -154,7 +154,7 @@ export default function PostLocationNameDetails({eventName, setEventName, eventD
 
   const getAddressByDrag = (longitude: number, latitude: number) => {
 
-    console.log('lognitude', longitude, 'latitude', latitude)
+    
     setLoadingAddress(true)
     setCoordinates({latitude: latitude, longitude: longitude})
     setMapCoordinates({latitude: latitude, longitude: longitude})

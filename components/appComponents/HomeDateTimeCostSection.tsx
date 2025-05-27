@@ -8,18 +8,37 @@ import {useLanguage} from '../../context/LanguageContext'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Link } from 'expo-router';
 
+interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+
+
+
+    interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+
 
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
-export default function EventDateTimeCostSection({eventTimelines, option, eventName}:{ eventName: string}) {
+export default function EventDateTimeCostSection({eventTimelines, option, eventName}:{ eventName: string, eventTimelines: DateTimePrice [], option: string}) {
 
     const colorScheme = useColorScheme();
     const {t, currentLanguageCode} = useLanguage()
-    const [sortedDates, setSortedDates] = useState([])
-    const [firstEventDate, setFirstEventDate] = useState('')
+    const [sortedDates, setSortedDates] = useState<DateTimePrice []>([])
+    const [firstEventDate, setFirstEventDate] = useState<DateTimePrice | null>(null)
     const [loadSortingDates, setLoadSortingDates] = useState(true)
    
     useEffect(()=> {
@@ -28,9 +47,9 @@ export default function EventDateTimeCostSection({eventTimelines, option, eventN
         setLoadSortingDates(true)
 
 
-        const sortedTimelines = eventTimelines.sort(function(a, b){
+        const sortedTimelines = eventTimelines!.sort(function(a, b){
 
-            return b.eventDate - a.eventDate
+            return new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime();
 
         })
 
@@ -39,6 +58,9 @@ export default function EventDateTimeCostSection({eventTimelines, option, eventN
         
 
         for (var i = 0 ; i < sortedTimelines.length; i++) {
+
+
+            
 
             if(moment(sortedTimelines[i].eventEndDate).format() > moment(new Date()).format()) {
 

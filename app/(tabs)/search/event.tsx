@@ -30,9 +30,69 @@ const windowHeight = Dimensions.get('window').height
 
 export default function EventScreen() {
 
+            type Nullable<T> = T | null;
+
+      interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+  
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+  
+interface Event {
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  }
+
+
+    type SearchParamType = {
+        id: number;
+        description: string;
+        age: number;
+        name: string;
+      };
+
+
     const { screenType, id } = useLocalSearchParams();
 
-    const [event, setEvent] = useState()
+    const [event, setEvent] = useState<Event | null>(null)
     const [loadingEvent, setLoadingEvent] = useState(true)
     const [loadingEventError, setLoadingEventError] = useState<string>('')
     const {userDetails} = useUser()
@@ -41,23 +101,122 @@ export default function EventScreen() {
 
     const handleGetEvent = async () => {
 
-        try {
-            setLoadingEventError('')
-            setLoadingEvent(true)
+                  
+            try {
 
-            const { data, errors } = await client.models.Event.get({
-                id: id,
-              });
+                function sanitizeTicketArray(arr: Nullable<{
+                    adultPrice: Nullable<number>;
+                    adolescentPrice: Nullable<number>;
+                    childPrice: Nullable<number>;
+                    ticketTitle: Nullable<string>;
+                    ticketNumber: Nullable<number>;
+                    }>[] | null | undefined) {
+                    return (arr ?? [])
+                        .filter((ticket): ticket is {
+                        adultPrice: number;
+                        adolescentPrice: number;
+                        childPrice: number;
+                        ticketTitle: string;
+                        ticketNumber: number;
+                        } =>
+                        ticket !== null &&
+                        ticket.ticketNumber !== null &&
+                        ticket.ticketTitle !== null &&
+                        ticket.adultPrice !== null &&
+                        ticket.adolescentPrice !== null &&
+                        ticket.childPrice !== null
+                        );
+                    }
 
-              setEvent(data)
-              setLoadingEvent(false)
+                setLoadingEvent(true)
 
-        } catch (e) {
 
-            setLoadingEventError(e?.message)
-            setLoadingEvent(false)
+                if(id) {
 
-        }
+                    const { data, errors } = await client.models.Event.get({
+                    id: Array.isArray(id) ? id[0] : id,
+                  });
+
+                  if(data) {
+
+
+                    setEvent({
+                    id: data.id,
+                    eventName: data.eventName ?? "",
+                    eventDescription: data.eventDescription ?? "",
+                    email: data.email ?? "",
+                    personType: data.personType ?? false,
+                    site: data.site ?? false,
+                    companyEmail: data.companyEmail ?? "",
+                    companyName: data.companyName ?? "",
+                    personName: data.personName ?? "",
+                    eventMainImage: {
+                       
+                        aspectRatio: data.eventMainImage?.aspectRatio ?? "",
+                        url: data.eventMainImage?.url ?? "",
+                    },
+                    eventImage2: {
+                       
+                        aspectRatio: data.eventImage2?.aspectRatio ?? "",
+                        url: data.eventImage2?.url ?? "",
+                    },
+                    eventImage3: {
+                       
+                        aspectRatio: data.eventImage3?.aspectRatio ?? "",
+                        url: data.eventImage3?.url ?? "",
+                    },
+                    eventImage4: {
+                       
+                        aspectRatio: data.eventImage4?.aspectRatio ?? "",
+                        url: data.eventImage4?.url ?? "",
+                    },
+                    dateTimePriceList: (data.dateTimePriceList ?? [])
+                        .filter((dt): dt is NonNullable<typeof dt> => dt !== null)
+                        .map(dt => ({
+                        eventDate: dt.eventDate ?? '',
+                        eventDays: dt.eventDays ?? 0,
+                        eventHours: dt.eventHours ?? 0,
+                        eventMinutes: dt.eventMinutes ?? 0,
+                        eventEndDate: dt.eventEndDate ?? '',
+                        ticketPriceArray: sanitizeTicketArray(dt?.ticketPriceArray),
+                        })),
+                    eventAddress: data.eventAddress ?? "",
+                    ageRestriction: (data.ageRestriction ?? []).filter(
+                        (age): age is string => age !== null
+                    ),
+                    location: data.location && data.location.type && Array.isArray(data.location.coordinates)
+                    ? {
+                        type: data.location.type ?? 'Point',
+                        coordinates: data.location.coordinates.filter((c): c is number => c !== null)
+                        }
+                    : {
+                        type: 'Point',
+                        coordinates: [0, 0]
+                        },
+                    categories: (data.categories ?? []).filter((c): c is string => c !== null),
+                    sponsored: data.sponsored ?? false,
+                   
+                });
+                  setLoadingEvent(false)
+
+                  }
+
+                }
+    
+                
+
+
+                  
+
+                  
+    
+            } catch (e) {
+
+                 const error = e as Error;
+
+                setLoadingEventError(error.message)
+    
+            }
 
         
 
@@ -69,7 +228,7 @@ export default function EventScreen() {
 
             const { data, errors } = await client.models.EventViewed.create({
                 email: userDetails?.username,
-                eventId: id,
+                eventId: Array.isArray(id) ? id[0] : id,
                 locationAddress: userAddress,
                 location:{
                     type: "Point",

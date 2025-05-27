@@ -26,14 +26,112 @@ const windowHeight = Dimensions.get('window').height
 
 export default function LikesScreen() {
 
+
+
     const {t} = useLanguage()
     const {userAddress, userLocation, setUserAddress, setUserLocation} = useLocation()
     const {likedEvents, loadingLikedEvents} = useLikes()
+
+
+    interface IEvent {
+    eventName?: string;
+    eventDescription?: string;
+    id?: string;
+    email?:string;
+    userEmail?: string;
+    eventId?:string;
+    personType?: boolean;
+    companyEmail?: string;
+    companyName?:string;
+    personName?: string;
+    sponsored?: boolean;
+    eventMainImage?:{ aspectRatio?: string; url?: string};
+    eventImage2?:{ aspectRatio?: string; url?: string};
+    eventImage3?:{ aspectRatio?: string; url?: string};
+    eventImage4?:{ aspectRatio?: string; url?: string};
+    dateTimePriceList?: { 
+      eventDate?: string;
+      eventDays?:number;
+      eventHours?:number;
+      eventMinutes?:number;
+      eventEndDate?:string;
+      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[] | []
+
+    }[] | [];
+    ageRestriction?:string[] | [];
+    location?: {type?:string;
+      coordinates?: number [];
+
+    };
+    eventAddress?:string;
+    categories?: string[];
+   
+  }
+  
+
+    interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+  
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+  interface BaseEvent {
+
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  
+}
+
+interface Event extends BaseEvent {
+  // Event-specific fields
+}
+
+interface LikedEvent extends BaseEvent {
+  eventId: string; // LikedEvent-specific field
+}
   
 
     
 
-     const renderEvents = ({item}) => {
+     const renderEvents = ({item}: {item: Event | LikedEvent | IEvent}) => {
                 return(
                     <EventBody item={item} screenType="like" />
                 )
@@ -51,12 +149,12 @@ export default function LikesScreen() {
         <ThemedView >
             {!loadingLikedEvents ? 
             <View>
-            {likedEvents.length > 0 ?
+            {likedEvents!.length > 0 ?
             <FlatList 
                 contentContainerStyle={{paddingBottom: 150}}
                 data={likedEvents}
                 renderItem={renderEvents}
-                keyExtractor={(item)=> item.id} 
+                keyExtractor={(item, index) => item.id ? item.id : index.toString()} 
                 showsVerticalScrollIndicator={false}/>
                 :
                 <ThemedView><ThemedText>{t('no.events.found')}</ThemedText></ThemedView>}

@@ -17,7 +17,6 @@ import { uploadData, getUrl } from '@aws-amplify/storage';
 import { generateClient } from 'aws-amplify/data';
 import {useUser} from '../../../context/UserContext';
 import {type Schema} from '../../../tchebaa-backend/amplify/data/resource'
-import EventManageBody from '@/components/appComponents/EventManageBody';
 import {useLanguage} from '../../../context/LanguageContext'
 import moment from 'moment';
 import BookedTicketBody from '@/components/appComponents/BookedTicketBody';
@@ -31,6 +30,39 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
+ interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+interface Ticket {
+    id: string;
+    eventName: string;
+    eventAddress: string;
+    eventDate: string;
+    eventEndDate: string;
+    eventTotalPrice: number;
+    totalTicketNumber: number;
+    adultNumber: number;
+    childNumber: number;
+    adolescentNumber: number;
+    userEmail: string;
+    organizerEmail: string;
+    eventId: string;
+    eventDescription: string;
+    ageRestriction: string[];
+    ticketsStatus: string;
+    refunded: boolean;
+    location: Location;
+    createdAt: string;
+  }
+
+
 
 
 export default function EventBookings() {
@@ -40,7 +72,7 @@ export default function EventBookings() {
 
     const {eventId, eventName, eventAddress} = useLocalSearchParams()
     const [pageType, setPageType] = useState<string>(t('bookings'))
-    const [bookings, setBookings] = useState([])
+    const [bookings, setBookings] = useState<Ticket []>([])
     const [loadingBookings, setLoadingBookings] = useState<boolean>(true)
     const [loadingError, setLoadingError] = useState<string>('')
     const [deletedItem, setDeletedItem] = useState<string>('')
@@ -230,14 +262,19 @@ export default function EventBookings() {
 
                 filter: {
                   eventId: {
-                    beginsWith: eventId
+                    beginsWith:  Array.isArray(eventId) ? eventId[0] : eventId
                   }
                 }
               });
 
 
-              setBookings(data)
-              setLoadingBookings(false)
+              if(data) {
+
+                const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                setBookings(filtered as Ticket[]);
+                setLoadingBookings(false)
+
+              }
 
 
             } else {
@@ -248,7 +285,7 @@ export default function EventBookings() {
                   and: [
                   {
                     eventId: {
-                      beginsWith: eventId
+                      beginsWith: Array.isArray(eventId) ? eventId[0] : eventId
                     },
                   },
                   {
@@ -266,8 +303,13 @@ export default function EventBookings() {
               });
 
 
-              setBookings(data)
-              setLoadingBookings(false)
+              if(data) {
+
+                const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                setBookings(filtered as Ticket[]);
+                setLoadingBookings(false)
+
+              }
 
             }
 
@@ -276,8 +318,14 @@ export default function EventBookings() {
 
         } catch (e) {
 
-            setLoadingError(e?.message)
+            const error = e as Error;
+
+            if(error) {
+
+            setLoadingError(error?.message)
             setLoadingBookings(false)
+
+            }
 
         }
 
@@ -293,11 +341,7 @@ export default function EventBookings() {
     },[dateFilterCode])
 
 
-    const renderEvents = ({item}) => {
-                return(
-                    <EventManageBody item={item} screenType="manage" deletedItem={deletedItem} setDeletedItem={setDeletedItem} />
-                )
-            }
+   
 
 
 

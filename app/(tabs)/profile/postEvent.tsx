@@ -63,6 +63,7 @@ export default function postEvent() {
     const [personNameError, setPersonNameError] = useState<boolean>(false)
     const [companyEmail, setCompanyEmail] = useState<string>('')
     const [companyEmailError, setCompanyEmailError] = useState<boolean>(false)
+    const [site, setSite] = useState<boolean>(false)
 
 
     
@@ -234,6 +235,7 @@ export default function postEvent() {
               setEmail(data?.email ?? '')
               setSponsord(data?.sponsored ?? false)
               setEventName(data?.eventName ?? '')
+              setSite(data?.site ?? false)
               setEventDescription(data?.eventDescription ?? '')
               setCompanyEmail(data?.companyEmail ?? '')
               setPersonName(data?.personName ?? '')
@@ -280,7 +282,7 @@ export default function postEvent() {
                     }
                 })
 
-                console.log('image2', data?.eventImage2?.url?.length)
+                
 
                 setImage2(linkToStorageFile.url.toString())
 
@@ -465,6 +467,7 @@ export default function postEvent() {
                 sponsored: sponsored,
                 personType: personType,
                 personName: personName,
+                site: site,
                 eventMainImage: {
                     aspectRatio: mainImageAspectRatio,
                     url: mainImage
@@ -511,6 +514,7 @@ export default function postEvent() {
                     eventName: eventName,
                     eventDescription: eventDescription,
                     email: email,
+                    site: site,
                     personType: personType,
                     personName: personName,
                     eventMainImage: {
@@ -709,6 +713,7 @@ export default function postEvent() {
                 email: email,
                 personType: personType,
                 personName: personName,
+                site: site,
                 eventMainImage: {
                     aspectRatio: mainImageAspectRatio,
                     url: ''
@@ -1043,7 +1048,7 @@ export default function postEvent() {
         }
         if(pageSection === 4) {
             return(
-                <PostDateTimeDuration ageRestriction={ageRestriction} dateTimePrice={dateTimePrice} setDateTimePrice={setDateTimePrice}/>
+                <PostDateTimeDuration ageRestriction={ageRestriction} dateTimePrice={dateTimePrice} setDateTimePrice={setDateTimePrice} site={site} setSite={setSite}/>
             )
         }
         if(pageSection === 5) {

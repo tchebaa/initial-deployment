@@ -29,10 +29,47 @@ const client = generateClient<Schema>();
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
+interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+  interface Conversation {
+    id: string;
+    participants: string[];
+    lastMessage: string;
+    
+  }
+
+interface Ticket {
+    id: string;
+    eventName: string;
+    eventAddress: string;
+    eventDate: string;
+    eventEndDate: string;
+    eventTotalPrice: number;
+    totalTicketNumber: number;
+    adultNumber: number;
+    childNumber: number;
+    adolescentNumber: number;
+    userEmail: string;
+    organizerEmail: string;
+    eventId: string;
+    eventDescription: string;
+    ageRestriction: string[];
+    ticketsStatus: string;
+    refunded: boolean;
+    location: Location;
+    createdAt: string;
+  }
 
 
-
-export default function AdminBookedTicketBody({item}: {}) {
+export default function AdminBookedTicketBody({item}: {item: Ticket}) {
 
     const {t, handleChangeLanguage, currentLanguageCode} = useLanguage()
     const [pageType, setPageType] = useState<string>(t('users'))
@@ -113,7 +150,7 @@ export default function AdminBookedTicketBody({item}: {}) {
         try {
 
             const { data, errors } = await client.models.Conversation.create({
-                participants: [email, "tchebaa"],
+                participants: [item.userEmail, "tchebaa"],
                 lastMessage: ''
             })
 
@@ -179,7 +216,7 @@ export default function AdminBookedTicketBody({item}: {}) {
                     <ThemedText>{t('event.end.date')}</ThemedText>
                     <ThemedText>{moment(item.eventEndDate).format('MMMM Do YYYY, h:mm a')}</ThemedText>
                 </ThemedView>
-                <ThemedText>{moment(new Date()).format('MMMM Do YYYY, h:mm a')}</ThemedText>
+
                 {moment(item.eventEndDate).format() > moment(new Date()).format() ?
                  <ThemedView style={styles.ticketDetailsBody}>
                     <TouchableOpacity style={styles.button}>
@@ -193,7 +230,7 @@ export default function AdminBookedTicketBody({item}: {}) {
                             <TouchableOpacity style={styles.button}>
                                 <ThemedText>{t('chat')}</ThemedText>
                             </TouchableOpacity>:
-                            <TouchableOpacity style={styles.button}>
+                            <TouchableOpacity style={styles.button} onPress={()=> handleCreateChat()}>
                                 <ThemedText>{t('create.chat')}</ThemedText>
                             </TouchableOpacity>}
                         </ThemedView>

@@ -45,9 +45,9 @@ export default function LocationComponent() {
                     minLength={2}
                     onPress={(data, details = null)=>{
     
-                        console.log(details)
+                        
                         if(details){
-                            console.log(details.geometry.location.lat, details.geometry.location.lng)
+                            
                         }
                         setUserLocation({latitude:details.geometry.location.lat, longitude: details.geometry.location.lng})
                         // setLocation({latitude: details.geometry.location.lat, longitude: details.geometry.location.lng});

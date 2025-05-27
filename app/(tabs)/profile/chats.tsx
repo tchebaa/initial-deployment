@@ -27,6 +27,14 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
+interface Message {
+   id: string;
+    sender: string;
+    conversationId: string;
+    content: string;
+    status: string;
+    createdAt: string
+  }
 
 
 export default function Message() {
@@ -36,7 +44,7 @@ export default function Message() {
   const colorScheme = useColorScheme();
 
   const [pageType, setPageType] = useState<string>('chats')
-  const [chats, setChats] = useState([])
+  const [chats, setChats] = useState<Message []>([])
   const [loadingChats, setLoadingChats] = useState(true)
   const [userEmail, setUserEmail] = useState<string>('rani@gmail.com')
   const [text, setText] = useState<string>('')
@@ -70,15 +78,21 @@ export default function Message() {
     const sub = client.models.Message.observeQuery({
         filter:{
             conversationId:{
-                beginsWith: conversationId
+                beginsWith: Array.isArray(conversationId) ? conversationId[0] : conversationId,
             }
         }
     }).subscribe({
         next: ({ items, isSynced }) => {
 
             const sortedChats = items.sort(function(a,b){
-                    return new Date(a.createdAt) - new Date(b.createdAt)
-                  })
+                    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                  }).map(chat => ({
+                    ...chat,
+                    sender: chat.sender ?? '',
+                    conversationId: chat.conversationId ?? '',
+                    content: chat.content ?? '',
+                    status: chat.status ?? '',
+                }));
 
             
             setChats([...sortedChats])
@@ -164,7 +178,7 @@ const handleSendText = async () => {
         if(screenName === 'user'){
 
             const { data, errors } = await client.models.Message.create({
-                conversationId: conversationId,
+                conversationId: Array.isArray(conversationId) ? conversationId[0] : conversationId,
                 sender: userDetails?.username,
                 content: text,
                 status: 'read'
@@ -174,7 +188,7 @@ const handleSendText = async () => {
               setText('')
 
               const updateLastMessage = await client.models.Conversation.update({
-               id: conversationId,
+               id: Array.isArray(conversationId) ? conversationId[0] : conversationId,
                lastMessage: text 
                 
               });
@@ -185,7 +199,7 @@ const handleSendText = async () => {
         if(screenName === 'customer') {
 
             const { data, errors } = await client.models.Message.create({
-                conversationId: conversationId,
+                conversationId: Array.isArray(conversationId) ? conversationId[0] : conversationId,
                 sender: userDetails?.username,
                 content: text,
                 status: 'read'
@@ -195,7 +209,7 @@ const handleSendText = async () => {
               setText('')
 
               const updateLastMessage = await client.models.Conversation.update({
-               id: conversationId,
+               id: Array.isArray(conversationId) ? conversationId[0] : conversationId,
                lastMessage: text 
                 
               });
@@ -205,7 +219,7 @@ const handleSendText = async () => {
         if(screenName === 'tchebaa') {
 
             const { data, errors } = await client.models.Message.create({
-                conversationId: conversationId,
+                conversationId: Array.isArray(conversationId) ? conversationId[0] : conversationId,
                 sender: 'tchebaa',
                 content: text,
                 status: 'read'
@@ -215,7 +229,7 @@ const handleSendText = async () => {
               setText('')
 
               const updateLastMessage = await client.models.Conversation.update({
-               id: conversationId,
+               id: Array.isArray(conversationId) ? conversationId[0] : conversationId,
                lastMessage: text 
                 
               });

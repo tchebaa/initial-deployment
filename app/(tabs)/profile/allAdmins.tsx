@@ -235,18 +235,18 @@ export default function AllAdmins() {
 
 
         setOpenDeleteModal(false)
-        setAdminId(item.id)
+        setAdminId(item.id ?? "")
         setAdminMode('edit')
-        setEmail(item.email)
-        setAdminName(item.adminName)
-        setPostEventPermissions(item.postEventPermissions)
-        setDeleteEventPermissions(item.deleteEventPermissions)
-        setTicketCancelPermissions(item.ticketCancelPermissions)
-        setAddAdminPermissions(item.addAdminPermissions)
-        setEditAdminPermissions(item.editAdminPermissions)
-        setChatPermissions(item.chatPermissions)
-        setDeleteAdminPermissions(item.deleteAdminPermissions)
-        setEditEventPermissions(item.editAdminPermissions)
+        setEmail(item.email ?? '')
+        setAdminName(item.adminName ?? '')
+        setPostEventPermissions(item.postEventPermissions ?? true)
+        setDeleteEventPermissions(item.deleteEventPermissions ?? true)
+        setTicketCancelPermissions(item.ticketCancelPermissions ?? true)
+        setAddAdminPermissions(item.addAdminPermissions ?? true)
+        setEditAdminPermissions(item.editAdminPermissions ?? true)
+        setChatPermissions(item.chatPermissions ?? true)
+        setDeleteAdminPermissions(item.deleteAdminPermissions ?? true)
+        setEditEventPermissions(item.editAdminPermissions ?? true)
 
         setOpenAddAdmin(true)
 
@@ -274,9 +274,9 @@ export default function AllAdmins() {
 
         setOpenAddAdmin(false)
         setOpenDeleteModal(true)
-        setAdminId(item.id),
-        setAdminName(item.adminName)
-        setEmail(item.email)
+        setAdminId(item.id ?? ''),
+        setAdminName(item.adminName ?? '')
+        setEmail(item.email ?? '')
         
     }
 
@@ -447,8 +447,8 @@ export default function AllAdmins() {
                                 <ThemedText>{item.adminName}</ThemedText>
                                 <ThemedText>{item.email}</ThemedText>
                                 <ThemedView style={styles.editDeleteContainer}>
-                                    <TouchableOpacity style={styles.editDeleteButtons} onPress={()=> handleOpenAdminEdit(item)}><ThemedText>Edit</ThemedText></TouchableOpacity>
-                                    <TouchableOpacity style={styles.editDeleteButtons} onPress={()=> handleOpenDeleteModal(item)}><ThemedText>Delete</ThemedText></TouchableOpacity>
+                                    <TouchableOpacity style={styles.editDeleteButtons} onPress={()=> handleOpenAdminEdit(item)}><ThemedText>{t('edit')}</ThemedText></TouchableOpacity>
+                                    <TouchableOpacity style={styles.editDeleteButtons} onPress={()=> handleOpenDeleteModal(item)}><ThemedText>{t('delete')}</ThemedText></TouchableOpacity>
                                 </ThemedView>
                             </ThemedView>
                             

@@ -16,7 +16,7 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function ProfileHeader({pageType}: {pageType: string}) {
+export default function ProfileHeader({pageType}: {pageType: string | string []}) {
 
   const colorScheme = useColorScheme();
   const {t} = useLanguage()

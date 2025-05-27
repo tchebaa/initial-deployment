@@ -30,6 +30,15 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
+interface User {
+    id: string;
+    email: string;
+    postEventLimit: number;
+    createdAt: string;
+    name: string;
+    pushNotificationToken: string;
+    pushNotificationEnabled: boolean;
+  }
 
 
 export default function Users() {
@@ -41,7 +50,7 @@ export default function Users() {
     
     const colorScheme = useColorScheme();
 
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState<User []>([])
     const [loadingUsers, setLoadingUsers] = useState<boolean>(true)
     const [loadingUsersError, setLoadingUsersError] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
@@ -234,9 +243,13 @@ export default function Users() {
                     
                 })
 
-                setUsers(data)
+                if(data) {
 
-                setLoadingUsers(false)
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setUsers(filtered as User[]);
+                    setLoadingUsers(false)
+                  
+                    }
 
             } else {
 
@@ -254,9 +267,13 @@ export default function Users() {
                     }
                 })
 
-                setUsers(data)
+                if(data) {
 
-                setLoadingUsers(false)
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setUsers(filtered as User[]);
+                    setLoadingUsers(false)
+                  
+                    }
 
             }
 
@@ -287,8 +304,13 @@ export default function Users() {
                     }
             })
 
-            setUsers(data)
-            setLoadingUsers(false)
+            if(data) {
+
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setUsers(filtered as User[]);
+                    setLoadingUsers(false)
+                  
+                    }
             
   
 

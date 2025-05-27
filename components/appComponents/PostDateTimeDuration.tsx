@@ -20,7 +20,8 @@ const windowHeight = Dimensions.get('window').height;
 
 
 
-export default function PostDateTimeDuration({ageRestriction, dateTimePrice, setDateTimePrice}: {ageRestriction: string [], dateTimePrice: string [], setDateTimePrice: Dispatch<SetStateAction<string []>>}) {
+export default function PostDateTimeDuration({ageRestriction, dateTimePrice, setDateTimePrice, site, setSite}: 
+    {ageRestriction: string [], dateTimePrice: string [], setDateTimePrice: Dispatch<SetStateAction<string []>>, site: boolean, setSite: Dispatch<SetStateAction<boolean>>}) {
 
     const colorScheme = useColorScheme();
     const {t} = useLanguage()
@@ -353,7 +354,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
                 <ThemedView style={[colorScheme === 'dark' ? {borderColor: 'white'} : {borderColor: 'gray'}, styles.container]}>
                     <ThemedView style={styles.closeFormSection}>
                         <View></View>
-                        {dateTimePrice.length > 0 ? <TouchableOpacity><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>: <View></View>}
+                        {dateTimePrice.length > 0 ? <TouchableOpacity onPress={()=> setShowForm(false)}><AntDesign name='close' size={24} color={'black'} /></TouchableOpacity>: <View></View>}
                     </ThemedView>
                     <ThemedView style={styles.dateTimeSection}>
                         <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.selectDateTimeButton]} onPress={()=> handleOpenDateTimeModal('date')}>
@@ -467,7 +468,7 @@ export default function PostDateTimeDuration({ageRestriction, dateTimePrice, set
 
                     {editForm ? 
                     <ThemedView style={styles.saveComponent}>
-                        <TouchableOpacity style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.saveButton]}>
+                        <TouchableOpacity onPress={()=> handleSaveEdit()} style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.saveButton]}>
                             <View style={[colorScheme === 'dark' ? {backgroundColor: '#202020'} : {backgroundColor: 'white'}, styles.plusSection]}>
                                 <AntDesign name="plussquareo" size={24} color="white" />
                             </View>

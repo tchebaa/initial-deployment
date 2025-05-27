@@ -170,7 +170,6 @@ export default function SignInScreen() {
                     <ThemedText style={styles.loginText}>{t('log.in')}</ThemedText>
                 </TouchableOpacity>
             </ThemedView>
-            <GoogleLoginButton />
             
             <ThemedView style={styles.signupContainer}>
                 <ThemedText type='default'>{t('new.user')}</ThemedText>

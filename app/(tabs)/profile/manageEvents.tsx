@@ -30,7 +30,132 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 
 
-const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {item: { icon: string, title: string, name: string}, selectedCategories: string [], handleAddRemoveCategory: (item: string) => void}) => {
+  interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+interface Ticket {
+    id: string;
+    eventName: string;
+    eventAddress: string;
+    eventDate: string;
+    eventEndDate: string;
+    eventTotalPrice: number;
+    totalTicketNumber: number;
+    adultNumber: number;
+    childNumber: number;
+    adolescentNumber: number;
+    userEmail: string;
+    organizerEmail: string;
+    eventId: string;
+    eventDescription: string;
+    ageRestriction: string[];
+    ticketsStatus: string;
+    refunded: boolean;
+    location: Location;
+    createdAt: string;
+  }
+
+  interface EventCategory {
+  icon: React.ReactNode;
+  title: string;
+  name: string;
+}
+
+
+   interface IEvent {
+    eventName?: string;
+    eventDescription?: string;
+    id?: string;
+    email?:string;
+    userEmail?: string;
+    eventId?:string;
+    personType?: boolean;
+    companyEmail?: string;
+    companyName?:string;
+    personName?: string;
+    sponsored?: boolean;
+    eventMainImage?:{ aspectRatio?: string; url?: string};
+    eventImage2?:{ aspectRatio?: string; url?: string};
+    eventImage3?:{ aspectRatio?: string; url?: string};
+    eventImage4?:{ aspectRatio?: string; url?: string};
+    dateTimePriceList?: { 
+      eventDate?: string;
+      eventDays?:number;
+      eventHours?:number;
+      eventMinutes?:number;
+      eventEndDate?:string;
+      ticketPriceArray?: {ticketNumber: number; ticketTitle: string; adultPrice: number; adolescentPrice: number; childPrice: number }[] | []
+
+    }[] | [];
+    ageRestriction?:string[] | [];
+    location?: {type?:string;
+      coordinates?: number [];
+
+    };
+    eventAddress?:string;
+    categories?: string[];
+   
+  }
+  
+
+    interface TicketPrice {
+    adultPrice: number;
+    adolescentPrice: number;
+    childPrice: number;
+    ticketTitle: string;
+    ticketNumber: number;
+  }
+  
+  interface DateTimePrice {
+    eventDate: string;
+    eventDays: number;
+    eventHours: number;
+    eventMinutes: number;
+    eventEndDate: string;
+    ticketPriceArray: TicketPrice[];
+  }
+  
+   interface EventImage {
+    aspectRatio: string;
+    url: string;
+  }
+
+  interface BaseEvent {
+
+    id: string;
+    eventName: string;
+    eventDescription: string;
+    email: string;
+    site: boolean;
+    personType: boolean;
+    companyEmail: string;
+    companyName: string;
+    personName: string;
+    sponsored: boolean;
+    eventMainImage: EventImage;
+    eventImage2: EventImage;
+    eventImage3: EventImage;
+    eventImage4: EventImage;
+    dateTimePriceList: DateTimePrice[];
+    ageRestriction: string[];
+    categories: string[];
+    eventAddress: string;
+    location: Location;
+  
+}
+
+interface Event extends BaseEvent {
+  // Event-specific fields
+}
+
+interface LikedEvent extends BaseEvent {
+  eventId: string; // LikedEvent-specific field
+}
+  
+
+const EventCategory = ({item, handleAddRemoveCategory, selectedCategories}: {item: EventCategory, selectedCategories: string [], handleAddRemoveCategory: (item: string) => void}) => {
     
     const colorScheme = useColorScheme();
 
@@ -62,7 +187,7 @@ export default function ManageEvents() {
     
 
     const [pageType, setPageType] = useState<string>(t('manage'))
-    const [events, setEvents] = useState()
+    const [events, setEvents] = useState<Event []>([])
     const [loadingEvents, setLoadingEvents] = useState<boolean>(true)
     const [loadingError, setLoadingError] = useState<string>('')
     const [deletedItem, setDeletedItem] = useState<string>('')
@@ -140,16 +265,25 @@ export default function ManageEvents() {
                 }
               });
 
+              if(data) {
 
-              setEvents(data)
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setEvents(filtered as Event[]);
+                    setLoadingEvents(false)
+                }
+
               
-              setLoadingEvents(false)
-
 
         } catch (e) {
 
-            setLoadingError(e?.message)
+            const error = e as Error;
+
+            if(error.message) {
+
+            setErrorLoadingEvents(error.message)
             setLoadingEvents(false)
+
+            }
 
         }
 
@@ -167,15 +301,24 @@ export default function ManageEvents() {
             const { data, errors } = await client.models.Event.list();
 
 
-                setEvents(data)
-                
-                setLoadingEvents(false)
+                if(data) {
+
+                    const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                    setEvents(filtered as Event[]);
+                    setLoadingEvents(false)
+                }
 
 
           } catch (e) {
 
-              setLoadingError(e?.message)
-              setLoadingEvents(false)
+             const error = e as Error;
+
+            if(error.message) {
+
+            setErrorLoadingEvents(error.message)
+            setLoadingEvents(false)
+
+            }
 
           } 
 
@@ -394,14 +537,14 @@ export default function ManageEvents() {
     
 
 
-    const renderEvents = ({item}) => {
+    const renderEvents = ({item}: {item : Event}) => {
                 return(
                     <EventManageBody item={item} screenType="manage" deletedItem={deletedItem} setDeletedItem={setDeletedItem}
                     screenName={screenName} />
                 )
             }
 
-        const renderEventsCategories = ({item}: CategoryProps) => {
+        const renderEventsCategories = ({item}: {item: EventCategory}) => {
           return(
               <EventCategory item={item} selectedCategories={selectedCategories} handleAddRemoveCategory={handleAddRemoveCategory}  />
           )
@@ -460,7 +603,7 @@ export default function ManageEvents() {
             </ThemedView>:
             <ThemedView>
               
-              {events.length > 0 ?
+              {events?.length > 0 ?
               <FlatList 
                   contentContainerStyle={{paddingBottom: 100}}
                   data={events}

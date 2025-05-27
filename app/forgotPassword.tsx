@@ -12,6 +12,7 @@ import { Link, useRouter } from 'expo-router';
 import {signIn, getCurrentUser, confirmSignUp, resetPassword, confirmResetPassword} from '@aws-amplify/auth'
 import {useUser} from '../context/UserContext'
 import {useLanguage} from '../context/LanguageContext'
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -23,6 +24,7 @@ export default function forgotPassword() {
 
     const {userDetails, setUserDetails} = useUser()
     const {t} = useLanguage()
+      const colorScheme = useColorScheme();
     
         const [email, setEmail] = useState<string>('')
         const [emailError, setEmailError] = useState<string>('')
@@ -182,7 +184,8 @@ export default function forgotPassword() {
                     <ActivityIndicator />
                   </ThemedView>: null}
                 <ThemedView style={styles.loginContainer}>
-                    <TextInput placeholder={t('email')} style={styles.inputContainer} value={email} onChangeText={(e)=> setEmail(e)}/>
+                    <TextInput placeholder={t('email')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'}  
+                    style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={email} onChangeText={(e)=> setEmail(e)}/>
                       {emailError ? <ThemedText style={styles.errorText}>{emailError}</ThemedText>: null}
     
                       {loginError ? <ThemedText style={styles.errorText}>{loginError}</ThemedText>: null}
@@ -196,8 +199,10 @@ export default function forgotPassword() {
                 </ThemedView>
                 {resendCodeSuccess ? 
                 <ThemedView style={styles.codeInputContainer}>
-                    <TextInput placeholder={t('enter.code')} style={styles.inputContainer} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
-                    <TextInput placeholder={t('new.password')} secureTextEntry={true} style={styles.inputContainer} value={password} onChangeText={(e)=> setPassword(e)}/>
+                    <TextInput placeholder={t('enter.code')} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'}  
+                    style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={codeConfirm} onChangeText={(e)=> setCodeConfirm(e)}/>
+                    <TextInput placeholder={t('new.password')} secureTextEntry={true} placeholderTextColor={ colorScheme === 'light' ? 'gray': 'white'}  
+                    style={[colorScheme === 'dark' ? {backgroundColor: '#202020', color: 'white'} : {backgroundColor: 'white', color:'black'}, styles.inputContainer]} value={password} onChangeText={(e)=> setPassword(e)}/>
                     <TouchableOpacity style={styles.loginButton} onPress={()=> handleConfirm()}>
                         <ThemedText style={styles.loginText}>{t('change.password')}</ThemedText>
                     </TouchableOpacity>

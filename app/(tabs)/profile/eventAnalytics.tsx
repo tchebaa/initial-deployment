@@ -31,6 +31,23 @@ const windowHeight = Dimensions.get('window').height
 
 
 
+interface Location {
+    type: string;
+    coordinates: number[];
+  }
+
+interface EventViewed {
+    id: string;
+    email: string;
+    eventId: string;
+    locationAddress: string;
+    location: Location;
+    createdAt: string;
+  }
+
+
+
+
 
 export default function EventAnalytics() {
 
@@ -42,7 +59,7 @@ export default function EventAnalytics() {
     
     const colorScheme = useColorScheme();
 
-    const [eventViews, setEventViews] = useState([])
+    const [eventViews, setEventViews] = useState<EventViewed []>([])
 
 
     const admin = admins?.find((admin)=> admin.email === userDetails?.username)
@@ -235,14 +252,19 @@ export default function EventAnalytics() {
                 const { data, errors } = await client.models.EventViewed.list({
                     filter:{
                         eventId: {
-                            beginsWith: id
+                            beginsWith: Array.isArray(id) ? id[0] : id,
                           }
                     }
                     
                 })
 
-                setEventViews(data)
+                  if(data) {
+
+                const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                setEventViews(filtered as EventViewed[]);
                 setLoadingEventViews(false)
+
+                }
                 
 
             } else {
@@ -252,7 +274,7 @@ export default function EventAnalytics() {
                 const { data, errors } = await client.models.EventViewed.list({
                     filter:{
                         eventId: {
-                            beginsWith: id
+                            beginsWith: Array.isArray(id) ? id[0] : id,
                           },
                           and: [
                             {
@@ -267,9 +289,13 @@ export default function EventAnalytics() {
                     
                 })
 
-                setEventViews(data)
+                  if(data) {
+
+                const filtered = data?.filter((e): e is NonNullable<typeof e> => Boolean(e));
+                setEventViews(filtered as EventViewed[]);
                 setLoadingEventViews(false)
-                
+
+                }
 
             }
 
